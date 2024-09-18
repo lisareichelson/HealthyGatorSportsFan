@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Expo
+.expo/
+
+# Node modules
+node_modules/
+
+# Build directories
+.expo-shared/
+dist/
+build/
+
