@@ -1,25 +1,42 @@
-import { Image, StyleSheet, Text, View, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Image, StyleSheet, Text, View, Platform, TouchableOpacity} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import BasicInformationCollection from "@/app/(tabs)/explore";
 
 export default function HomeScreen() {
+    const navigation = useNavigation();
   return (
-      <View style={styles1.container} >
-          <Image source={require('./../../assets/images/coolgator.png')} />
-          <Text style={{fontSize:40, fontFamily:'System'}}>Hey there, Gator!</Text>
-          <Text style={{fontSize:40, fontFamily:'System', alignItems: 'center' }}>Get started on your health journey today.</Text>
+      <View style={styles1.container}>
+          <Image source={require('./../../assets/images/coolgator.png')}/>
+          <Text style={{fontSize: 40, fontFamily: 'System'}}>Hey there, Gator!</Text>
+          <Text style={{fontSize: 40, fontFamily: 'System', alignItems: 'center'}}>Get started on your health journey
+              today.</Text>
+          <View style={styles1.bottomObject}>
+          <TouchableOpacity activeOpacity={0.5}
+                            onPress={() => navigation.navigate('BasicInfo' as never) }>
+              <Image
+                  source={require('./../../assets/images/forwardarrow.png')}
+                  style={{width:50, height:50}}
+              />
+          </TouchableOpacity>
+      </View>
       </View>
   );
 }
+
 const styles1 = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    bottomObject: {
+        position: 'absolute',
+        bottom: 10,
+        left: 320,
+        right: 0,
     },
 });
 
