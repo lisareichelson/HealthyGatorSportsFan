@@ -33,10 +33,11 @@ const styles1 = StyleSheet.create({
         justifyContent: 'center',
     },
     bottomObject: {
+        alignItems: 'center',
         position: 'absolute',
-        bottom: 10,
-        left: 320,
-        right: 0,
+        bottom: 30,
+        alignSelf: 'flex-end',
+        padding: 20
     },
 });
 
