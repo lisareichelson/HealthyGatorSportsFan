@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View, Platform, TouchableOpacity} from 'react-
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import BasicInformationCollection from "@/app/(tabs)/explore";
+import BasicInformationCollection from "@/app/(tabs)/basicinfo";
 
 export default function HomeScreen() {
     const navigation = useNavigation();

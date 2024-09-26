@@ -7,7 +7,7 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import HomeScreen from './index'
-import BasicInformationCollection from './explore'
+import BasicInformationCollection from './basicinfo'
 
 
 const Stack = createNativeStackNavigator();

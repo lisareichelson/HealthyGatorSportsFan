@@ -10,7 +10,7 @@ import { ThemedView } from '@/components/ThemedView';
 export default function BasicInformationCollection() {
   return (
       <View style={styles1.container}>
-        <Text>Testing. Is Screen Reached?</Text>
+        <Text style={{fontSize: 30, fontFamily: 'System'}}>Before we begin, we need some basic information.</Text>
       </View>
   );
 }
