@@ -12,3 +12,10 @@ node_modules/
 dist/
 build/
 
+# venv and python specific libraries
+venv/
+**/__pycache__/
+
+# IDE specific settings
+.idea/
+
