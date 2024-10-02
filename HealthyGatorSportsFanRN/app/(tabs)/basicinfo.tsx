@@ -1,32 +1,35 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import {StyleSheet, View, Text, Image, useWindowDimensions, Platform, TouchableOpacity} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
-import SelectDropdown from 'react-native-select-dropdown';
-//import DropDownPicker from 'react-native-dropdown-picker';
 import { Dropdown } from 'react-native-element-dropdown';
+import {useState} from "react";
 
 
 export default function BasicInformationCollection() {
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions();
   const styles1 = SetStyles(width, height);
-  const genders = ["Male", "Female", "NonBinary", "Other"];
+  const [genders] = useState([
+    {label: 'Male', value: 'male'},
+    {label: 'Female', value: 'female'},
+    {label: 'Other', value: 'other'}
+  ]);
   return (
       <View style={styles1.container}>
-        <Text style={{fontSize: 30, fontFamily: 'System', bottom: height/4}}>Before we begin, we need some basic information.</Text>
-        <View style={styles1.rightBox}>
-          <Text style={styles1.label}>Select your gender:</Text>
-          <Dropdown data={genders} labelField={5} onChange={item => {
-            setValue(item.valueOf);
+        <Text style={{fontSize: 30, fontFamily: 'System', bottom: height/4, alignItems: 'center', alignContent: 'center'}}>Before we begin, we need some basic information.</Text>
+        <View style={styles1.TopBox}>
+          <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
+          <Dropdown style={[styles1.dropdown]}
+              data={genders} labelField={"label"} valueField={"value"} onChange={item => {
+            setValue(item.value);
           }}
-                    valueField={5}></Dropdown>
+          ></Dropdown>
         </View>
       </View>
       
   );
 }
 function setValue(item: any){
-
+  console.log(item);
 }
 //PLAN: create two buttons with onpress functions. Only allow one button to be selected at a time.
 function SetStyles(width: number, height: number) : any{
@@ -37,10 +40,9 @@ function SetStyles(width: number, height: number) : any{
       alignItems: 'center',
       justifyContent: 'center',
     },
-    rightBox: {
+    TopBox: {
       position: 'absolute',
-      bottom: height/3,
-      left: width/9,
+      bottom: height/1.65,
     },
     middleBox: {
       position: 'absolute',
@@ -52,6 +54,13 @@ function SetStyles(width: number, height: number) : any{
       bottom: 10,
       left: 320,
       right: 0,
+    },
+    dropdown:{
+      height: 50,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
     },
   });
   return styles1;
