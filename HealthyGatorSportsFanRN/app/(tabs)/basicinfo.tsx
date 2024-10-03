@@ -4,23 +4,21 @@ import {
   Text,
   Image,
   useWindowDimensions,
-  Platform,
   TouchableOpacity,
-  TextInput,
-  TouchableWithoutFeedback, Keyboard
+  TextInput
 } from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {useState} from "react";
-
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+//To focus on the weight input box while it's being entered, use: https://github.com/APSL/react-native-keyboard-aware-scroll-view
 
 
 
 export default function BasicInformationCollection() {
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions();
-  const styles1 = SetStyles(width, height);
+  const styles = SetStyles(width, height);
   const [genders] = useState([
     {label: 'Male', value: 'male'},
     {label: 'Female', value: 'female'},
@@ -50,40 +48,39 @@ export default function BasicInformationCollection() {
     { value: 11},
     { value: 12}
   ]);
-  const [weight, setWeight] = useState('');
+  const [weight] = useState('');
 
   return (
-      <View style={styles1.container}>
+      <View style={styles.container}>
         <Text style={{fontSize: 35, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
         <Image style=
                    {{width: 150,
                     height: 150,}}
                source={require('./../../assets/images/clipboardgator.jpg')}/>
-        <View style={styles1.InputBoxes}>
+        <View style={styles.InputBoxes}>
           <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
-          <Dropdown style={[styles1.dropdown]}
+          <Dropdown style={[styles.dropdown]}
                     data={genders} labelField={"label"} valueField={"value"} onChange={item => {
             SetGenderValue(item.value);
           }}
           ></Dropdown>
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in feet:</Text>
-          <Dropdown style={[styles1.dropdown]}
+          <Dropdown style={[styles.dropdown]}
                     data={heightFeet} labelField={"value"} valueField={"value"} onChange={item => {
             SetHeightValueFeet(item.value);
           }}
           ></Dropdown>
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in inches:</Text>
-          <Dropdown style={[styles1.dropdown]}
+          <Dropdown style={[styles.dropdown]}
                     data={heightInches} labelField={"value"} valueField={"value"} onChange={item => {
             SetHeightValueInches(item.value);
           }}
           ></Dropdown>
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
-
           <TextInput
-              style={styles1.inputWeight}
+              style={styles.inputWeight}
               placeholder="enter a weight..."
               keyboardType={"numeric"}
               editable={true}
@@ -91,6 +88,15 @@ export default function BasicInformationCollection() {
               onEndEditing={weight => SetWeightValue(weight)}
               returnKeyType="done"/>
         </View>
+
+
+        <TouchableOpacity activeOpacity={0.5}
+                          onPress={() => navigation.navigate('CreateOrSignIn' as never) }>
+          <Image
+              source={require('./../../assets/images/forwardarrow.png')}
+              style={{width:50, height:50}}
+          />
+        </TouchableOpacity>
 
       </View>
 
@@ -114,7 +120,7 @@ function SetHeightValueInches(height: any){
 }
 
 function SetStyles(width: number, height: number) : any{
-  const styles1 = StyleSheet.create({
+  const styles = StyleSheet.create({
     container: {
       flex:1,
       backgroundColor: '#fff',
@@ -131,26 +137,7 @@ function SetStyles(width: number, height: number) : any{
       flex: 1,
       justifyContent: "center",
       paddingBottom: height/4,
-      paddingTop: 100,
-    },
-    TopBox: {
-      position: 'absolute',
-      bottom: height/1.65,
-    },
-    Height:{
-      position: 'absolute',
-      bottom: height/2,
-    },
-    middleBox: {
-      position: 'absolute',
-      bottom: height/3,
-      left: width - width/3,
-    },
-    bottomObject: {
-      position: 'absolute',
-      bottom: 10,
-      left: 320,
-      right: 0,
+      paddingTop: 150,
     },
     dropdown:{
       height: 50,
@@ -160,19 +147,6 @@ function SetStyles(width: number, height: number) : any{
       paddingHorizontal: 8,
     },
   });
-  return styles1;
+  return styles;
 }
 
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});

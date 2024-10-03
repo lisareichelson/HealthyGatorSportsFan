@@ -8,6 +8,7 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import HomeScreen from './index'
 import BasicInformationCollection from './basicinfo'
+import CreateOrSignIn from "@/app/(tabs)/signinorcreate";
 
 
 const Stack = createNativeStackNavigator();
@@ -27,6 +28,11 @@ export default function TabLayout() {
               <Stack.Screen
                   name="BasicInfo"
                   component={BasicInformationCollection}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="CreateOrSignIn"
+                  component={CreateOrSignIn}
                   options={{headerShown: false}}
               />
           </Stack.Navigator>
