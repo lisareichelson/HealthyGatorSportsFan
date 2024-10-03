@@ -67,20 +67,20 @@ export default function BasicInformationCollection() {
           }}
           ></Dropdown>
 
-          <Text style={{fontSize: 15, fontFamily: 'System'}}>Select your height in feet:</Text>
+          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in feet:</Text>
           <Dropdown style={[styles1.dropdown]}
                     data={heightFeet} labelField={"value"} valueField={"value"} onChange={item => {
             SetHeightValueFeet(item.value);
           }}
           ></Dropdown>
 
-          <Text style={{fontSize: 15, fontFamily: 'System'}}>Select your height in inches:</Text>
+          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in inches:</Text>
           <Dropdown style={[styles1.dropdown]}
                     data={heightInches} labelField={"value"} valueField={"value"} onChange={item => {
             SetHeightValueInches(item.value);
           }}
           ></Dropdown>
-          <Text style={{fontSize: 15, fontFamily: 'System'}}>Enter your weight in pounds:</Text>
+          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
 
           <TextInput
               style={styles1.inputWeight}
@@ -130,7 +130,8 @@ function SetStyles(width: number, height: number) : any{
     InputBoxes: {
       flex: 1,
       justifyContent: "center",
-      paddingBottom: height/4
+      paddingBottom: height/4,
+      paddingTop: 100,
     },
     TopBox: {
       position: 'absolute',
