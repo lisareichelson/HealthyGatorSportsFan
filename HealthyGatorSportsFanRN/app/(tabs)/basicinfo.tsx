@@ -1,7 +1,18 @@
-import {StyleSheet, View, Text, Image, useWindowDimensions, Platform, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  useWindowDimensions,
+  Platform,
+  TouchableOpacity,
+  TextInput,
+  TouchableWithoutFeedback, Keyboard
+} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {useState} from "react";
+
 
 
 
@@ -39,48 +50,58 @@ export default function BasicInformationCollection() {
     { value: 11},
     { value: 12}
   ]);
-  let weight: number = 0;
+  const [weight, setWeight] = useState('');
 
   return (
       <View style={styles1.container}>
-        <Text style={{fontSize: 30, fontFamily: 'System', bottom: height/4, alignItems: 'center', alignContent: 'center'}}>Before we begin, we need some basic information.</Text>
-
-        <View style={styles1.TopBox}>
+        <Text style={{fontSize: 35, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
+        <Image style=
+                   {{width: 150,
+                    height: 150,}}
+               source={require('./../../assets/images/clipboardgator.jpg')}/>
+        <View style={styles1.InputBoxes}>
           <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
           <Dropdown style={[styles1.dropdown]}
-              data={genders} labelField={"label"} valueField={"value"} onChange={item => {
+                    data={genders} labelField={"label"} valueField={"value"} onChange={item => {
             SetGenderValue(item.value);
           }}
           ></Dropdown>
-        </View>
-        <View style={styles1.Height}>
+
           <Text style={{fontSize: 15, fontFamily: 'System'}}>Select your height in feet:</Text>
           <Dropdown style={[styles1.dropdown]}
                     data={heightFeet} labelField={"value"} valueField={"value"} onChange={item => {
             SetHeightValueFeet(item.value);
           }}
           ></Dropdown>
-        </View>
 
-        <View>
           <Text style={{fontSize: 15, fontFamily: 'System'}}>Select your height in inches:</Text>
           <Dropdown style={[styles1.dropdown]}
                     data={heightInches} labelField={"value"} valueField={"value"} onChange={item => {
             SetHeightValueInches(item.value);
           }}
           ></Dropdown>
+          <Text style={{fontSize: 15, fontFamily: 'System'}}>Enter your weight in pounds:</Text>
+
+          <TextInput
+              style={styles1.inputWeight}
+              placeholder="enter a weight..."
+              keyboardType={"numeric"}
+              editable={true}
+              value={weight}
+              onEndEditing={weight => SetWeightValue(weight)}
+              returnKeyType="done"/>
         </View>
 
-        <View>
-          <Text style={{fontSize: 15, fontFamily: 'System'}}>Select your weight in pounds:</Text>
-
-        </View>
       </View>
 
   );
 }
 
-function SetGenderValue(item: any){
+function SetWeightValue(weight: any){
+  console.log(weight.valueOf());
+}
+
+function SetGenderValue(item: any) {
   console.log(item);
 }
 
@@ -99,6 +120,17 @@ function SetStyles(width: number, height: number) : any{
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    inputWeight: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
+    },
+    InputBoxes: {
+      flex: 1,
+      justifyContent: "center",
+      paddingBottom: height/4
     },
     TopBox: {
       position: 'absolute',
