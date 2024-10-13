@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image, useWindowDimensions, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 export default function LogInScreen() {

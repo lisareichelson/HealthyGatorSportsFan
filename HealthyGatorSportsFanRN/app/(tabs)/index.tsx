@@ -1,9 +1,8 @@
-/*This is the log in or create account screen that will launch at the application's start*/
+/*This is the login or create account screen that will launch at the application's start*/
 
-import {StyleSheet, View, Text, Image, useWindowDimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 
-//PLACEHOLDER CODE: Insert this between the welcome screen and the next screens once the google sign in is working.
 export default function CreateOrSignIn() {
     const navigation = useNavigation();
     return(

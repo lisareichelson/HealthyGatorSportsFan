@@ -86,7 +86,6 @@ export default function BasicInformationCollection() {
               returnKeyType="done"/>
         </View>
 
-
         <TouchableOpacity activeOpacity={0.5}
                           onPress={() => navigation.navigate('CreateOrSignIn' as never) }>
           <Image

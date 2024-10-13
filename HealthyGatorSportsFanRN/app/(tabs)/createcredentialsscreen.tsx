@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image, Alert, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 
