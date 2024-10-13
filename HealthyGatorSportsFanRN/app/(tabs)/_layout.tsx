@@ -12,6 +12,7 @@ import WelcomeScreen from "@/app/(tabs)/accountcreationwelcome";
 //import CreateOrSignIn from "@/app/(tabs)/signinorcreate";
 import CreateOrSignIn from './index'
 import LogInScreen from "@/app/(tabs)/loginscreen";
+import CreateCredentials from "@/app/(tabs)/createcredentialsscreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +37,11 @@ export default function TabLayout() {
               <Stack.Screen
                   name="LogInScreen"
                   component={LogInScreen}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="CreateCredentialsScreen"
+                  component={CreateCredentials}
                   options={{headerShown: false}}
               />
               <Stack.Screen

@@ -11,7 +11,7 @@ export default function WelcomeScreen() {
                 today.</Text>
             <View style={styles.bottomObject}>
                 <TouchableOpacity activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('BasicInfo' as never) }>
+                                  onPress={() => navigation.navigate('CreateCredentialsScreen' as never) }>
                     <Image
                         source={require('./../../assets/images/forwardarrow.png')}
                         style={{width:50, height:50}}
