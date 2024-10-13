@@ -10,10 +10,7 @@ import {
 import {useNavigation} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {useState} from "react";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 //To focus on the weight input box while it's being entered, use: https://github.com/APSL/react-native-keyboard-aware-scroll-view
-
-
 
 export default function BasicInformationCollection() {
   const navigation = useNavigation();
