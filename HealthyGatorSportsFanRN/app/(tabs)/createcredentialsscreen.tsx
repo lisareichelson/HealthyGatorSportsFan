@@ -37,21 +37,21 @@ export default function CreateCredentials() {
             <Text style={{fontSize: 15, fontFamily: 'System', textAlign: 'center', margin : 20, color: "grey"}}>
                 Passwords must contain at least 1 letter and character, and must be at least 8 characters long.
             </Text>
-            <View style={styles.bottomObject}>
-                <TouchableOpacity activeOpacity={0.5}
+                <TouchableOpacity style = {[styles.buttons, {marginTop: 20} ]} activeOpacity={0.5}
                                   onPress={() => ConfirmData(username, password, passwordConfirmed, navigation) }>
-                    <Image
-                        source={require('./../../assets/images/forwardarrow.png')}
-                        style={{width:50, height:50}}
-                    />
+                    <Text style={{fontSize: 15, fontFamily: 'System'}}>
+                        Create Account
+                    </Text>
                 </TouchableOpacity>
-            </View>
         </View>
     );
 }
 
 
 function ConfirmData(username :any, password: any, passwordConfirmed: any, navigation : any){
+    //Check that the inputted username does not yet exist through connection with database
+    //TODO
+
     //Confirm that the password and the confirmedpassword match
     if (password != passwordConfirmed){
         Alert.alert("Passwords do not match!");
@@ -74,7 +74,7 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, navig
         return;
     }
 
-    //Save the username and password, if valid, to the database
+    //Save the username and password, if valid, to the database //TODO
     console.log(username);
     console.log(password);
 
@@ -90,15 +90,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    bottomObject: {
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 30,
-        alignSelf: 'flex-end',
-        padding: 20
+    buttons:{
+        borderWidth:1,
+        borderColor:'orange',
+        width:200,
+        height:50,
+        backgroundColor:'#ADD8E6',
+        borderRadius:50,
+        justifyContent: "center",
+        alignItems: "center",
     },
     input: {
-        width: '100%',
+        width: '90%',
         height: 40,
         borderWidth: 1,
         borderColor: '#ccc',
