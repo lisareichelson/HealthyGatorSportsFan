@@ -13,9 +13,7 @@ import {useState} from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 //To focus on the weight input box while it's being entered, use: https://github.com/APSL/react-native-keyboard-aware-scroll-view
 
-
-
-export default function BasicInformationCollection() {
+const BasicInformationCollection = () => {
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions();
   const styles = SetStyles(width, height);
@@ -25,30 +23,31 @@ export default function BasicInformationCollection() {
     {label: 'Other', value: 'other'}
   ]);
   const [heightFeet] = useState([
-    { value: 1},
-    { value: 2},
-    { value: 3},
-    { value: 4},
-    { value: 5},
-    { value: 6},
-    { value: 7},
-    { value: 8}
+    {value: '1'},
+    {value: '2'},
+    {value: '3'},
+    {value: '4'},
+    {value: '5'},
+    {value: '6'},
+    {value: '7'},
+    {value: '8'}
   ]);
   const [heightInches] = useState([
-    { value: 1},
-    { value: 2},
-    { value: 3},
-    { value: 4},
-    { value: 5},
-    { value: 6},
-    { value: 7},
-    { value: 8},
-    { value: 9},
-    { value: 10},
-    { value: 11},
-    { value: 12}
+    { value: '1'},
+    { value: '2'},
+    { value: '3'},
+    { value: '4'},
+    { value: '5'},
+    { value: '6'},
+    { value: '7'},
+    { value: '8'},
+    { value: '9'},
+    { value: '10'},
+    { value: '11'},
+    { value: '12'}
   ]);
-  const [weight] = useState('');
+  //const [weight] = useState("");
+  const [weight, setWeight] = useState('');
 
   return (
       <View style={styles.container}>
@@ -57,27 +56,36 @@ export default function BasicInformationCollection() {
                    {{width: 150,
                     height: 150,}}
                source={require('./../../assets/images/clipboardgator.jpg')}/>
+
         <View style={styles.InputBoxes}>
           <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
-                    data={genders} labelField={"label"} valueField={"value"} onChange={item => {
-            SetGenderValue(item.value);
-          }}
+                data={genders}
+                labelField={"label"}
+                valueField={"value"}
+                onChange={item => {SetGenderValue(item.value);}}
           ></Dropdown>
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in feet:</Text>
-          <Dropdown style={[styles.dropdown]}
-                    data={heightFeet} labelField={"value"} valueField={"value"} onChange={item => {
-            SetHeightValueFeet(item.value);
-          }}
+          <Dropdown 
+                style={[styles.dropdown]}
+                data={heightFeet} 
+                labelField={"value"} 
+                valueField={"value"} 
+                accessibilityLabel="Dropdown menu for selecting height options"
+                onChange={item => { SetHeightValueFeet(item.value);}}
+                renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in inches:</Text>
           <Dropdown style={[styles.dropdown]}
-                    data={heightInches} labelField={"value"} valueField={"value"} onChange={item => {
-            SetHeightValueInches(item.value);
-          }}
+                data={heightInches}
+                labelField={"value"}
+                valueField={"value"}
+                onChange={item => {SetHeightValueInches(item.value);}}
+                renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
+
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
           <TextInput
               style={styles.inputWeight}
@@ -85,6 +93,8 @@ export default function BasicInformationCollection() {
               keyboardType={"numeric"}
               editable={true}
               value={weight}
+              defaultValue={weight}
+              onChangeText={newWeight => setWeight(newWeight)}
               onEndEditing={weight => SetWeightValue(weight)}
               returnKeyType="done"/>
         </View>
@@ -103,8 +113,10 @@ export default function BasicInformationCollection() {
   );
 }
 
+export default BasicInformationCollection;
+
 function SetWeightValue(weight: any){
-  console.log(weight.valueOf());
+  console.log(weight.nativeEvent.text);
 }
 
 function SetGenderValue(item: any) {
