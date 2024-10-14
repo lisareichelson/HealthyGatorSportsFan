@@ -1,26 +1,27 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+/*This is the login or create account screen that will launch at the application's start*/
 
-export default function HomeScreen() {
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {useNavigation} from "@react-navigation/native";
+
+export default function CreateOrSignIn() {
     const navigation = useNavigation();
-  return (
-      <View style={styles.container}>
-          <Image source={require('./../../assets/images/coolgator.png')}/>
-          <Text style={{fontSize: 40, fontFamily: 'System'}}>Hey there, Gator!</Text>
-          <Text style={{fontSize: 40, fontFamily: 'System', alignItems: 'center'}}>Get started on your health journey
-              today.</Text>
-          <View style={styles.bottomObject}>
-          <TouchableOpacity activeOpacity={0.5}
-                            onPress={() => navigation.navigate('BasicInfo' as never) }>
-              <Image
-                  source={require('./../../assets/images/forwardarrow.png')}
-                  style={{width:50, height:50}}
-              />
-          </TouchableOpacity>
-      </View>
-      </View>
-  );
+    return(
+        <View style={styles.container}>
+            <Image source={require('./../../assets/images/coolgator.png')}/>
+            <TouchableOpacity style = {[styles.buttons, {marginTop: 100} ]} activeOpacity={0.5}
+                              onPress={() => navigation.navigate('WelcomeScreen' as never) }>
+                <Text style={{fontSize: 15, fontFamily: 'System'}}>
+                    Create Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style = {[styles.buttons, {marginTop: 20} ]} activeOpacity={0.5}
+                              onPress={() => navigation.navigate('LogInScreen' as never) }>
+                <Text style={{fontSize: 15, fontFamily: 'System'}}>
+                    Login</Text>
+            </TouchableOpacity>
+        </View>
+    );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -36,5 +37,14 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         padding: 20
     },
+    buttons:{
+        borderWidth:1,
+        borderColor:'black',
+        width:200,
+        height:50,
+        backgroundColor:'#fff',
+        borderRadius:50,
+        justifyContent: "center",
+        alignItems: "center",
+    }
 });
-

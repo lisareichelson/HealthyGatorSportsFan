@@ -6,9 +6,13 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import HomeScreen from './index'
+//import HomeScreen from './index'
 import BasicInformationCollection from './basicinfo'
-import CreateOrSignIn from "@/app/(tabs)/signinorcreate";
+import WelcomeScreen from "@/app/(tabs)/accountcreationwelcome";
+//import CreateOrSignIn from "@/app/(tabs)/signinorcreate";
+import CreateOrSignIn from './index'
+import LogInScreen from "@/app/(tabs)/loginscreen";
+import CreateCredentials from "@/app/(tabs)/createcredentialsscreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -21,18 +25,28 @@ export default function TabLayout() {
       <NavigationContainer independent={true}>
           <Stack.Navigator>
               <Stack.Screen
-                  name="Home"
-                  component={HomeScreen}
+                  name="CreateOrSignIn"
+                  component={CreateOrSignIn}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="WelcomeScreen"
+                  component={WelcomeScreen}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="LogInScreen"
+                  component={LogInScreen}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="CreateCredentialsScreen"
+                  component={CreateCredentials}
                   options={{headerShown: false}}
               />
               <Stack.Screen
                   name="BasicInfo"
                   component={BasicInformationCollection}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="CreateOrSignIn"
-                  component={CreateOrSignIn}
                   options={{headerShown: false}}
               />
           </Stack.Navigator>
