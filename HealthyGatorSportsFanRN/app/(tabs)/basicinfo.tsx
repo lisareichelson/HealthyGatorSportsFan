@@ -45,7 +45,7 @@ import {useState} from "react";
     { value: '11'},
     { value: '12'}
   ]);
-  const [weight] = useState('');
+  const [weight, setWeight] = useState('');
 
   return (
       <View style={styles.container}>
@@ -91,6 +91,8 @@ import {useState} from "react";
               keyboardType={"numeric"}
               editable={true}
               value={weight}
+              defaultValue={weight}
+              onChangeText={newWeight => setWeight(newWeight)}
               onEndEditing={weight => SetWeightValue(weight)}
               returnKeyType="done"/>
         </View>
@@ -111,7 +113,7 @@ import {useState} from "react";
 export default BasicInformationCollection
 
 function SetWeightValue(weight: any){
-  console.log(weight.valueOf());
+  console.log(weight.nativeEvent.text);
 }
 
 function SetGenderValue(item: any) {
