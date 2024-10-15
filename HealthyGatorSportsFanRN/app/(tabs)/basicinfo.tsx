@@ -12,7 +12,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import {useState} from "react";
 //To focus on the weight input box while it's being entered, use: https://github.com/APSL/react-native-keyboard-aware-scroll-view
 
-export default function BasicInformationCollection() {
+ const BasicInformationCollection = () => {
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions();
   const styles = SetStyles(width, height);
@@ -98,6 +98,8 @@ export default function BasicInformationCollection() {
 
   );
 }
+
+export default BasicInformationCollection
 
 function SetWeightValue(weight: any){
   console.log(weight.valueOf());
