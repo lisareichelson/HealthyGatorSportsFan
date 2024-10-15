@@ -57,9 +57,11 @@ import {useState} from "react";
         <View style={styles.InputBoxes}>
           <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
-                    data={genders} labelField={"label"} valueField={"value"} onChange={item => {
-            SetGenderValue(item.value);
-          }}
+                    data={genders} 
+                    labelField={"label"} 
+                    valueField={"value"} 
+                    accessibilityLabel="Dropdown menu for selecting gender"
+                    onChange={item => {SetGenderValue(item.value);}}
           ></Dropdown>
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in feet:</Text>
@@ -81,6 +83,7 @@ import {useState} from "react";
                     onChange={item => {SetHeightValueInches(item.value);}}
                     renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
+          
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
           <TextInput
               style={styles.inputWeight}
