@@ -46,7 +46,7 @@ const GoalCollection = () => {
                         value={startWeight}
                         defaultValue={startWeight}
                         onChangeText={newWeight => setStartWeight(newWeight)}
-                        onEndEditing={weight => SetStartWeightBackend(startWeight)}
+                        onEndEditing={startWeight => SetStartWeightBackend(startWeight)}
                         returnKeyType="done"/>
                 </View>
                 <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
@@ -59,7 +59,7 @@ const GoalCollection = () => {
                         value={goalWeight}
                         defaultValue={goalWeight}
                         onChangeText={newWeight => setGoalWeight(newWeight)}
-                        onEndEditing={weight => SetGoalWeightBackend(goalWeight)}
+                        onEndEditing={goalWeight => SetGoalWeightBackend(goalWeight)}
                         returnKeyType="done"/>
                 </View>
             </View>
@@ -91,8 +91,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 
     //If losing weight is a goal
     if (loseWeight){
-        if (goalWeight > loseWeight){
-            Alert.alert("Goal Weight cannot be less than current weight.");
+        if (goalWeight < loseWeight){
+            Alert.alert("Current Weight cannot be less than goal weight.");
             return;
         }
     }
