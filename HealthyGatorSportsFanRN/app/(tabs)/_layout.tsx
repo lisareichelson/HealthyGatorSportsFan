@@ -1,18 +1,14 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-//import HomeScreen from './index'
 import BasicInformationCollection from './basicinfo'
 import WelcomeScreen from "@/app/(tabs)/accountcreationwelcome";
-//import CreateOrSignIn from "@/app/(tabs)/signinorcreate";
 import CreateOrSignIn from './index'
 import LogInScreen from "@/app/(tabs)/loginscreen";
 import CreateCredentials from "@/app/(tabs)/createcredentialsscreen";
+import HomePage from "@/app/(tabs)/homepage";
+import GoalCollection from "@/app/(tabs)/goalcollection";
 
 
 const Stack = createNativeStackNavigator();
@@ -35,6 +31,11 @@ export default function TabLayout() {
                   options={{headerShown: false}}
               />
               <Stack.Screen
+                  name="HomePage"
+                  component={HomePage}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
                   name="LogInScreen"
                   component={LogInScreen}
                   options={{headerShown: false}}
@@ -47,6 +48,11 @@ export default function TabLayout() {
               <Stack.Screen
                   name="BasicInfo"
                   component={BasicInformationCollection}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="GoalCollection"
+                  component={GoalCollection}
                   options={{headerShown: false}}
               />
           </Stack.Navigator>
