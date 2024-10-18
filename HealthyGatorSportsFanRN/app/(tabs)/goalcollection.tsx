@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
@@ -8,6 +8,7 @@ const GoalCollection = () => {
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
     const [startWeight, setStartWeight] = useState('');
+    const [goalWeight, setGoalWeight] = useState('');
 
     return (
         <View style={styles.container}>
@@ -55,18 +56,17 @@ const GoalCollection = () => {
                         placeholder="enter a weight..."
                         keyboardType={"numeric"}
                         editable={true}
-                        value={startWeight}
-                        defaultValue={startWeight}
-                        onChangeText={newWeight => setStartWeight(newWeight)}
-                        onEndEditing={weight => SetStartWeightBackend(startWeight)}
+                        value={goalWeight}
+                        defaultValue={goalWeight}
+                        onChangeText={newWeight => setGoalWeight(newWeight)}
+                        onEndEditing={weight => SetGoalWeightBackend(goalWeight)}
                         returnKeyType="done"/>
                 </View>
-
             </View>
             }
 
             <TouchableOpacity style = {[styles.bottomObject, {marginTop: 150} ]} activeOpacity={0.5}
-                              onPress={() => navigation.navigate('CreateOrSignIn' as never)}>
+                              onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight)}>
                 <Image
                     source={require('./../../assets/images/forwardarrow.png')}
                     style={{width: 50, height: 50}}
@@ -80,6 +80,23 @@ export default GoalCollection
 
 function SetStartWeightBackend(weight: any){
     console.log(weight.nativeEvent.text);
+}
+
+function SetGoalWeightBackend(weight: any){
+    console.log(weight.nativeEvent.text);
+}
+
+//TODO: Store goals from here into backend.
+function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any){
+
+    //If losing weight is a goal
+    if (loseWeight){
+        if (goalWeight > loseWeight){
+            Alert.alert("Goal Weight cannot be less than current weight.");
+            return;
+        }
+    }
+    navigation.navigate('HomePage' as never);
 }
 
 const styles = StyleSheet.create({
