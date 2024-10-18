@@ -3,13 +3,11 @@ import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
 
-export default function GoalCollection() {
+const GoalCollection = () => {
     const navigation = useNavigation();
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
-    const handleChange = () => {
-        setFeelBetter(!feelBetter);
-    };
+    const [startWeight, setStartWeight] = useState('');
 
     return (
         <View style={styles.container}>
@@ -36,6 +34,36 @@ export default function GoalCollection() {
                     style={{width:25, height:25}}
                 />
             </View>
+            {loseWeight && <View>
+                <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
+                    <Text style={{fontSize: 15, fontFamily: 'System'}}>Current Weight:   </Text>
+                    <TextInput
+                        style={styles.weightBox}
+                        placeholder="enter a weight..."
+                        keyboardType={"numeric"}
+                        editable={true}
+                        value={startWeight}
+                        defaultValue={startWeight}
+                        onChangeText={newWeight => setStartWeight(newWeight)}
+                        onEndEditing={weight => SetStartWeightBackend(startWeight)}
+                        returnKeyType="done"/>
+                </View>
+                <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
+                    <Text style={{fontSize: 15, fontFamily: 'System'}}>Goal Weight:        </Text>
+                    <TextInput
+                        style={styles.weightBox}
+                        placeholder="enter a weight..."
+                        keyboardType={"numeric"}
+                        editable={true}
+                        value={startWeight}
+                        defaultValue={startWeight}
+                        onChangeText={newWeight => setStartWeight(newWeight)}
+                        onEndEditing={weight => SetStartWeightBackend(startWeight)}
+                        returnKeyType="done"/>
+                </View>
+
+            </View>
+            }
 
             <TouchableOpacity style = {[styles.bottomObject, {marginTop: 150} ]} activeOpacity={0.5}
                               onPress={() => navigation.navigate('CreateOrSignIn' as never)}>
@@ -48,11 +76,11 @@ export default function GoalCollection() {
     );
 }
 
-function SetGoal(type: string){
+export default GoalCollection
 
+function SetStartWeightBackend(weight: any){
+    console.log(weight.nativeEvent.text);
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -73,6 +101,10 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1.5,
         borderRadius: 10,
+    },
+    weightBox:{
+        borderWidth: 1,
+        height: 30,
     },
     bottomObject: {
         alignItems: 'center',
