@@ -44,7 +44,7 @@ function ConfirmData(username: any, password: any, navigation: any){
     //Navigate to the user's home page.
 
     //TODO: REMOVE ME AFTER TESTING
-    if (username == "debug" && password == "debug"){
+    if ((username == "debug" || username == "Debug") && (password == "debug" || password == "Debug")){
         //Navigate to the home screen
         navigation.navigate('HomePage' as never);
     }
