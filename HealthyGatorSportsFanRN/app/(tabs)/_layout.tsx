@@ -9,7 +9,7 @@ import LogInScreen from "@/app/(tabs)/loginscreen";
 import CreateCredentials from "@/app/(tabs)/createcredentialsscreen";
 import HomePage from "@/app/(tabs)/homepage";
 import GoalCollection from "@/app/(tabs)/goalcollection";
-
+import NotificationsPage from "@/app/(tabs)/notifications";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +53,11 @@ export default function TabLayout() {
               <Stack.Screen
                   name="GoalCollection"
                   component={GoalCollection}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="NotificationsPage"
+                  component={NotificationsPage}
                   options={{headerShown: false}}
               />
           </Stack.Navigator>
