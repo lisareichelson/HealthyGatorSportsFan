@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "HealthyGatorSportsFanRN",
-    "slug": "HealthyGatorSportsFanRN",
+    "slug": "healthygatorsportsfanrn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f46bf456-c579-4de5-aa32-17f1d2ee030f"
+      }
+    },
+    "owner": "healthygatorsportsfan"
   }
 }

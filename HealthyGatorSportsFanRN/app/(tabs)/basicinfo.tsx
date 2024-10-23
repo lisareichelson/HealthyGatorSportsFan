@@ -98,7 +98,7 @@ import {useState} from "react";
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => navigation.navigate('CreateOrSignIn' as never) }>
+                          onPress={() => navigation.navigate('GoalCollection' as never) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
