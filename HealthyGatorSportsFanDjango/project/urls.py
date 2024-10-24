@@ -16,12 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import WeightView, index
+from app.views import WeightView, index, CreateUserView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
 urlpatterns = [
-    path('api/weights/', WeightView.as_view(), name='weight'),  # API endpoint
-    path('admin/', admin.site.urls),
-    path('', index, name = "index"),
+    path('api/weights/', WeightView.as_view(), name='weight'),  # API endpoint for test with Postman (no fetch on front-end yet)
+    path('admin/', admin.site.urls), # Django Admin page (http://127.0.0.1:8000/admin)
+    path('', index, name = "index"), # to see database contents for testing (http://127.0.0.1:8000/), see templates -> index.html
+    path('api/users/', CreateUserView.as_view(), name='user-create'), # API endpoint for test with front end
 ]

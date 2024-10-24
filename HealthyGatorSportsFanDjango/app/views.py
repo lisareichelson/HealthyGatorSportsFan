@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserDataSerializer
+from .serializers import UserSerializer
 
 # Create your views here.
 
@@ -27,7 +28,7 @@ def index(request):
 # 'request.body' is used to access raw data that is not parsed
 # 'self' refers to the current instance
 
-# API view to handle POST requests for data
+# API view to handle POST requests for data sent from Postman
 class WeightView(APIView):
     def post(self, request):
 
@@ -37,5 +38,14 @@ class WeightView(APIView):
         serializer = UserDataSerializer(data=request.data) # Validate the data
         if serializer.is_valid():
             serializer.save() # Save the validated data to the database
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# API view to handle POST requests for data sent from createcredentialsscreen.tsx (username and password)
+class CreateUserView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
