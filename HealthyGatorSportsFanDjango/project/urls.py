@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import WeightView, index, CreateUserView
+from app.views import WeightView, index, CreateUserView, poll_cfbd_view
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
@@ -25,4 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls), # Django Admin page (http://127.0.0.1:8000/admin)
     path('', index, name = "index"), # to see database contents for testing (http://127.0.0.1:8000/), see templates -> index.html
     path('api/users/', CreateUserView.as_view(), name='user-create'), # API endpoint for test with front end
+    path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
+
 ]
