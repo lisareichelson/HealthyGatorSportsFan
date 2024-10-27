@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserDataSerializer
 from .serializers import UserSerializer
-
+import aiohttp
+import asyncio
 # Create your views here.
 
 #  for testing with Django's web interface
@@ -49,3 +50,20 @@ class CreateUserView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SendNotificationView(APIView):
+    def post(self, request):
+        serializer = NotificationDataSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def send_notification(self, data):
+        expo_push_url = "https://exp.host/--/api/v2/push/send"
+        message = {
+            "to": data['user'].google_acct_id,
+            "title": "Score Update",
+            "body": data["Testing to see if this push notification works!"],
+        }
+class GetGameNotificationView(APIView):
+
