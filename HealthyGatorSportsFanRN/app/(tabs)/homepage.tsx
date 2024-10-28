@@ -1,151 +1,96 @@
+import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
-
-import { useState, useEffect, useRef } from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, TextInput, Button, Platform} from 'react-native';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-
-import Constants from 'expo-constants';
+import {useState} from "react";
 
 export default function HomePage() {
     const navigation = useNavigation();
-    const [expoPushToken, setExpoPushToken] = useState('');
-    const [notification, setNotification] = useState<Notifications.Notification | undefined>(
-      undefined
-    );
-    const notificationListener = useRef<Notifications.Subscription>();
-    const responseListener = useRef<Notifications.Subscription>();
+    const currentOpponent = GetCurrentOpponentName();
+    const test = `../../assets/images/teamLogos/${currentOpponent}.png`;
 
-    useEffect(() => {
-      registerForPushNotificationsAsync()
-        .then(token => setExpoPushToken(token ?? ''))
-        .catch((error: any) => setExpoPushToken(`${error}`));
-  
-      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        setNotification(notification);
-      });
-  
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log(response);
-      });
-  
-      return () => {
-        notificationListener.current &&
-          Notifications.removeNotificationSubscription(notificationListener.current);
-        responseListener.current &&
-          Notifications.removeNotificationSubscription(responseListener.current);
-      };
-    }, []);
-  
     return (
         <View style={styles.container}>
-            <Text style={{fontSize: 15, fontFamily: 'System'}}>
+            <View style={styles.topMenu}>
+                <Image
+                    source={require('./../../assets/images/clipboardgator.jpg')}
+                    style={{width:55, height:55}}
+                />
+                <Text style={{fontSize: 25, fontFamily: 'System'}}>
+                    Hey, Albert!
+                </Text>
+                <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
+                    <Image
+                        source={require('./../../assets/images/defaultprofile.png')}
+                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
+                    <Image
+                        source={require('./../../assets/images/bell.png')}
+                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+            </View>
+            <View style={styles.middleContent}>
+                <View style={styles.scoreBox}>
+                    <Image
+                        source={require('../../assets/images/teamLogos/gatorlogo.png')}
+                        style={{width:100, height:100, objectFit: 'contain'}}
+                    />
+                    <Image
+                        source={require(`../../assets/images/teamLogos/fsu.png`)}
+                        style={{width:100, height:100, objectFit: 'contain'}}
+                    />
+
+                </View>
+
+            </View>
+            <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 50, alignSelf:'center'}}>
                 Welcome to the placeholder home screen!
             </Text>
-        
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
-            <Text>Your Expo push token: {expoPushToken}</Text>
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Title: {notification && notification.request.content.title} </Text>
-            <Text>Body: {notification && notification.request.content.body}</Text>
-            <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
-            </View>
-            <Button
-            title="Press to Send Notification"
-            onPress={async () => {
-                await sendPushNotification(expoPushToken);
-            }}
-            />
         </View>
-
-      </View>
     );
+}
+
+
+
+//TODO: call backend API to get who we are playing next
+function GetCurrentOpponentName():string{
+    //Call the API to find out what game is next. Use this to choose the image.
+
+    //TEMP: ASSUME we are playing FSU.
+    return 'fsu';
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
+    },
+    topMenu:{
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-around',
+        marginTop: '15%',
+    },
+    topIcons:{
         justifyContent: 'center',
+        borderColor: 'grey',
+        borderWidth: 1,
+        backgroundColor:'#fae7d7',
+        borderRadius: 40,
+        height: 40,
+        width: 40,
     },
-});
-
-
-// Notification functions
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
-async function sendPushNotification(expoPushToken: string) {
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: 'Original Title',
-    body: 'And here is the body!',
-    data: { someData: 'goes here' },
-  };
-
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
+    middleContent:{
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        marginTop: '20%',
     },
-    body: JSON.stringify(message),
-  });
-}
+    scoreBox:{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
 
-function handleRegistrationError(errorMessage: string) {
-  alert(errorMessage);
-  throw new Error(errorMessage);
-}
-
-async function registerForPushNotificationsAsync() {
-
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
     }
-    if (finalStatus !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
-      return;
-    }
-    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    console.log("projectID: " + projectId);
-    if (!projectId) {
-      handleRegistrationError('Project ID not found');
-    }
-    try {
-      const pushTokenString = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
-      console.log(pushTokenString);
-      return pushTokenString;
-    } catch (e: unknown) {
-      handleRegistrationError(`${e}`);
-    }
-  } else {
-    handleRegistrationError('Must use physical device for push notifications');
-  }
-}
+});
