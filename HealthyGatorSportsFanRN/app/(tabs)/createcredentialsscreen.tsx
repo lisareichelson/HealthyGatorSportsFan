@@ -78,7 +78,38 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, navig
     console.log(username);
     console.log(password);
 
-    //Move to the next screen.
+    
+     // API call to send the data to the backend to api/users
+     const url = 'http://192.168.68.124:8000/api/users/'; // Adjust the endpoint to your computer IP address
+     fetch(url, {
+         // send the user credentials to the backend
+         method: 'POST',
+         // this is a header to tell the server to parse the request body as JSON
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         // convert the data into JSON format
+         body: JSON.stringify({ username, password })
+     })
+     // check to see what status the server sends back
+     .then(response => { // this is an arrow function that takes 'response' as an argument, like function(response)
+         if (!response.ok) {
+             throw new Error('Failed to save user data');
+         }
+         // convert the JSON back into a JavaScript object so it can be passed to the next '.then' to log the data that was saved
+         return response.json();
+     })
+     .then(data => { // 'data' is the JavaScript object that was created after parsing the JSON from the server response
+         console.log('Data successfully saved:', data);
+         // Navigate to the next screen upon successful data submission
+         navigation.navigate('BasicInfo'); // Make sure this is the correct screen you want to navigate to
+     })
+     .catch(error => {
+         console.error('Error saving data:', error);
+         Alert.alert("Failed to create account, please try again!");
+     });
+
+    // move to the next screen.
     navigation.navigate('BasicInfo' as never);
 }
 
