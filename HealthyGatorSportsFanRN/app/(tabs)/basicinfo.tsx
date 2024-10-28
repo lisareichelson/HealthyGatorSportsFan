@@ -10,10 +10,15 @@ import {
 import {useNavigation} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {useState} from "react";
-//To focus on the weight input box while it's being entered, use: https://github.com/APSL/react-native-keyboard-aware-scroll-view
+import User from "@/components/user";
+import {current} from "@react-native-community/cli-tools/build/releaseChecker";
+
 
  const BasicInformationCollection = () => {
   const navigation = useNavigation();
+  //Used to save user info as collected
+  const currentUser = new User();
+
   const { width, height } = useWindowDimensions();
   const styles = SetStyles(width, height);
   const [genders] = useState([
@@ -46,6 +51,9 @@ import {useState} from "react";
     { value: '12'}
   ]);
   const [weight, setWeight] = useState('');
+  const [heightInch, setHeightInches] = useState('');
+  const [heightFt, setHeightFeet] = useState('');
+  const [gender, setGender] = useState('');
 
   return (
       <View style={styles.container}>
@@ -61,7 +69,7 @@ import {useState} from "react";
                     labelField={"label"} 
                     valueField={"value"} 
                     accessibilityLabel="Dropdown menu for selecting gender"
-                    onChange={item => {SetGenderValue(item.value);}}
+                    onChange={item => {setGender(item.value);}}
           ></Dropdown>
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in feet:</Text>
@@ -70,7 +78,7 @@ import {useState} from "react";
                     labelField={"value"} 
                     valueField={"value"} 
                     accessibilityLabel="Dropdown menu for selecting height in feet"
-                    onChange={item => { SetHeightValueFeet(item.value);}}
+                    onChange={item => { setHeightFeet(item.value);}}
                     renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
 
@@ -80,7 +88,7 @@ import {useState} from "react";
                     labelField={"value"} 
                     valueField={"value"} 
                     accessibilityLabel="Dropdown menu for selecting additional heigh in inches"
-                    onChange={item => {SetHeightValueInches(item.value);}}
+                    onChange={item => {setHeightInches(item.value);}}
                     renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
           
@@ -93,12 +101,12 @@ import {useState} from "react";
               value={weight}
               defaultValue={weight}
               onChangeText={newWeight => setWeight(newWeight)}
-              onEndEditing={weight => SetWeightValue(weight)}
+              onEndEditing={weight => SetWeightValue(currentUser, weight)}
               returnKeyType="done"/>
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => navigation.navigate('GoalCollection' as never) }>
+                          onPress={() => SaveAndContinue(navigation, Number(weight), gender, Number(heightInch), Number(heightFt)) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
@@ -108,11 +116,23 @@ import {useState} from "react";
       </View>
 
   );
+
 }
 
 export default BasicInformationCollection
 
-function SetWeightValue(weight: any){
+function SaveAndContinue(navigation: any, weight: number, gender: string, heightInches: number, heightFeet: number){
+     //Save the variables in the user object type
+     const currentUser = new User();
+     currentUser.gender = gender;
+     currentUser.currentWeight = weight;
+     currentUser.heightFeet = heightFeet;
+     currentUser.heightInches = heightInches;
+
+     navigation.navigate('GoalCollection' , {currentUser} as never)
+}
+
+function SetWeightValue(currentUser: any, weight: any){
   console.log(weight.nativeEvent.text);
 }
 

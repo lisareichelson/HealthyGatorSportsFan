@@ -1,10 +1,15 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
+import User from "@/components/user";
+
 
 const GoalCollection = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const currentUser = route.params;
+
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
     const [startWeight, setStartWeight] = useState('');
@@ -37,19 +42,6 @@ const GoalCollection = () => {
             </View>
             {loseWeight && <View>
                 <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
-                    <Text style={{fontSize: 15, fontFamily: 'System'}}>Current Weight:   </Text>
-                    <TextInput
-                        style={styles.weightBox}
-                        placeholder="enter a weight..."
-                        keyboardType={"numeric"}
-                        editable={true}
-                        value={startWeight}
-                        defaultValue={startWeight}
-                        onChangeText={newWeight => setStartWeight(newWeight)}
-                        onEndEditing={startWeight => SetStartWeightBackend(startWeight)}
-                        returnKeyType="done"/>
-                </View>
-                <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
                     <Text style={{fontSize: 15, fontFamily: 'System'}}>Goal Weight:        </Text>
                     <TextInput
                         style={styles.weightBox}
@@ -66,7 +58,7 @@ const GoalCollection = () => {
             }
 
             <TouchableOpacity style = {[styles.bottomObject, {marginTop: 150} ]} activeOpacity={0.5}
-                              onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight)}>
+                              onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight, currentUser)}>
                 <Image
                     source={require('./../../assets/images/forwardarrow.png')}
                     style={{width: 50, height: 50}}
@@ -87,11 +79,14 @@ function SetGoalWeightBackend(weight: any){
 }
 
 //TODO: Store goals from here into backend.
-function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any){
-
+function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
+    const userData = currentUser.currentUser;
+    //console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.gender);
     //If losing weight is a goal
     if (loseWeight){
-        if (goalWeight < loseWeight){
+        const currentWeight = userData.currentWeight;
+        console.log("current weight is : " + currentWeight);
+        if (goalWeight > currentWeight){
             Alert.alert("Current Weight cannot be less than goal weight.");
             return;
         }
