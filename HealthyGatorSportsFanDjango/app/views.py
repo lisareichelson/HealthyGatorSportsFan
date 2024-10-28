@@ -10,6 +10,9 @@ import cfbd
 import pytz
 from django.http import JsonResponse
 from datetime import date, datetime
+from .utils import send_push_notification_next_game
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 
 #  for testing with Django's web interface
@@ -69,9 +72,11 @@ class CreateUserView(APIView):
 #             "body": data["Testing to see if this push notification works!"],
 #         }
 #
+@csrf_exempt
 def poll_cfbd_view(request):
     configuration = cfbd.Configuration(
-        api_key=os.getenv('COLLEGE_FOOTBALL_API_KEY')
+        host="https://apinext.collegefootballdata.com",
+        access_token=os.getenv('COLLEGE_FOOTBALL_API_KEY')
     )
     apiInstance = cfbd.GamesApi(cfbd.ApiClient(configuration))
 
@@ -90,9 +95,16 @@ def poll_cfbd_view(request):
             "teams": f"{next_game.home_team} vs {next_game.away_team}",
             "date": game_time.strftime('%m-%d-%Y %I:%M %p')
         }
+        message = f"Teams: {next_game.home_team} vs {next_game.away_team}, Date: {game_time.strftime('%m-%d-%Y %I:%M %p')}"
     else:
         response = {"message": "No upcoming games found."}
-
+        message = response["message"]
+    push_token = os.getenv('EXPO_PUSH_TOKEN')
+    if push_token:
+        try:
+            send_push_notification_next_game(push_token, message)
+        except Exception as e:
+            print(f"Error sending push notification: {e}")
     return JsonResponse(response)
 #class GetGameNotificationView(APIView):
 

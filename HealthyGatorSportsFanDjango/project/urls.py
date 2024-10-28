@@ -26,5 +26,4 @@ urlpatterns = [
     path('', index, name = "index"), # to see database contents for testing (http://127.0.0.1:8000/), see templates -> index.html
     path('api/users/', CreateUserView.as_view(), name='user-create'), # API endpoint for test with front end
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
-
 ]

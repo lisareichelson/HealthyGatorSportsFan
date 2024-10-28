@@ -36,6 +36,26 @@ export default function HomePage() {
           Notifications.removeNotificationSubscription(responseListener.current);
       };
     }, []);
+
+
+    const handlePollCFBD = async () => {
+      try {
+        const response = await fetch('https://b862-184-185-222-16.ngrok-free.app/poll-cfbd/', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: 'Poll request sent' }),
+        });
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error('Error sending poll request:', error);
+      }
+    };
+
+
   
     return (
         <View style={styles.container}>
@@ -56,6 +76,10 @@ export default function HomePage() {
                 await sendPushNotification(expoPushToken);
             }}
             />
+            <TouchableOpacity style={styles.pollButton} onPress={handlePollCFBD}>
+                <Text style={styles.pollButtonText}>Get next game info</Text>
+            </TouchableOpacity>
+
         </View>
 
       </View>
@@ -68,6 +92,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    pollButton: {
+      backgroundColor: '#007bff',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 5,
+      marginTop: 20,
+    },
+    pollButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 
