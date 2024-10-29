@@ -54,15 +54,33 @@ import {current} from "@react-native-community/cli-tools/build/releaseChecker";
   const [heightInch, setHeightInches] = useState('');
   const [heightFt, setHeightFeet] = useState('');
   const [gender, setGender] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   return (
       <View style={styles.container}>
-        <Text style={{fontSize: 35, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
+        <Text style={{fontSize: 25, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
         <Image style=
                    {{width: 150,
                     height: 150,}}
                source={require('./../../assets/images/clipboardgator.jpg')}/>
+
+
+
         <View style={styles.InputBoxes}>
+            <Text style={{fontSize: 15, fontFamily: 'System'}}>Enter your name:</Text>
+            <TextInput
+                style = {[styles.input, {marginTop:15} ]}
+                placeholder="First Name"
+                value={firstName}
+                onChangeText={first => setFirstName(first)}
+            />
+            <TextInput
+                style = {[styles.input, {marginTop:15} ]}
+                placeholder="Last Name"
+                value={lastName}
+                onChangeText={last => setLastName(last)}
+            />
           <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
                     data={genders} 
@@ -115,6 +133,7 @@ import {current} from "@react-native-community/cli-tools/build/releaseChecker";
 
       </View>
 
+
   );
 
 }
@@ -154,7 +173,7 @@ function SetStyles(width: number, height: number) : any{
       flex:1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'space-around',
     },
     inputWeight: {
       height: 40,
@@ -165,8 +184,6 @@ function SetStyles(width: number, height: number) : any{
     InputBoxes: {
       flex: 1,
       justifyContent: "center",
-      paddingBottom: height/4,
-      paddingTop: 150,
     },
     dropdown:{
       height: 50,
@@ -175,6 +192,13 @@ function SetStyles(width: number, height: number) : any{
       borderRadius: 8,
       paddingHorizontal: 8,
     },
+      input: {
+          height: 40,
+          borderWidth: 1,
+          borderColor: 'grey',
+          borderRadius: 5,
+          paddingHorizontal: 10,
+      },
   });
   return styles;
 }

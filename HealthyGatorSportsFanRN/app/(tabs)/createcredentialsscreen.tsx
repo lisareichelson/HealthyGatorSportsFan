@@ -1,6 +1,7 @@
 import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
+import User from "@/components/user";
 
 //PLACEHOLDER CODE: Insert this between the welcome screen and the next screens once the google sign in is working.
 export default function CreateCredentials() {
@@ -63,7 +64,7 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, email
     //TODO
 
     //Confirm that the email format is valid //todo; add more checks here
-    if(!email.contains("@")){
+    if(!(email.includes("@") && email.includes("."))){
         Alert.alert("Invalid email address!");
         return;
     }
@@ -125,8 +126,13 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, email
          Alert.alert("Failed to create account, please try again!");
      });
 
+     //Save everything but the password to ID user in next screen
+    const currentUser = new User();
+    currentUser.email = email;
+    currentUser.username = username;
+
     // move to the next screen.
-    navigation.navigate('BasicInfo' as never);
+    navigation.navigate('BasicInfo', {currentUser} as never);
 }
 
 

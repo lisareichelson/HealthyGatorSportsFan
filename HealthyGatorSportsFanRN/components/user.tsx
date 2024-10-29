@@ -5,6 +5,7 @@ class User {
     lastName?: string;
 
     email?: string;
+    username?: string;
 
     gender?: string;
 
@@ -14,7 +15,7 @@ class User {
     currentWeight?: number;
 
 
-    constructor(fName?: string, lName?: string, email?: string, gender?: string, hFeet?: number, hInches?: number, cWeight?: number) {
+    constructor(fName?: string, lName?: string, email?: string, username?: string, gender?: string, hFeet?: number, hInches?: number, cWeight?: number) {
         this.firstName = fName;
         this.lastName = lName;
         this.email = email;
