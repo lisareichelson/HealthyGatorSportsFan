@@ -5,7 +5,8 @@ import {
   Image,
   useWindowDimensions,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  Platform
 } from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -52,10 +53,12 @@ import {useState} from "react";
         <Text style={{fontSize: 35, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
         <Image style=
                    {{width: 150,
-                    height: 150,}}
+                    height: 150,
+                    paddingTop: 10}}
                source={require('./../../assets/images/clipboardgator.jpg')}/>
+
         <View style={styles.InputBoxes}>
-          <Text style={{fontSize: 20, fontFamily: 'System'}}>Select your gender:</Text>
+          <Text style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}, {fontSize: 20, fontFamily: 'System', paddingTop: 10}]}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
                     data={genders} 
                     labelField={"label"} 
@@ -64,7 +67,7 @@ import {useState} from "react";
                     onChange={item => {SetGenderValue(item.value);}}
           ></Dropdown>
 
-          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in feet:</Text>
+          <Text style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}, {fontSize: 20, fontFamily: 'System', paddingTop: 10}]}>Select your height in feet:</Text>
           <Dropdown style={[styles.dropdown]}
                     data={heightFeet} 
                     labelField={"value"} 
@@ -74,7 +77,7 @@ import {useState} from "react";
                     renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
 
-          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Select your height in inches:</Text>
+          <Text style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}, {fontSize: 20, fontFamily: 'System', paddingTop: 10}]}>Select your height in inches:</Text>
           <Dropdown style={[styles.dropdown]}
                     data={heightInches} 
                     labelField={"value"} 
@@ -84,7 +87,7 @@ import {useState} from "react";
                     renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
           ></Dropdown>
           
-          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
+          <Text style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}, {fontSize: 20, fontFamily: 'System', paddingTop: 10}]}>Enter your weight in pounds:</Text>
           <TextInput
               style={styles.inputWeight}
               placeholder="enter a weight..."
