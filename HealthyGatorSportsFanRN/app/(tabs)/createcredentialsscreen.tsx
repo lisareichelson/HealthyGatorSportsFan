@@ -80,7 +80,7 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, navig
 
     
      // API call to send the data to the backend to api/users
-     const url = 'http://192.168.68.124:8000/api/users/'; // Adjust the endpoint to your computer IP address
+     const url = 'http://192.168.4.32:8000/api/users/'; // Adjust the endpoint to your computer IP address
      fetch(url, {
          // send the user credentials to the backend
          method: 'POST',
