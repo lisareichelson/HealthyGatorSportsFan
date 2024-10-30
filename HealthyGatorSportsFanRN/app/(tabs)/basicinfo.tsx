@@ -49,12 +49,13 @@ import {useState} from "react";
   const [weight, setWeight] = useState('');
 
   return (
+
       <View style={styles.container}>
-        <Text style={{fontSize: 35, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
+        <Text style={{fontSize: 30, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 75}}>Before we begin, we need some basic information.</Text>
         <Image style=
                    {{width: 150,
                     height: 150,
-                    paddingTop: 10}}
+                    paddingBottom: 50}}
                source={require('./../../assets/images/clipboardgator.jpg')}/>
 
         <View style={styles.InputBoxes}>
