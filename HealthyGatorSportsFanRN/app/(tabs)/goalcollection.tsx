@@ -80,8 +80,10 @@ function SetGoalWeightBackend(weight: any){
 
 //TODO: Store goals from here into backend.
 function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
-    const userData = currentUser.currentUser;
-    //console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.gender);
+    //const userData = currentUser.currentUser;
+    const userData: User = { ...currentUser };
+   // console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
+    //         (uncommenting this will give a non-serializable warning: thats fine, just don't use JSON.Stringify unless you are testing something.
     //If losing weight is a goal
     if (loseWeight){
         const currentWeight = userData.currentWeight;
@@ -91,7 +93,12 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
             return;
         }
     }
-    navigation.navigate('HomePage' as never);
+    userData.feelBetter = feelBetter;
+    userData.loseWeight = loseWeight;
+    if (loseWeight){
+        userData.goalWeight = goalWeight;
+    }
+    navigation.navigate('HomePage', {userData} as never);
 }
 
 const styles = StyleSheet.create({

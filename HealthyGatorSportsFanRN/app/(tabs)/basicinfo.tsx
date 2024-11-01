@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInput
 } from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState} from "react";
 import User from "@/components/user";
@@ -17,7 +17,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 const BasicInformationCollection = () => {
     const navigation = useNavigation();
     //Used to save user info as collected
-    const currentUser = new User();
+    const route = useRoute();
+    const userData = route.params;
 
     const {width, height} = useWindowDimensions();
     const styles = SetStyles(width, height);
@@ -56,11 +57,11 @@ const BasicInformationCollection = () => {
     const [gender, setGender] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [date, setDate] = useState(new Date());
+    const [birthdate, setBirthdate] = useState(new Date());
     const [isVisible, setIsVisible] = useState(false);
 
     const handleDate = (selectedDate: SetStateAction<Date>) => {
-         setDate(selectedDate);
+         setBirthdate(selectedDate);
          setIsVisible(false);
      };
 
@@ -95,7 +96,7 @@ const BasicInformationCollection = () => {
             <DateTimePickerModal
                 isVisible={isVisible}
                 mode="date"
-                date={date}
+                date={birthdate}
                 onConfirm={handleDate}
                 onCancel={() => setIsVisible(false)}
             />
@@ -140,12 +141,12 @@ const BasicInformationCollection = () => {
               value={weight}
               defaultValue={weight}
               onChangeText={newWeight => setWeight(newWeight)}
-              onEndEditing={weight => SetWeightValue(currentUser, weight)}
+              onEndEditing={weight => SetWeightValue(weight)}
               returnKeyType="done"/>
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => SaveAndContinue(navigation, Number(weight), gender, Number(heightInch), Number(heightFt)) }>
+                          onPress={() => SaveAndContinue(navigation, userData, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
@@ -161,18 +162,21 @@ const BasicInformationCollection = () => {
 
 export default BasicInformationCollection
 
-function SaveAndContinue(navigation: any, weight: number, gender: string, heightInches: number, heightFeet: number){
+function SaveAndContinue(navigation: any, userData: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
      //Save the variables in the user object type
-     const currentUser = new User();
+     const currentUser: User = { ...userData };
      currentUser.gender = gender;
      currentUser.currentWeight = weight;
      currentUser.heightFeet = heightFeet;
      currentUser.heightInches = heightInches;
+     currentUser.firstName = firstName;
+     currentUser.lastName = lastName;
+     currentUser.birthDate = JSON.stringify(birthdate);
 
      navigation.navigate('GoalCollection' , {currentUser} as never)
 }
 
-function SetWeightValue(currentUser: any, weight: any){
+function SetWeightValue(weight: any){
   console.log(weight.nativeEvent.text);
 }
 
