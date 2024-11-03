@@ -4,7 +4,6 @@ import {useState} from "react";
 import Checkbox from 'expo-checkbox';
 import User from "@/components/user";
 
-
 const GoalCollection = () => {
     const navigation = useNavigation();
     const route = useRoute();
@@ -51,7 +50,6 @@ const GoalCollection = () => {
                         value={goalWeight}
                         defaultValue={goalWeight}
                         onChangeText={newWeight => setGoalWeight(newWeight)}
-                        onEndEditing={goalWeight => SetGoalWeightBackend(goalWeight)}
                         returnKeyType="done"/>
                 </View>
             </View>
@@ -70,20 +68,12 @@ const GoalCollection = () => {
 
 export default GoalCollection
 
-function SetStartWeightBackend(weight: any){
-    console.log(weight.nativeEvent.text);
-}
-
-function SetGoalWeightBackend(weight: any){
-    console.log(weight.nativeEvent.text);
-}
-
 //TODO: Store goals from here into backend.
 function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
-    //const userData = currentUser.currentUser;
     const userData: User = { ...currentUser };
+    //This is how to get the data from the currentUser object
    // console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
-    //         (uncommenting this will give a non-serializable warning: thats fine, just don't use JSON.Stringify unless you are testing something.
+
     //If losing weight is a goal
     if (loseWeight){
         const currentWeight = userData.currentWeight;

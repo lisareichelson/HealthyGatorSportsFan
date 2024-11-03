@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  useWindowDimensions,
-  TouchableOpacity,
-  TextInput
-} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState} from "react";
@@ -20,8 +12,7 @@ const BasicInformationCollection = () => {
     const route = useRoute();
     const userData = route.params;
 
-    const {width, height} = useWindowDimensions();
-    const styles = SetStyles(width, height);
+    const styles = SetStyles();
     const [genders] = useState([
         {label: 'Male', value: 'male'},
         {label: 'Female', value: 'female'},
@@ -59,10 +50,14 @@ const BasicInformationCollection = () => {
     const [lastName, setLastName] = useState('');
     const [birthdate, setBirthdate] = useState(new Date());
     const [isVisible, setIsVisible] = useState(false);
+    //This is the displayed string representing the birthdate.
+    const [birthDayStr, setBirthDayStr] = useState("Enter birthdate");
 
     const handleDate = (selectedDate: SetStateAction<Date>) => {
          setBirthdate(selectedDate);
          setIsVisible(false);
+         //Parse the string to display in MM/DD/YY format
+         setBirthDayStr(selectedDate.toLocaleString().split(',')[0]);
      };
 
   return (
@@ -77,13 +72,13 @@ const BasicInformationCollection = () => {
             <Text style={{fontSize: 15, fontFamily: 'System'}}>Enter your name:</Text>
             <View style = {styles.row}>
             <TextInput
-                style = {[styles.input, {marginTop:15} ]}
+                style = {[styles.input, {marginTop:15}, {width: '45%'}]}
                 placeholder="First Name"
                 value={firstName}
                 onChangeText={first => setFirstName(first)}
             />
             <TextInput
-                style = {[styles.input, {marginTop:15} ]}
+                style = {[styles.input, {marginTop:15}, {width: '45%'} ]}
                 placeholder="Last Name"
                 value={lastName}
                 onChangeText={last => setLastName(last)}
@@ -91,15 +86,16 @@ const BasicInformationCollection = () => {
             </View>
             <TouchableOpacity style = {[styles.input, {marginTop:10} ]} activeOpacity={0.5}
                               onPress={() => setIsVisible(true) }>
-                <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter birthdate</Text>
-            </TouchableOpacity>
-            <DateTimePickerModal
+                <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>{birthDayStr}</Text>
+            <DateTimePickerModal style = {[styles.input, {marginTop:10} ]}
                 isVisible={isVisible}
                 mode="date"
                 date={birthdate}
                 onConfirm={handleDate}
+                onChange={item => {setBirthdate(item)}}
                 onCancel={() => setIsVisible(false)}
             />
+            </TouchableOpacity>
           <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 10}}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
                     data={genders} 
@@ -112,7 +108,7 @@ const BasicInformationCollection = () => {
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your height:</Text>
             <View style = {styles.row}>
                 <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Feet:</Text>
-                <Dropdown style={[styles.dropdown]}
+                <Dropdown style={[styles.dropdown, {width: '30%'}]}
                           data={heightFeet}
                           labelField={"value"}
                           valueField={"value"}
@@ -122,11 +118,11 @@ const BasicInformationCollection = () => {
                 ></Dropdown>
 
                 <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Inches:</Text>
-                <Dropdown style={[styles.dropdown]}
+                <Dropdown style={[styles.dropdown, {width: '30%'}]}
                           data={heightInches}
                           labelField={"value"}
                           valueField={"value"}
-                          accessibilityLabel="Dropdown menu for selecting additional heigh in inches"
+                          accessibilityLabel="Dropdown menu for selecting additional height in inches"
                           onChange={item => {setHeightInches(item.value);}}
                           renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
                 ></Dropdown>
@@ -141,7 +137,6 @@ const BasicInformationCollection = () => {
               value={weight}
               defaultValue={weight}
               onChangeText={newWeight => setWeight(newWeight)}
-              onEndEditing={weight => SetWeightValue(weight)}
               returnKeyType="done"/>
         </View>
 
@@ -152,12 +147,9 @@ const BasicInformationCollection = () => {
               style={{width:50, height:50}}
           />
         </TouchableOpacity>
-
       </View>
 
-
   );
-
 }
 
 export default BasicInformationCollection
@@ -176,23 +168,7 @@ function SaveAndContinue(navigation: any, userData: any, weight: number, gender:
      navigation.navigate('GoalCollection' , {currentUser} as never)
 }
 
-function SetWeightValue(weight: any){
-  console.log(weight.nativeEvent.text);
-}
-
-function SetGenderValue(item: any) {
-  console.log(item);
-}
-
-function SetHeightValueFeet(height: any){
-  console.log(height);
-}
-
-function SetHeightValueInches(height: any){
-  console.log(height);
-}
-
-function SetStyles(width: number, height: number) : any{
+function SetStyles() : any{
   const styles = StyleSheet.create({
     container: {
       flex:1,
@@ -238,4 +214,3 @@ function SetStyles(width: number, height: number) : any{
   });
   return styles;
 }
-
