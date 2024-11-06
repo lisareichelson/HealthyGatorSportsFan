@@ -2,6 +2,8 @@ from django.db import models
 
 # Create your models here.
 
+# Best practice is one model per database table, so each model represents a table.
+
 # User model
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
@@ -14,7 +16,7 @@ class User(models.Model):
     goal_to_lose_weight = models.BooleanField(default=False)
     goal_to_feel_better = models.BooleanField(default=False)
     password = models.CharField(max_length=128, blank=True, null=True)  # Optional if signing in with Google
-    google_acct_id = models.CharField(max_length=255, blank=True, null=True)  # Optional if creating an account directly
+    #google_acct_id = models.CharField(max_length=255, blank=True, null=True)  # Optional if creating an account directly
 
     # When an instance is referenced, prints the user ID and name instead of the default "User object (1)"
     def __str__(self):
@@ -37,6 +39,7 @@ class UserData(models.Model):
 class NotificationData(models.Model):
     notification_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Foreign key to User, CASCADE -> all related NotificationData instances will be deleted if User is deleted
+    notification_title = models.CharField(max_length=255)
     notification_message = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)  # Automatically sets the field to the current date and time
     read_status = models.BooleanField(default=False)

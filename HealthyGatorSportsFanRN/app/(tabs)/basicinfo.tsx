@@ -5,7 +5,8 @@ import {
   Image,
   useWindowDimensions,
   TouchableOpacity,
-  TextInput
+  TextInput, 
+  Alert
 } from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -46,6 +47,40 @@ import {useState} from "react";
     { value: '12'}
   ]);
   const [weight, setWeight] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [selectedHeightFeet, setSelectedHeightFeet] = useState('');
+  const [selectedHeightInches, setSelectedHeightInches] = useState('');
+
+  // API call to submit user data
+  const submitUserData = () => {
+    const userId = 1;  // Replace with actual user ID from previous screen (from Lisa's PR)
+    const url = `http://192.168.68.124:8000/api/users/${userId}/update/`;
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        gender: selectedGender,
+        height: `${selectedHeightFeet}ft ${selectedHeightInches}in`,
+        goal_weight: parseFloat(weight)
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to save user data');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('User info updated:', data);
+      navigation.navigate('GoalCollection' as never); // Navigate to next screen
+    })
+    .catch(error => {
+      console.error('Error updating user info:', error);
+      Alert.alert("Failed to update information. Please try again.");
+    });
+  };
+
 
   return (
       <View style={styles.container}>
