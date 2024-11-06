@@ -7,7 +7,6 @@ from django.db import models
 # User model
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     birthdate = models.DateField()
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
@@ -20,7 +19,7 @@ class User(models.Model):
 
     # When an instance is referenced, prints the user ID and name instead of the default "User object (1)"
     def __str__(self):
-        return f"User ID: {self.user_id}, Name: {self.username}"
+        return f"User ID: {self.user_id}, Name: {self.email}"
     
 # UserData model
 class UserData(models.Model):
@@ -33,20 +32,20 @@ class UserData(models.Model):
 
     # When an instance is referenced, prints the user name and timestamp instead of the default "User object (1)"
     def __str__(self):
-        return f"Data for {self.user.username} at {self.timestamp}"
+        return f"Data for {self.user.email} at {self.timestamp}"
     
 # NotificationData model
 class NotificationData(models.Model):
     notification_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Foreign key to User, CASCADE -> all related NotificationData instances will be deleted if User is deleted
-    notification_title = models.CharField(max_length=255)
+    notification_title = models.CharField(max_length=255, default="Default Title")
     notification_message = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)  # Automatically sets the field to the current date and time
     read_status = models.BooleanField(default=False)
 
      # When an instance is referenced, prints the user name and timestamp instead of the default "User object (1)"
     def __str__(self):
-        return f"Notification for {self.user.username} at {self.timestamp}"
+        return f"Notification for {self.user.email} at {self.timestamp}"
     
 
     

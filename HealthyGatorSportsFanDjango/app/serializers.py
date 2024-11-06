@@ -16,22 +16,28 @@ from .models import UserData, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'password', 'gender', 'height', 'goal_weight']
+        fields = ['email', 'password', 'gender', 'height', 'goal_weight']
+        # required fields in models.py, but these are overidden temporarily
+        extra_kwargs = {
+            'gender': {'required': False, 'default': "Other"},
+            'height': {'required': False, 'default': "Unknown"},
+            'goal_weight': {'required': False, 'default': 0.0},
+        }
 
-    # Only 'username' and 'password' are required for the createcredentialsscreen.tsx screen
+    # Only 'email', 'username' and 'password' are required for the createcredentialsscreen.tsx screen
     def create(self, validated_data):
         return User.objects.create(
-            username=validated_data['username'],
+            email=validated_data['email'],
             password=validated_data['password'],
-            # the following are input on other screens, so a default value is set for now
             birthdate="2000-01-01",
-            gender="Other",
-            height="Unknown",
-            goal_weight=0.0
+            gender=validated_data.get('gender', "Other"),
+            height=validated_data.get('height', "Unknown"),
+            goal_weight=validated_data.get('goal_weight', 0.0)
         )
     
     def update(self, instance, validated_data):
         # Update fields when new data comes from the basicinfo.tsx screen
+        instance.birthdate = validated_data.get('birthdate', instance.birthdate)
         instance.gender = validated_data.get('gender', instance.gender)
         instance.height = validated_data.get('height', instance.height)
         instance.goal_weight = validated_data.get('goal_weight', instance.goal_weight)

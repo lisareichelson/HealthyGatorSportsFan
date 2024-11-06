@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-native-element-dropdown": "^2.12.2",
+    "react-native-modal-datetime-picker": "^18.0.0"
+  }
+}
