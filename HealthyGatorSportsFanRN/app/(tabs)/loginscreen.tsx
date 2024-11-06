@@ -1,6 +1,7 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
+import User from "@/components/user";
 export default function LogInScreen() {
     const navigation = useNavigation();
     const [username, setUsername] = useState('');
@@ -41,12 +42,14 @@ function ConfirmData(username: any, password: any, navigation: any){
     console.log(password);
     //Eventually design a backup email verification system for forgotten passwords.
 
-    //Navigate to the user's home page.
+    //TODO: Grab other needed information (from backend) here before navigating to the homepage
+    const currentUser = new User('','','','','','','',0,0,0,false,true,0);
+    currentUser.username = username;
 
     //TODO: REMOVE ME AFTER TESTING
     if ((username == "debug" || username == "Debug") && (password == "debug" || password == "Debug")){
         //Navigate to the home screen
-        navigation.navigate('HomePage' as never);
+        navigation.navigate('HomePage', {currentUser} as never);
     }
 }
 
