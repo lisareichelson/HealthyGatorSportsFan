@@ -1,10 +1,14 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
+import User from "@/components/user";
 
 const GoalCollection = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const currentUser = route.params;
+
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
     const [startWeight, setStartWeight] = useState('');
@@ -37,19 +41,6 @@ const GoalCollection = () => {
             </View>
             {loseWeight && <View>
                 <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
-                    <Text style={{fontSize: 15, fontFamily: 'System'}}>Current Weight:   </Text>
-                    <TextInput
-                        style={styles.weightBox}
-                        placeholder="enter a weight..."
-                        keyboardType={"numeric"}
-                        editable={true}
-                        value={startWeight}
-                        defaultValue={startWeight}
-                        onChangeText={newWeight => setStartWeight(newWeight)}
-                        onEndEditing={startWeight => SetStartWeightBackend(startWeight)}
-                        returnKeyType="done"/>
-                </View>
-                <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
                     <Text style={{fontSize: 15, fontFamily: 'System'}}>Goal Weight:        </Text>
                     <TextInput
                         style={styles.weightBox}
@@ -59,14 +50,13 @@ const GoalCollection = () => {
                         value={goalWeight}
                         defaultValue={goalWeight}
                         onChangeText={newWeight => setGoalWeight(newWeight)}
-                        onEndEditing={goalWeight => SetGoalWeightBackend(goalWeight)}
                         returnKeyType="done"/>
                 </View>
             </View>
             }
 
             <TouchableOpacity style = {[styles.bottomObject, {marginTop: 150} ]} activeOpacity={0.5}
-                              onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight)}>
+                              onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight, currentUser)}>
                 <Image
                     source={require('./../../assets/images/forwardarrow.png')}
                     style={{width: 50, height: 50}}
@@ -78,25 +68,27 @@ const GoalCollection = () => {
 
 export default GoalCollection
 
-function SetStartWeightBackend(weight: any){
-    console.log(weight.nativeEvent.text);
-}
-
-function SetGoalWeightBackend(weight: any){
-    console.log(weight.nativeEvent.text);
-}
-
 //TODO: Store goals from here into backend.
-function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any){
+function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
+    const userData: User = { ...currentUser };
+    //This is how to get the data from the currentUser object
+   // console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
 
     //If losing weight is a goal
     if (loseWeight){
-        if (goalWeight < loseWeight){
+        const currentWeight = userData.currentWeight;
+        console.log("current weight is : " + currentWeight);
+        if (goalWeight > currentWeight){
             Alert.alert("Current Weight cannot be less than goal weight.");
             return;
         }
     }
-    navigation.navigate('HomePage' as never);
+    userData.feelBetter = feelBetter;
+    userData.loseWeight = loseWeight;
+    if (loseWeight){
+        userData.goalWeight = goalWeight;
+    }
+    navigation.navigate('HomePage', {userData} as never);
 }
 
 const styles = StyleSheet.create({

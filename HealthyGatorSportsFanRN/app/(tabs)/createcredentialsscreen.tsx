@@ -1,10 +1,12 @@
 import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
+import User from "@/components/user";
 
 //PLACEHOLDER CODE: Insert this between the welcome screen and the next screens once the google sign in is working.
 export default function CreateCredentials() {
     const navigation = useNavigation();
+    const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirmed, setPasswordConfirmed] = useState('');
@@ -12,10 +14,19 @@ export default function CreateCredentials() {
     return(
         <View style={styles.container}>
             <Text style={{fontSize: 15, fontFamily: 'System'}}>
+                Please provide an email.
+            </Text>
+            <TextInput
+                style = {[styles.input, {marginTop: 15} ]}
+                placeholder="Email"
+                value={email}
+                onChangeText={email => setEmail(email)}
+            />
+            <Text style={{fontSize: 15, fontFamily: 'System'}}>
                 Please create a username and password.
             </Text>
             <TextInput
-                style = {[styles.input, {marginTop: 100} ]}
+                style = {[styles.input, {marginTop:15} ]}
                 placeholder="Username"
                 value={username}
                 onChangeText={user => setUsername(user)}
@@ -38,7 +49,7 @@ export default function CreateCredentials() {
                 Passwords must contain at least 1 letter and character, and must be at least 8 characters long.
             </Text>
                 <TouchableOpacity style = {[styles.buttons, {marginTop: 20} ]} activeOpacity={0.5}
-                                  onPress={() => ConfirmData(username, password, passwordConfirmed, navigation) }>
+                                  onPress={() => ConfirmData(username, password, passwordConfirmed, email, navigation) }>
                     <Text style={{fontSize: 15, fontFamily: 'System'}}>
                         Create Account
                     </Text>
@@ -48,9 +59,15 @@ export default function CreateCredentials() {
 }
 
 
-function ConfirmData(username :any, password: any, passwordConfirmed: any, navigation : any){
+function ConfirmData(username :any, password: any, passwordConfirmed: any, email: any, navigation : any){
     //Check that the inputted username does not yet exist through connection with database
     //TODO
+
+    //Confirm that the email format is valid //todo; add more checks here
+    if(!(email.includes("@") && email.includes("."))){
+        Alert.alert("Invalid email address!");
+        return;
+    }
 
     //Confirm that the password and the confirmedpassword match
     if (password != passwordConfirmed){
@@ -109,8 +126,13 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, navig
          Alert.alert("Failed to create account, please try again!");
      });
 
+     //Save everything but the password to ID user in next screen
+    const currentUser = new User('','','','','','','',0,0,0,false,true,0);
+    currentUser.email = email;
+    currentUser.username = username;
+
     // move to the next screen.
-    navigation.navigate('BasicInfo' as never);
+    navigation.navigate('BasicInfo', {currentUser} as never);
 }
 
 
@@ -139,5 +161,5 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 20,
         paddingHorizontal: 10,
-    },
+    }
 });
