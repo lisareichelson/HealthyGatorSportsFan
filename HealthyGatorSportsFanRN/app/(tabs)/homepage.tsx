@@ -1,11 +1,23 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
+import {TeamLogo} from "@/components/getTeamImages";
+
 
 export default function HomePage() {
     const navigation = useNavigation();
     const currentOpponent = GetCurrentOpponentName();
     const test = `../../assets/images/teamLogos/${currentOpponent}.png`;
+    const OpponentLogo = TeamLogo.GetImage(
+        `${currentOpponent}.png`,
+    );
+    console.log("Current logo: " + JSON.stringify(OpponentLogo));
+    //const imgFolder = require.context('../../assets/images/teamLogos/', false);
+    //const img_node = images(`./${currentOpponent}.png`);
+    //return <img src={img_node}/>;
+   // const images = require.context('../../assets/images/teamLogos/', true);
+   // const loadImage = (currentOpponent: any) => (images(`./${currentOpponent}`));
+   // <img src={loadImage("someimage.png")} alt="" />
 
     return (
         <View style={styles.container}>
@@ -39,7 +51,7 @@ export default function HomePage() {
                         style={{width:100, height:100, objectFit: 'contain'}}
                     />
                     <Image
-                        source={require(`../../assets/images/teamLogos/fsu.png`)}
+                        source={OpponentLogo}
                         style={{width:100, height:100, objectFit: 'contain'}}
                     />
 
