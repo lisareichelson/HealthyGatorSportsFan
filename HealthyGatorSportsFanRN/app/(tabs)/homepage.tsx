@@ -6,18 +6,13 @@ import {TeamLogo} from "@/components/getTeamImages";
 
 export default function HomePage() {
     const navigation = useNavigation();
-    const currentOpponent = GetCurrentOpponentName();
-    const test = `../../assets/images/teamLogos/${currentOpponent}.png`;
-    const OpponentLogo = TeamLogo.GetImage(
-        `${currentOpponent}.png`,
+
+    let currentOpponent = GetCurrentOpponentName();
+    let CurrentOpponentFullName = GetCurrentOpponentFullName();
+    let OpponentLogo = TeamLogo.GetImage(
+        `${currentOpponent}`,
     );
-    console.log("Current logo: " + JSON.stringify(OpponentLogo));
-    //const imgFolder = require.context('../../assets/images/teamLogos/', false);
-    //const img_node = images(`./${currentOpponent}.png`);
-    //return <img src={img_node}/>;
-   // const images = require.context('../../assets/images/teamLogos/', true);
-   // const loadImage = (currentOpponent: any) => (images(`./${currentOpponent}`));
-   // <img src={loadImage("someimage.png")} alt="" />
+    let CurrentGameData = GetCurrentScoreAndTime();
 
     return (
         <View style={styles.container}>
@@ -46,14 +41,32 @@ export default function HomePage() {
             </View>
             <View style={styles.middleContent}>
                 <View style={styles.scoreBox}>
+                    <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
                     <Image
                         source={require('../../assets/images/teamLogos/gatorlogo.png')}
                         style={{width:100, height:100, objectFit: 'contain'}}
                     />
+                        <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
+                            University of Florida
+                        </Text>
+                    </View>
+                    <View style={styles.scoreBoxText}>
+                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+                       {CurrentGameData[0]} - {CurrentGameData[1]}
+                    </Text>
+                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+                        Q{CurrentGameData[2]} - {CurrentGameData[3]}:{CurrentGameData[4]}
+                    </Text>
+                    </View>
+                    <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
                     <Image
                         source={OpponentLogo}
                         style={{width:100, height:100, objectFit: 'contain'}}
                     />
+                        <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
+                            {CurrentOpponentFullName}
+                        </Text>
+                    </View>
 
                 </View>
 
@@ -73,6 +86,20 @@ function GetCurrentOpponentName():string{
 
     //TEMP: ASSUME we are playing FSU.
     return 'fsu';
+}
+
+//TODO: call backend API to get who we are playing next
+function GetCurrentOpponentFullName():string{
+    //TEMP: ASSUME we are playing FSU.
+    return 'Florida State University';
+}
+/*
+Returns [gators' current score, opponent's current score, current quarter,
+        minutes remaining in the quarter, seconds remaining in the quarter]
+ */
+function GetCurrentScoreAndTime():[number, number, number, number, number]{
+//TODO: Connect to backend API
+    return [0,0,0,15,0];
 }
 
 const styles = StyleSheet.create({
@@ -102,7 +129,14 @@ const styles = StyleSheet.create({
     },
     scoreBox:{
         flexDirection: 'row',
-        justifyContent: 'space-between'
-
+        justifyContent: 'space-evenly',
+        borderWidth: 1.5,
+        borderRadius: 30,
+        borderColor: 'grey',
+        width: '90%',
+        alignSelf: 'center'
+    },
+    scoreBoxText:{
+        flexDirection: 'column',
     }
 });
