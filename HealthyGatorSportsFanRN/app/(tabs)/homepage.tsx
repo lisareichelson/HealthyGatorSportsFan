@@ -1,11 +1,14 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
 export default function HomePage() {
     const navigation = useNavigation();
+    const route = useRoute();
+    const userData = route.params;
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();
@@ -27,15 +30,8 @@ export default function HomePage() {
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
                                   onPress={() => navigation.navigate('NotificationsPage' as never) }>
                     <Image
-                        source={require('./../../assets/images/defaultprofile.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
-                    <Image
                         source={require('./../../assets/images/bell.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
             </View>
@@ -74,6 +70,44 @@ export default function HomePage() {
             <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 50, alignSelf:'center'}}>
                 Welcome to the placeholder home screen!
             </Text>
+            <View style={styles.bottomMenu}>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                    <Image
+                        source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
+                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
+                    <Image
+                        source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
+                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                    <Image
+                        source={require('../../assets/images/bottomHomeMenu/plus.png')}
+                        style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                    <Image
+                        source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
+                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                    <Image
+                        source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
+                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                    />
+                </TouchableOpacity>
+
+            </View>
         </View>
     );
 }
@@ -113,11 +147,25 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: '15%',
     },
+    bottomMenu:{
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-around',
+        position: 'absolute',
+        bottom: '5%',
+        width: '100%',
+    },
     topIcons:{
         justifyContent: 'center',
         borderColor: 'grey',
         borderWidth: 1,
         backgroundColor:'#fae7d7',
+        borderRadius: 40,
+        height: 50,
+        width: 50,
+    },
+    bottomIcons:{
+        justifyContent: 'center',
         borderRadius: 40,
         height: 40,
         width: 40,
