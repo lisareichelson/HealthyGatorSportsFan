@@ -8,9 +8,12 @@ from django.db import models
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=100, default="")
+    last_name = models.CharField(max_length=100, default="")
     birthdate = models.DateField()
-    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
-    height = models.CharField(max_length=10)  # Height in format like '5ft 6in'
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
+    height_feet = models.CharField(max_length=10, default="")
+    height_inches = models.CharField(max_length=10, default="")
     goal_weight = models.DecimalField(max_digits=4, decimal_places=1)  # Weight in pounds
     goal_to_lose_weight = models.BooleanField(default=False)
     goal_to_feel_better = models.BooleanField(default=False)

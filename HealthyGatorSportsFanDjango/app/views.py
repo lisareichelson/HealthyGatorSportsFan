@@ -3,8 +3,7 @@ from .models import User, UserData, NotificationData
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-#from .serializers import UserDataSerializer
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserDataSerializer
 
 # Create your views here.
 
@@ -48,20 +47,37 @@ class CreateUserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # Log error details for debugging
-        print("Validation errors:", serializer.errors) 
+            user = serializer.save()
+            # Prepare the response data including the user_id
+            response_data = {'user_id': user.user_id}
+            response_data.update(serializer.data)
+            return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 # API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
 class BasicInfoView(APIView):
     def post(self, request, user_id):
-        user = User.objects.get(pk=user_id)  # Get the user instance by ID
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        # Retrieve the user by ID
+        user = User.objects.get(pk=user_id) # pk is primary key
+        # Separate weight_value for UserData
+        weight_value = request.data.pop('weight_value', None) # return 'None' if no weight available
+        # Handle User data update
+        user_serializer = UserSerializer(user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            # Handle UserData creation/update with weight_value
+            if weight_value is not None:
+                user_data, created = UserData.objects.get_or_create(user=user)
+                user_data_serializer = UserDataSerializer(user_data, data={'weight_value': weight_value}, partial=True)
+                if user_data_serializer.is_valid():
+                    user_data_serializer.save()
+                else:
+                    print("UserData errors:", user_data_serializer.errors)
+                    return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # Return the user data with success status
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
         
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Log and return errors if the user data is invalid
+        print("User errors:", user_serializer.errors)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

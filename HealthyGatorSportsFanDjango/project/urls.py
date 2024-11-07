@@ -30,5 +30,5 @@ urlpatterns = [
 
     # API endpoints for app
     path('api/users/', CreateUserView.as_view(), name='user-create'), # endpoint for user creation screen
-    path('api/users/<int:user_id>/update/', BasicInfoView.as_view(), name='user-basicinfo'),
+    path('api/users/<int:user_id>/basicinfo/', BasicInfoView.as_view(), name='user-basicinfo'),
 ]

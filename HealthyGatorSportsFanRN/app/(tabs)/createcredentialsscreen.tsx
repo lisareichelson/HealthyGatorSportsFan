@@ -108,22 +108,22 @@ function ConfirmData(email: any, password: any, passwordConfirmed: any, navigati
      })
      .then(data => { // 'data' is the JavaScript object that was created after parsing the JSON from the server response
          console.log('Data successfully saved:', data);
-         // Navigate to the next screen upon successful data submission
-         navigation.navigate('BasicInfo'); // Make sure this is the correct screen you want to navigate to
+        
+         //Save everything but the password to ID user in next screen
+        const currentUser = new User(data.user_id,'','','','','','',0,0,0,false,true,0);
+        currentUser.email = email;
+
+        // move to the next screen.
+        navigation.navigate('BasicInfo', {currentUser} as never);
+
      })
      .catch(error => {
          console.error('Error saving data:', error);
          Alert.alert("Failed to create account, please try again!");
      });
 
-     //Save everything but the password to ID user in next screen
-    const currentUser = new User('','','','','','','',0,0,0,false,true,0);
-    currentUser.email = email;
-
-    // move to the next screen.
-    navigation.navigate('BasicInfo', {currentUser} as never);
+     // moved Lisa's code to 'then(data =>)' above, so that we can have access to user_id
 }
-
 
 const styles = StyleSheet.create({
     container: {
