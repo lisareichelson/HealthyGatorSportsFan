@@ -19,6 +19,9 @@ class User {
     loseWeight: Boolean;
     goalWeight?: number;
 
+    goal_to_feel_better: boolean;
+    goal_to_lose_weight: boolean;
+
 
     constructor(userId: number, fName: string, lName: string, bDate: string, email: string, username: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number) {
         this.userId = userId;
@@ -33,6 +36,9 @@ class User {
         this.feelBetter = feelBetter;
         this.loseWeight = loseWeight;
         this.goalWeight = goalWeight;
+
+        this.goal_to_feel_better = false;
+        this.goal_to_lose_weight = false;
     }
 }
 

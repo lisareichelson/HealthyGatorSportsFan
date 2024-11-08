@@ -25,7 +25,9 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name': {'required': False, 'default': ''},
             'height_feet': {'required': False, 'default': 0},
             'height_inches': {'required': False, 'default': 0},
-            'goal_weight': {'required': False, 'default': 0.0}
+            # DEBUG Remove the default value for goal_weight to prevent unintended overwrites
+            'goal_weight': {'required': False},
+            #'goal_weight': {'required': False, 'default': 0.0}
         }
 
     # Only 'email' and 'password' are required for the createcredentialsscreen.tsx screen
@@ -49,6 +51,11 @@ class UserSerializer(serializers.ModelSerializer):
         instance.gender = validated_data.get('gender', instance.gender)
         instance.height_feet = validated_data.get('height_feet', instance.height_feet)
         instance.height_inches = validated_data.get('height_inches', instance.height_inches)
+        #instance.goal_weight = validated_data.get('goal_weight', instance.goal_weight)
+        #UNDO if this doesn't work!
+         # Handling goal_weight properly
+        if 'goal_weight' in validated_data:
+            instance.goal_weight = float(validated_data['goal_weight'])
         instance.save()
         return instance
     

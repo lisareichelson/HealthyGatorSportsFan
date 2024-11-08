@@ -164,9 +164,12 @@ function SaveAndContinue(navigation: any, userData: any, weight: number, gender:
      currentUser.firstName = firstName;
      currentUser.lastName = lastName;
      currentUser.birthDate = JSON.stringify(birthdate);
+     currentUser.currentWeight = weight;
 
-     navigation.navigate('GoalCollection' , {currentUser} as never)
+     // DEBUG statement
+     console.log('Weight before POST:', weight);
 
+     // save to database
      const userDataCurrentWeight = {
       user: currentUser.userId,
       weight_value: weight,
@@ -199,6 +202,15 @@ function SaveAndContinue(navigation: any, userData: any, weight: number, gender:
         })
         .then(data => {
             console.log('Data successfully saved:', data);
+
+            // Explicitly check and set the weight_value to currentWeight
+            if (data.weight_value !== undefined) {
+                currentUser.currentWeight = data.weight_value;
+            }
+
+            //DEBUG statement
+            console.log('Updated currentUser with currentWeight:', currentUser); 
+
             // Continue to the next screen upon successful data submission
             navigation.navigate('GoalCollection', { currentUser } as never);
         })

@@ -7,11 +7,17 @@ import User from "@/components/user";
 const GoalCollection = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const currentUser = route.params;
+    const currentUser = route.params as any;
+
+    // DEBUG statement
+    console.log('CurrentUser in GoalCollection:', currentUser);
 
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
-    const [startWeight, setStartWeight] = useState('');
+
+    // startWeight will automatically get initialized to the currentWeight (which is fetched from weight_value).
+    const [startWeight, setStartWeight] = useState(currentUser.currentWeight || '');
+
     const [goalWeight, setGoalWeight] = useState('');
 
     return (
@@ -74,21 +80,108 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     //This is how to get the data from the currentUser object
    // console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
 
-    //If losing weight is a goal
-    if (loseWeight){
-        const currentWeight = userData.currentWeight;
-        console.log("current weight is : " + currentWeight);
-        if (goalWeight > currentWeight){
+    // Access currentWeight from the nested currentUser structure
+    const currentWeight = currentUser.currentUser.currentWeight || startWeight;
+
+    console.log("current weight is : " + currentWeight);
+
+    // Determine goal_type based on checkboxes
+    let goalType = null;
+    if (feelBetter && loseWeight) {
+        goalType = 'both';
+    } else if (loseWeight) {
+        goalType = 'loseWeight';
+    } else if (feelBetter) {
+        goalType = 'feelBetter';
+    }
+
+    //DEBUG statement
+    console.log("Determined goalType:", goalType);
+
+    // Update goal_to_lose_weight and goal_to_feel_better accordingly
+    if (goalType === 'feelBetter') {
+        userData.goal_to_feel_better = true;
+        userData.goal_to_lose_weight = false;
+    } else if (goalType === 'loseWeight') {
+        userData.goal_to_lose_weight = true;
+        userData.goal_to_feel_better = false;
+    } else if (goalType === 'both') {
+        userData.goal_to_lose_weight = true;
+        userData.goal_to_feel_better = true;
+    } else {
+        userData.goal_to_lose_weight = false;
+        userData.goal_to_feel_better = false;
+    }
+
+    // DEBUG statement
+    console.log("Updated goal_to fields:", {
+        goal_to_lose_weight: userData.goal_to_lose_weight,
+        goal_to_feel_better: userData.goal_to_feel_better
+    });
+
+
+    if (loseWeight) {
+        if (parseFloat(goalWeight) > parseFloat(currentWeight)) {
             Alert.alert("Current Weight cannot be less than goal weight.");
             return;
         }
     }
-    userData.feelBetter = feelBetter;
-    userData.loseWeight = loseWeight;
-    if (loseWeight){
+
+        
+    /*if (loseWeight){
         userData.goalWeight = goalWeight;
-    }
-    navigation.navigate('HomePage', {userData} as never);
+    }*/
+
+    // Convert goalWeight to a float
+    let goalWeightNum = parseFloat(goalWeight);
+    // DEBUG
+    console.log("Parsed goalWeightNum:", goalWeightNum);
+
+    //DEBUG statement
+    console.log("Goal Weight before POST:", goalWeight);
+
+    // Define the URL for the POST request
+    const url = `http://192.168.68.124:8000/api/users/${currentUser.currentUser.userId}/goals/`;
+
+    // DEBUG statement: Log payload being sent to backend
+    const requestBody = {
+        feelBetter,
+        loseWeight,
+        goalWeight: goalWeightNum,
+        goalType,
+        goal_to_lose_weight: userData.goal_to_lose_weight,
+        goal_to_feel_better: userData.goal_to_feel_better,
+    };
+
+    console.log('Request Body before POST:', requestBody);
+
+    // Perform the fetch operation
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            feelBetter,
+            loseWeight,
+            goalWeight: goalWeightNum,
+            goalType,
+            goal_to_lose_weight: userData.goal_to_lose_weight,
+            goal_to_feel_better: userData.goal_to_feel_better,
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to save your goals.');
+        return response.json();
+    })
+    .then(data => {
+        console.log('Goals successfully saved:', data);
+        navigation.navigate('HomePage', { user: userData });
+    })
+    .catch(error => {
+        console.error('Error saving goals:', error);
+        Alert.alert("Failed to save your goals. Please try again!");
+    });
 }
 
 const styles = StyleSheet.create({

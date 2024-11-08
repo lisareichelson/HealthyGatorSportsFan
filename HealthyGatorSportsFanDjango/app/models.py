@@ -29,7 +29,7 @@ class UserData(models.Model):
     data_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Foreign key to User, CASCADE -> all related UserData instances will be deleted if User is deleted
     timestamp = models.DateTimeField(auto_now_add=True)  # Automatically sets the field to the current date and time
-    goal_type = models.CharField(max_length=20, choices=[('Lose Weight', 'Lose Weight'), ('Feel Better', 'Feel Better'), ('Both', 'Both')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
+    goal_type = models.CharField(max_length=20, choices=[('loseWeight', 'Lose Weight'), ('feelBetter', 'Feel Better'), ('both', 'Both')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
     weight_value = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)  # Weight in pounds (optional, depends on goal type)
     feel_better_value = models.IntegerField(null=True, blank=True)  # Scale of 1 to 5 (optional, depends on goal type)
 

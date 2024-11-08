@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import index, CreateUserView, BasicInfoView
+from app.views import index, CreateUserView, BasicInfoView, GoalCollectionView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
@@ -31,4 +31,5 @@ urlpatterns = [
     # API endpoints for app
     path('api/users/', CreateUserView.as_view(), name='user-create'), # endpoint for user creation screen
     path('api/users/<int:user_id>/basicinfo/', BasicInfoView.as_view(), name='user-basicinfo'),
+    path('api/users/<int:user_id>/goals/', GoalCollectionView.as_view(), name='user-goals'),
 ]
