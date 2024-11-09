@@ -72,11 +72,15 @@ export default function NotificationsPage() {
                         await sendPushNotification(expoPushToken);
                     }}
                 />
+                <Button 
+                    title="Get next game info"
+                    onPress={handlePollCFBD}
+                />
             </View>
 
-            <TouchableOpacity style={styles.pollButton} onPress={handlePollCFBD}>
+            {/* <TouchableOpacity style={styles.pollButton} onPress={handlePollCFBD}>
                 <Text style={styles.pollButtonText}>Get next game info</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
         </View>
     );
@@ -96,11 +100,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 20,
       },
-      pollButtonText: {
-          color: '#ffffff',
-          fontSize: 16,
-          fontWeight: 'bold',
-      },
+    pollButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
 
 
