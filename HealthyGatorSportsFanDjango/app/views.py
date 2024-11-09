@@ -13,6 +13,9 @@ from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 # Create your views here.
 
 #  for testing with Django's web interface
@@ -78,6 +81,8 @@ def poll_cfbd_view(request):
         host="https://apinext.collegefootballdata.com",
         access_token=os.getenv('COLLEGE_FOOTBALL_API_KEY')
     )
+    print("Value of 'COLLEGE_FOOTBALL_API_KEY' environment variable :", os.getenv('COLLEGE_FOOTBALL_API_KEY'))                         
+    print("Value of 'EXPO_PUSH_TOKEN' environment variable :", os.getenv('EXPO_PUSH_TOKEN'))                         
     apiInstance = cfbd.GamesApi(cfbd.ApiClient(configuration))
 
     def get_next_game():
