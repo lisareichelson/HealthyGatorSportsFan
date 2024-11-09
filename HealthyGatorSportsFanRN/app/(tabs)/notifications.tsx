@@ -1,10 +1,8 @@
 import {useNavigation} from "@react-navigation/native";
-
 import { useState, useEffect, useRef } from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Button, Platform} from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-
 import Constants from 'expo-constants';
 
 export default function NotificationsPage() {
@@ -37,6 +35,24 @@ export default function NotificationsPage() {
         };
     }, []);
 
+
+    const handlePollCFBD = async () => {
+        try {
+          const response = await fetch('https://b862-184-185-222-16.ngrok-free.app/poll-cfbd/', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: 'Poll request sent' }),
+          });
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.error('Error sending poll request:', error);
+        }
+      };
+
     return (
         <View style={styles.container}>
             <Text style={{fontSize: 25, fontFamily: 'System', paddingTop: 100}}>
@@ -58,6 +74,10 @@ export default function NotificationsPage() {
                 />
             </View>
 
+            <TouchableOpacity style={styles.pollButton} onPress={handlePollCFBD}>
+                <Text style={styles.pollButtonText}>Get next game info</Text>
+            </TouchableOpacity>
+
         </View>
     );
 }
@@ -69,6 +89,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    pollButton: {
+        backgroundColor: '#007bff',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 20,
+      },
+      pollButtonText: {
+          color: '#ffffff',
+          fontSize: 16,
+          fontWeight: 'bold',
+      },
 });
 
 
