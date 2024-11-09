@@ -38,7 +38,7 @@ export default function NotificationsPage() {
 
     const handlePollCFBD = async () => {
         try {
-          const response = await fetch('https://b862-184-185-222-16.ngrok-free.app/poll-cfbd/', {
+          const response = await fetch(' https://a3a9-66-235-13-11.ngrok-free.app/poll-cfbd/', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
