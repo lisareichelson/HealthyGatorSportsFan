@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState} from "react";
@@ -61,6 +61,9 @@ const BasicInformationCollection = () => {
      };
 
   return (
+
+    <ScrollView>
+
       <View style={styles.container}>
         <Text style={{fontSize: 25, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
         <Image style=
@@ -148,6 +151,8 @@ const BasicInformationCollection = () => {
           />
         </TouchableOpacity>
       </View>
+
+      </ScrollView>
 
   );
 }

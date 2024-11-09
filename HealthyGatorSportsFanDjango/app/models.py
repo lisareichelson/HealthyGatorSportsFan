@@ -6,7 +6,7 @@ from django.db import models
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=False) # TO-DO: need to turn back to True
     birthdate = models.DateField()
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
     height = models.CharField(max_length=10)  # Height in format like '5ft 6in'
