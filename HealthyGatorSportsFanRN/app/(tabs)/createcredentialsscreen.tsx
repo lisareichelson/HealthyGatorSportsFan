@@ -131,7 +131,7 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, email
     currentUser.email = email;
     currentUser.username = username;
 
-    // move to the next screen.
+    // move to the next screen
     navigation.navigate('BasicInfo', {currentUser} as never);
 }
 

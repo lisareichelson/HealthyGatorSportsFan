@@ -1,10 +1,10 @@
-import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
 
 
-export default function HomePage() {
+export default function GameSchedule() {
     const navigation = useNavigation();
     const route = useRoute();
     const userData = route.params;
@@ -27,7 +27,7 @@ export default function HomePage() {
                     Hey, Albert!
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToNotifications(userData, navigation) }>
+                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
                     <Image
                         source={require('./../../assets/images/bell.png')}
                         style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
@@ -37,27 +37,27 @@ export default function HomePage() {
             <View style={styles.middleContent}>
                 <View style={styles.scoreBox}>
                     <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-                    <Image
-                        source={require('../../assets/images/teamLogos/gatorlogo.png')}
-                        style={{width:100, height:100, objectFit: 'contain'}}
-                    />
+                        <Image
+                            source={require('../../assets/images/teamLogos/gatorlogo.png')}
+                            style={{width:100, height:100, objectFit: 'contain'}}
+                        />
                         <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
                             University of Florida
                         </Text>
                     </View>
                     <View style={styles.scoreBoxText}>
-                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-                       {CurrentGameData[0]} - {CurrentGameData[1]}
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-                        Q{CurrentGameData[2]} - {CurrentGameData[3]}:{CurrentGameData[4]}
-                    </Text>
+                        <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+                            {CurrentGameData[0]} - {CurrentGameData[1]}
+                        </Text>
+                        <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+                            Q{CurrentGameData[2]} - {CurrentGameData[3]}:{CurrentGameData[4]}
+                        </Text>
                     </View>
                     <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-                    <Image
-                        source={OpponentLogo}
-                        style={{width:100, height:100, objectFit: 'contain'}}
-                    />
+                        <Image
+                            source={OpponentLogo}
+                            style={{width:100, height:100, objectFit: 'contain'}}
+                        />
                         <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
                             {CurrentOpponentFullName}
                         </Text>
@@ -67,17 +67,18 @@ export default function HomePage() {
 
             </View>
             <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 50, alignSelf:'center'}}>
-                Welcome to the placeholder home screen!
+                Welcome to the GAME SCHEDULE SCREEN!!!
             </Text>
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => navigation.navigate('HomePage' as never) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToGameSchedule(userData, navigation)}>
+                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -98,7 +99,7 @@ export default function HomePage() {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => LogoutPopup(navigation)}>
+                                  onPress={() => navigation.navigate('HomePage' as never) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -110,33 +111,6 @@ export default function HomePage() {
     );
 }
 
-function NavigateToGameSchedule(userData:any, navigation:any){
-    navigation.navigate('GameSchedule', {userData} as never)
-}
-function NavigateToNotifications(userData:any, navigation:any){
-    navigation.navigate('NotificationsPage', {userData} as never)
-}
-function LogoutPopup(navigation: any){
-    Alert.alert(
-        "Confirmation",
-        "Are you sure you want logout?",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {
-                text: "Logout",
-                style: "destructive",
-                onPress: () => {
-                    // Navigate back to the welcome page.
-                    console.log("Logging out.");
-                    navigation.navigate('CreateOrSignIn' as never);
-                }
-            }
-        ]
-    );
-}
 
 
 //TODO: call backend API to get who we are playing next
