@@ -7,7 +7,9 @@ import User from "@/components/user";
 const GoalCollection = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const currentUser = route.params;
+    const user: any = route.params;
+    const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
+    //console.log("User Data goal collection: " + JSON.stringify(currentUser));
 
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
@@ -70,25 +72,26 @@ export default GoalCollection
 
 //TODO: Store goals from here into backend.
 function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
-    const userData: User = { ...currentUser };
+    //const userData: User = { ...currentUser };
+    //const userData = currentUser;
     //This is how to get the data from the currentUser object
    // console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
 
     //If losing weight is a goal
     if (loseWeight){
-        const currentWeight = userData.currentWeight;
-        console.log("current weight is : " + currentWeight);
+        const currentWeight = currentUser.currentWeight;
+        //console.log("current weight is : " + currentWeight);
         if (goalWeight > currentWeight){
             Alert.alert("Current Weight cannot be less than goal weight.");
             return;
         }
     }
-    userData.feelBetter = feelBetter;
-    userData.loseWeight = loseWeight;
+    currentUser.feelBetter = feelBetter;
+    currentUser.loseWeight = loseWeight;
     if (loseWeight){
-        userData.goalWeight = goalWeight;
+        currentUser.goalWeight = goalWeight;
     }
-    navigation.navigate('HomePage', {userData} as never);
+    navigation.navigate('HomePage', {currentUser} as never);
 }
 
 const styles = StyleSheet.create({

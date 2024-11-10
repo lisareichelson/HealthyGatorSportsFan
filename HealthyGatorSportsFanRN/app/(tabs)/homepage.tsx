@@ -2,12 +2,15 @@ import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
+import User from "@/components/user";
 
 
 export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
-    const userData = route.params;
+    const user: any = route.params;
+    const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
+    //console.log("User Data:" + JSON.stringify(currentUser));
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();
@@ -27,7 +30,7 @@ export default function HomePage() {
                     Hey, Albert!
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToNotifications(userData, navigation) }>
+                                  onPress={() => NavigateToNotifications(currentUser, navigation) }>
                     <Image
                         source={require('./../../assets/images/bell.png')}
                         style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
@@ -77,7 +80,7 @@ export default function HomePage() {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToGameSchedule(userData, navigation)}>
+                                  onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -91,7 +94,7 @@ export default function HomePage() {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                                  onPress={() => NavigateToProfileManagement(currentUser, navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -110,12 +113,16 @@ export default function HomePage() {
     );
 }
 
-function NavigateToGameSchedule(userData:any, navigation:any){
-    navigation.navigate('GameSchedule', {userData} as never)
+function NavigateToGameSchedule(currentUser:any, navigation:any){
+    navigation.navigate('GameSchedule', {currentUser} as never)
 }
-function NavigateToNotifications(userData:any, navigation:any){
-    navigation.navigate('NotificationsPage', {userData} as never)
+function NavigateToNotifications(currentUser:any, navigation:any){
+    navigation.navigate('NotificationsPage', {currentUser} as never)
 }
+function NavigateToProfileManagement(currentUser:any, navigation:any){
+    navigation.navigate('ProfileManagement', {currentUser} as never)
+}
+
 function LogoutPopup(navigation: any){
     Alert.alert(
         "Confirmation",

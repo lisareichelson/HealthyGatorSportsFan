@@ -10,7 +10,9 @@ const BasicInformationCollection = () => {
     const navigation = useNavigation();
     //Used to save user info as collected
     const route = useRoute();
-    const userData = route.params;
+    const user: any = route.params;
+    const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
+    //console.log("User Data basic info: " + JSON.stringify(currentUser));
 
     const styles = SetStyles();
     const [genders] = useState([
@@ -141,7 +143,7 @@ const BasicInformationCollection = () => {
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => SaveAndContinue(navigation, userData, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
+                          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
@@ -156,7 +158,8 @@ export default BasicInformationCollection
 
 function SaveAndContinue(navigation: any, userData: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
      //Save the variables in the user object type
-     const currentUser: User = { ...userData };
+    // const currentUser: User = { ...userData };
+     const currentUser = userData;
      currentUser.gender = gender;
      currentUser.currentWeight = weight;
      currentUser.heightFeet = heightFeet;

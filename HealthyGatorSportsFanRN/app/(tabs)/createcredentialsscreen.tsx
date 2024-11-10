@@ -127,7 +127,7 @@ function ConfirmData(username :any, password: any, passwordConfirmed: any, email
      });
 
      //Save everything but the password to ID user in next screen
-    const currentUser = new User('','','','','','','',0,0,0,false,true,0);
+    const currentUser = new User('','','','','','',0,0,0,false,true,0);
     currentUser.email = email;
     currentUser.username = username;
 

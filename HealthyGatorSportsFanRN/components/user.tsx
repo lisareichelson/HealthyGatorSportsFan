@@ -19,7 +19,7 @@ class User {
     goalWeight?: number;
 
 
-    constructor(fName: string, lName: string, uName: string, bDate: string, email: string, username: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number) {
+    constructor(fName: string, lName: string, uName: string, bDate: string, email: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number) {
         this.firstName = fName;
         this.lastName = lName;
         this.username = uName;
@@ -33,6 +33,12 @@ class User {
         this.loseWeight = loseWeight;
         this.goalWeight = goalWeight;
     }
+
+    //Used to solve nesting issues within screens. Essentially a copy constructor.
+    cloneUser(){
+        return new User(this.firstName, this.lastName, this.username, this.birthDate, this.email, this.gender, this.heightFeet, this.heightInches, this.currentWeight, this.feelBetter, this.loseWeight, this.goalWeight);
+    }
+
 }
 
 export default User;

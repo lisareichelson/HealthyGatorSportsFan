@@ -2,12 +2,14 @@ import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
+import User from "@/components/user";
 
 
 export default function GameSchedule() {
     const navigation = useNavigation();
     const route = useRoute();
-    const userData = route.params;
+    const user: any = route.params;
+    const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();

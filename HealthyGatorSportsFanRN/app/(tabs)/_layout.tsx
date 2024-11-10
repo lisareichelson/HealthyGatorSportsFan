@@ -11,6 +11,7 @@ import HomePage from "@/app/(tabs)/homepage";
 import GoalCollection from "@/app/(tabs)/goalcollection";
 import NotificationsPage from "@/app/(tabs)/notifications";
 import GameSchedule from "@/app/(tabs)/gameschedule";
+import ProfileManagement from "@/app/(tabs)/profilemanagement";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,11 @@ export default function TabLayout() {
               <Stack.Screen
                   name="GameSchedule"
                   component={GameSchedule}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="ProfileManagement"
+                  component={ProfileManagement}
                   options={{headerShown: false}}
               />
               <Stack.Screen
