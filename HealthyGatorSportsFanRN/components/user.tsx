@@ -1,12 +1,13 @@
 
 class User {
     // Class members (properties and methods) go here
+    userId: number;
+
     firstName: string;
     lastName: string;
     birthDate: string; //A string is used to define the date here so it can be inside a navigation state
 
     email: string;
-    username: string;
 
     gender: string;
     heightFeet: number;
@@ -18,11 +19,16 @@ class User {
     loseWeight: Boolean;
     goalWeight?: number;
 
+    goal_to_feel_better: boolean;
+    goal_to_lose_weight: boolean;
 
-    constructor(fName: string, lName: string, uName: string, bDate: string, email: string, username: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number) {
+    goalType?: string;
+
+
+    constructor(userId: number, fName: string, lName: string, bDate: string, email: string, username: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number, goalType?: string) {
+        this.userId = userId;
         this.firstName = fName;
         this.lastName = lName;
-        this.username = uName;
         this.birthDate = bDate;
         this.email = email;
         this.gender = gender;
@@ -32,6 +38,11 @@ class User {
         this.feelBetter = feelBetter;
         this.loseWeight = loseWeight;
         this.goalWeight = goalWeight;
+
+        this.goal_to_feel_better = false;
+        this.goal_to_lose_weight = false;
+
+        this.goalType = goalType;
     }
 }
 

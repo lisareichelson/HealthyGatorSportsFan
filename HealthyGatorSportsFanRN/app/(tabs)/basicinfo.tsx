@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState} from "react";
@@ -10,7 +10,8 @@ const BasicInformationCollection = () => {
     const navigation = useNavigation();
     //Used to save user info as collected
     const route = useRoute();
-    const userData = route.params;
+    const { currentUser } = route.params as { currentUser: any };
+    const userId = currentUser.userId;
 
     const styles = SetStyles();
     const [genders] = useState([
@@ -144,7 +145,7 @@ const BasicInformationCollection = () => {
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => SaveAndContinue(navigation, userData, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
+                          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
@@ -163,14 +164,59 @@ function SaveAndContinue(navigation: any, userData: any, weight: number, gender:
      //Save the variables in the user object type
      const currentUser: User = { ...userData };
      currentUser.gender = gender;
-     currentUser.currentWeight = weight;
      currentUser.heightFeet = heightFeet;
      currentUser.heightInches = heightInches;
      currentUser.firstName = firstName;
      currentUser.lastName = lastName;
      currentUser.birthDate = JSON.stringify(birthdate);
+     currentUser.currentWeight = weight;
 
-     navigation.navigate('GoalCollection' , {currentUser} as never)
+     // save to database
+     const userDataCurrentWeight = {
+      user: currentUser.userId,
+      weight_value: weight,
+  };
+
+    // API call to send the data to the backend
+    const userId = userData.userId;
+    const url = `http://192.168.68.124:8000/api/users/${userId}/basicinfo/`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            first_name: firstName,
+            last_name: lastName,
+            birthdate: birthdate.toISOString().split('T')[0],
+            gender: gender,
+            height_feet: heightFeet,
+            height_inches: heightInches,
+            weight_value: weight,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to save user data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data successfully saved:', data);
+
+            // Explicitly check and set the weight_value to currentWeight
+            if (data.weight_value !== undefined) {
+                currentUser.currentWeight = data.weight_value;
+            } 
+
+            // Continue to the next screen upon successful data submission
+            navigation.navigate('GoalCollection', { currentUser } as never);
+        })
+        .catch(error => {
+            console.error('Error saving data:', error);
+            Alert.alert("Failed to save data. Please try again!");
+        });
 }
 
 function SetStyles() : any{

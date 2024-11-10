@@ -15,22 +15,24 @@
 
     <h2>Users</h2>
     {% for x in user_objs %}
-    <p>Name: {{ x.name }}</p>
+    <p>User ID: {{ x.user_id }}</p>
     <p>Email: {{ x.email }}</p>
+    <p>First Name: {{ x.first_name }}</p>
+    <p>Last Name: {{ x.last_name }}</p>
     <p>Birthdate: {{ x.birthdate }}</p>
     <p>Gender: {{ x.gender }}</p>
-    <p>Height: {{ x.height }}</p>
+    <p>Height (Feet): {{ x.height_feet }}</p>
+    <p>Height (Inches): {{ x.height_inches }}</p>
     <p>Goal Weight: {{ x.goal_weight }}</p>
     <p>Goal to Lose Weight: {{ x.goal_to_lose_weight }}</p>
     <p>Goal to Feel Better: {{ x.goal_to_feel_better }}</p>
     <p>Password: {{ x.password }}</p>
-    <p>Google Account ID: {{ x.google_acct_id }}</p>
     <hr>
     {% endfor %}
 
     <h2>User Data</h2>
     {% for data in user_data_objs %}
-    <p>User: {{ data.user.name }}</p>
+    <p>User Email: {{ data.user.email }}</p>
     <p>Timestamp: {{ data.timestamp }}</p>
     <p>Goal Type: {{ data.goal_type }}</p>
     <p>Weight Value: {{ data.weight_value }}</p>
@@ -40,7 +42,8 @@
 
     <h2>Notifications</h2>
     {% for notification in notification_objs %}
-    <p>User: {{ notification.user.name }}</p>
+    <p>User Email: {{ notification.user.email }}</p>
+    <p>Notification Title: {{ notification.notification_title }}</p>
     <p>Notification Message: {{ notification.notification_message }}</p>
     <p>Timestamp: {{ notification.timestamp }}</p>
     <p>Read Status: {{ notification.read_status }}</p>

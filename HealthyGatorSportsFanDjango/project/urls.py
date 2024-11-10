@@ -16,14 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import WeightView, index, CreateUserView, poll_cfbd_view
+from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
+# Best practice is one route per page, but multipe routes can be implemented as the app gets more complex
+
 urlpatterns = [
-    path('api/weights/', WeightView.as_view(), name='weight'),  # API endpoint for test with Postman (no fetch on front-end yet)
+    # API endpoints for testing
+    #path('api/weights/', WeightView.as_view(), name='weight'),  # endpoint for test with Postman (no fetch on front-end yet)
     path('admin/', admin.site.urls), # Django Admin page (http://127.0.0.1:8000/admin)
     path('', index, name = "index"), # to see database contents for testing (http://127.0.0.1:8000/), see templates -> index.html
-    path('api/users/', CreateUserView.as_view(), name='user-create'), # API endpoint for test with front end
+
+    # API endpoints for app
+    path('api/users/', CreateUserView.as_view(), name='user-create'), # endpoint for user creation screen
+    path('api/users/<int:user_id>/basicinfo/', BasicInfoView.as_view(), name='user-basicinfo'),
+    path('api/users/<int:user_id>/goals/', GoalCollectionView.as_view(), name='user-goals'),
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
 ]
