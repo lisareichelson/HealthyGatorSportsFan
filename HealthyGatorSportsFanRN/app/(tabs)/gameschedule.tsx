@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
@@ -73,35 +73,34 @@ export default function GameSchedule() {
             </Text>
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                                  onPress={() => NavigateToHomePage(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                                  onPress={() => NavigateToHomePage(currentUser, navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/plus.png')}
                         style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                                  onPress={() => NavigateToProfileManagement(currentUser, navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                                  onPress={() => LogoutPopup(navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -113,7 +112,37 @@ export default function GameSchedule() {
     );
 }
 
+function LogoutPopup(navigation: any){
+    Alert.alert(
+        "Confirmation",
+        "Are you sure you want logout?",
+        [
+            {
+                text: "Cancel",
+                style: "cancel"
+            },
+            {
+                text: "Logout",
+                style: "destructive",
+                onPress: () => {
+                    // Navigate back to the welcome page.
+                    console.log("Logging out.");
+                    navigation.navigate('CreateOrSignIn' as never);
+                }
+            }
+        ]
+    );
+}
 
+function NavigateToHomePage(currentUser:any, navigation:any){
+    navigation.navigate('HomePage', {currentUser} as never)
+}
+function NavigateToNotifications(currentUser:any, navigation:any){
+    navigation.navigate('NotificationsPage', {currentUser} as never)
+}
+function NavigateToProfileManagement(currentUser:any, navigation:any){
+    navigation.navigate('ProfileManagement', {currentUser} as never)
+}
 
 //TODO: call backend API to get who we are playing next
 function GetCurrentOpponentName():string{

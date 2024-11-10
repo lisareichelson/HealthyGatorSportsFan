@@ -262,7 +262,8 @@ export default function ProfileManagement() {
 
 
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => NavigateToHomePage(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -378,13 +379,61 @@ function GetGoalsText(currentUser: User):String{
 }
 
 function NavigateToGameSchedule(currentUser:any, navigation:any){
-    navigation.navigate('GameSchedule', {currentUser} as never)
+    Alert.alert(
+        "Confirmation",
+        "Are you sure you want to abandon your changes?",
+        [
+            {
+                text: "No",
+                style: "cancel"
+            },
+            {
+                text: "Yes",
+                style: "destructive",
+                onPress: () => {
+                    navigation.navigate('GameSchedule', {currentUser} as never)
+                }
+            }
+        ]
+    );
 }
 function NavigateToHomePage(currentUser:any, navigation:any){
-    navigation.navigate('GameSchedule', {currentUser} as never)
+    Alert.alert(
+        "Confirmation",
+        "Are you sure you want to abandon your changes?",
+        [
+            {
+                text: "No",
+                style: "cancel"
+            },
+            {
+                text: "Yes",
+                style: "destructive",
+                onPress: () => {
+                    navigation.navigate('HomePage', {currentUser} as never)
+                }
+            }
+        ]
+    );
 }
 function NavigateToNotifications(currentUser:any, navigation:any){
-    navigation.navigate('NotificationsPage', {currentUser} as never)
+    Alert.alert(
+        "Confirmation",
+        "Are you sure you want to abandon your changes?",
+        [
+            {
+                text: "No",
+                style: "cancel"
+            },
+            {
+                text: "Yes",
+                style: "destructive",
+                onPress: () => {
+                    navigation.navigate('NotificationsPage', {currentUser} as never)
+                }
+            }
+        ]
+    );
 }
 function LogoutPopup(navigation: any){
     Alert.alert(
