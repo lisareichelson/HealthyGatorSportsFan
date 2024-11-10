@@ -62,9 +62,6 @@ class BasicInfoView(APIView):
         # Separate weight_value for UserData
         weight_value = request.data.pop('weight_value', None) # return 'None' if no weight available
 
-        # DEBUG statement
-        print(f"Received weight_value: {weight_value}")
-
         # Handle User data update
         user_serializer = UserSerializer(user, data=request.data, partial=True)
         if user_serializer.is_valid():
@@ -84,9 +81,6 @@ class BasicInfoView(APIView):
             response_data = user_serializer.data
             response_data['weight_value'] = weight_value
 
-            # DEBUG statement
-            print(f"Response data: {response_data}")
-
             # Return the user data with success status
             return Response(user_serializer.data, status=status.HTTP_200_OK)
         
@@ -98,30 +92,15 @@ class BasicInfoView(APIView):
 class GoalCollectionView(APIView):
     def post(self, request, user_id):
 
-        # DEBUG statement to see what data is received from the request
-        print(f"Received data: {request.data}")
-
         # Extract goal_weight and goal_type DEBUG
         goal_weight = request.data.get('goal_weight', None)
         goal_type = request.data.get('goal_type', None)
 
-        # DEBUG statement
-        print(f"Received goal_weight: {request.data.get('goal_weight')}")
-
         user = User.objects.get(pk=user_id)
         user_serializer = UserSerializer(user, data=request.data, partial=True)
-
         
         if user_serializer.is_valid():
-
-            # Debug statement
-            print(f"Validated data before saving: {user_serializer.validated_data}")
-
             user_instance = user_serializer.save()
-
-            # DEBUG statement to confirm goal_weight update
-            print(f"Updated goal_weight to: {user_instance.goal_weight}")
-
             # Now handle UserData
             user_data, created = UserData.objects.get_or_create(user=user)
             user_data_serializer = UserDataSerializer(user_data, data=request.data, partial=True)
@@ -132,9 +111,6 @@ class GoalCollectionView(APIView):
                     'user_data': user_data_serializer.data
                 }, status=status.HTTP_200_OK)
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        # DEBUG statement to log errors if data is not valid
-        print(f"User serializer errors: {user_serializer.errors}")
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

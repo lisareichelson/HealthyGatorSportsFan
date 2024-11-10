@@ -9,9 +9,6 @@ const GoalCollection = () => {
     const route = useRoute();
     const currentUser = route.params as any;
 
-    // DEBUG statement
-    console.log('CurrentUser in GoalCollection:', currentUser);
-
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
 
@@ -74,7 +71,6 @@ const GoalCollection = () => {
 
 export default GoalCollection
 
-//TODO: Store goals from here into backend.
 function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
     const userData: User = { ...currentUser };
     //This is how to get the data from the currentUser object
@@ -82,8 +78,6 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 
     // Access currentWeight from the nested currentUser structure
     const currentWeight = currentUser.currentUser.currentWeight || startWeight;
-
-    console.log("current weight is : " + currentWeight);
 
     // Determine goal_type based on checkboxes
     let goalType = null;
@@ -94,9 +88,6 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     } else if (feelBetter) {
         goalType = 'feelBetter';
     }
-
-    //DEBUG statement
-    console.log("Determined goalType:", goalType);
 
     // Update goal_to_lose_weight and goal_to_feel_better accordingly
     if (goalType === 'feelBetter') {
@@ -113,13 +104,6 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         userData.goal_to_feel_better = false;
     }
 
-    // DEBUG statement
-    console.log("Updated goal_to fields:", {
-        goal_to_lose_weight: userData.goal_to_lose_weight,
-        goal_to_feel_better: userData.goal_to_feel_better
-    });
-
-
     if (loseWeight) {
         if (parseFloat(goalWeight) > parseFloat(currentWeight)) {
             Alert.alert("Current Weight cannot be less than goal weight.");
@@ -127,23 +111,13 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         }
     }
 
-        
-    /*if (loseWeight){
-        userData.goalWeight = goalWeight;
-    }*/
-
     // Convert goalWeight to a float
     let goalWeightNum = parseFloat(goalWeight);
-    // DEBUG
-    console.log("Parsed goalWeightNum:", goalWeightNum);
-
-    //DEBUG statement
-    console.log("Goal Weight before POST:", goalWeight);
 
     // Define the URL for the POST request
     const url = `http://192.168.68.124:8000/api/users/${currentUser.currentUser.userId}/goals/`;
 
-    // DEBUG statement: Log payload being sent to backend
+    // Log payload being sent to backend
     const requestBody = {
         feelBetter,
         loseWeight,
@@ -152,8 +126,6 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         goal_to_lose_weight: userData.goal_to_lose_weight,
         goal_to_feel_better: userData.goal_to_feel_better,
     };
-
-    console.log('Request Body before POST:', requestBody);
 
     // Perform the fetch operation
     fetch(url, {
