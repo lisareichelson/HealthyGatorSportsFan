@@ -22,8 +22,10 @@ class User {
     goal_to_feel_better: boolean;
     goal_to_lose_weight: boolean;
 
+    goalType?: string;
 
-    constructor(userId: number, fName: string, lName: string, bDate: string, email: string, username: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number) {
+
+    constructor(userId: number, fName: string, lName: string, bDate: string, email: string, username: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:Boolean, loseWeight: Boolean, goalWeight?: number, goalType?: string) {
         this.userId = userId;
         this.firstName = fName;
         this.lastName = lName;
@@ -39,6 +41,8 @@ class User {
 
         this.goal_to_feel_better = false;
         this.goal_to_lose_weight = false;
+
+        this.goalType = goalType;
     }
 }
 

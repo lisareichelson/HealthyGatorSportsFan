@@ -63,18 +63,21 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['weight_value']
+        fields = ['weight_value', 'goal_type']
         extra_kwargs = {
-            'weight_value': {'required': False, 'default': 0.0}
+            'weight_value': {'required': False, 'default': 0.0},
+            'goal_type': {'required': False}
         }
 
     def create(self, validated_data):
         weight_value = validated_data.get('weight_value', 0.0)
+        goal_type = validated_data.get('goal_type', None)
         return UserData.objects.create(weight_value=weight_value)
 
     def update(self, instance, validated_data):
         # Update fields when new data comes from the basicinfo.tsx screen
         instance.weight_value = validated_data.get('weight_value', instance.weight_value)
+        instance.goal_type = validated_data.get('goal_type', instance.goal_type)
         instance.save()
         return instance
     

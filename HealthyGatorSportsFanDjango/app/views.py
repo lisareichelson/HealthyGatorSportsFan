@@ -101,6 +101,10 @@ class GoalCollectionView(APIView):
         # DEBUG statement to see what data is received from the request
         print(f"Received data: {request.data}")
 
+        # Extract goal_weight and goal_type DEBUG
+        goal_weight = request.data.get('goal_weight', None)
+        goal_type = request.data.get('goal_type', None)
+
         # DEBUG statement
         print(f"Received goal_weight: {request.data.get('goal_weight')}")
 

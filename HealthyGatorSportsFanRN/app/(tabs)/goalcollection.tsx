@@ -147,8 +147,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     const requestBody = {
         feelBetter,
         loseWeight,
-        goalWeight: goalWeightNum,
-        goalType,
+        goal_weight: goalWeightNum,
+        goal_type: goalType,
         goal_to_lose_weight: userData.goal_to_lose_weight,
         goal_to_feel_better: userData.goal_to_feel_better,
     };
@@ -164,8 +164,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         body: JSON.stringify({
             feelBetter,
             loseWeight,
-            goalWeight: goalWeightNum,
-            goalType,
+            goal_weight: goalWeightNum,
+            goal_type: goalType,
             goal_to_lose_weight: userData.goal_to_lose_weight,
             goal_to_feel_better: userData.goal_to_feel_better,
         })
