@@ -2,6 +2,7 @@ import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 
 import {useNavigation, useRoute} from "@react-navigation/native";
 import User from "@/components/user";
 import {useState} from "react";
+import {Dropdown} from "react-native-element-dropdown";
 
 export default function ProfileManagement() {
     const navigation = useNavigation();
@@ -14,6 +15,40 @@ export default function ProfileManagement() {
     const [showEditName, setShowEditName] = useState(false);
     const [newFirstName, setNewFirstName] = useState('');
     const [newLastName, setNewLastName] = useState('');
+
+    const [showEditHeight, setShowEditHeight] = useState(false);
+    const [heightInch, setHeightInches] = useState('');
+    const [heightFt, setHeightFeet] = useState('');
+    const [newHeightFeet] = useState([
+        {value: '1'},
+        {value: '2'},
+        {value: '3'},
+        {value: '4'},
+        {value: '5'},
+        {value: '6'},
+        {value: '7'},
+        {value: '8'}
+    ]);
+    const [newHeightInches] = useState([
+        {value: '1'},
+        {value: '2'},
+        {value: '3'},
+        {value: '4'},
+        {value: '5'},
+        {value: '6'},
+        {value: '7'},
+        {value: '8'},
+        {value: '9'},
+        {value: '10'},
+        {value: '11'},
+        {value: '12'}
+    ]);
+
+    const [showEditWeight, setShowEditWeight] = useState(false);
+    const [newWeight, setNewWeight] = useState('');
+
+    const [showEditGender, setShowEditGender] = useState(false);
+    const [newGender, setNewGender] = useState('');
 
 
     return (
@@ -71,7 +106,8 @@ export default function ProfileManagement() {
                         onChangeText={newLast => setNewLastName(newLast)}
                     />
                 )}
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}>
+                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                                  onPress={() => setShowEditHeight(!showEditHeight)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Height
                     </Text>
@@ -83,6 +119,29 @@ export default function ProfileManagement() {
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
+                {showEditHeight && (<View style = {styles.rowHeight}>
+                    <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Feet:</Text>
+                    <Dropdown style={[styles.dropdown, {width: '30%'}]}
+                              data={newHeightFeet}
+                              labelField={"value"}
+                              valueField={"value"}
+                              accessibilityLabel="Dropdown menu for selecting height in feet"
+                              onChange={item => { setHeightFeet(item.value);}}
+                              renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
+                    ></Dropdown>
+
+                    <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Inches:</Text>
+                    <Dropdown style={[styles.dropdown, {width: '30%'}]}
+                              data={newHeightInches}
+                              labelField={"value"}
+                              valueField={"value"}
+                              accessibilityLabel="Dropdown menu for selecting additional height in inches"
+                              onChange={item => {setHeightInches(item.value);}}
+                              renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
+                    ></Dropdown>
+                </View>)}
+
+
                 <TouchableOpacity style = {styles.row} activeOpacity={0.5}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Current Weight
@@ -138,9 +197,9 @@ export default function ProfileManagement() {
             </View>
 
             <TouchableOpacity style = {[styles.confirmButton, {marginTop: 100, alignSelf: 'center'} ]} activeOpacity={0.5}
-                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, navigation) }>
+                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, navigation) }>
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
-                    Create Account
+                    Confirm Changes
                 </Text>
             </TouchableOpacity>
 
@@ -185,7 +244,7 @@ export default function ProfileManagement() {
     );
 }
 
-function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, navigation: any){
+function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: number, newInch: number, navigation: any){
     Alert.alert(
         "Confirmation",
         "Are you sure you want to make these changes?",
@@ -205,6 +264,10 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
                         currentUser.firstName = newFirstName;
                     if(newLastName != '')
                         currentUser.lastName = newLastName;
+                    if(newFt != null)
+                        currentUser.heightFeet = newFt;
+                    if(newInch != null)
+                        currentUser.heightInches = newInch;
 
                     navigation.navigate('HomePage', {currentUser} as never);
                 }
@@ -318,6 +381,11 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
         margin: 5,
     },
+    rowHeight: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-around",
+    },
     editBox:{
         borderWidth: 1,
         width: '80%',
@@ -334,6 +402,13 @@ const styles = StyleSheet.create({
         borderRadius:50,
         justifyContent: "center",
         alignItems: "center",
+    },
+    dropdown:{
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
     },
 
 });
