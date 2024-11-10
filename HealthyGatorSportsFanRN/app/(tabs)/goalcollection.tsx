@@ -115,7 +115,7 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     let goalWeightNum = parseFloat(goalWeight);
 
     // Define the URL for the POST request
-    const url = `http://192.168.68.124:8000/api/users/${currentUser.currentUser.userId}/goals/`;
+    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${currentUser.currentUser.userId}/goals/`;
 
     // Log payload being sent to backend
     const requestBody = {

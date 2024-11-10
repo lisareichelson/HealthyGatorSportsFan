@@ -179,7 +179,7 @@ function SaveAndContinue(navigation: any, userData: any, weight: number, gender:
 
     // API call to send the data to the backend
     const userId = userData.userId;
-    const url = `http://192.168.68.124:8000/api/users/${userId}/basicinfo/`;
+    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${userId}/basicinfo/`;
     
     fetch(url, {
         method: 'POST',
