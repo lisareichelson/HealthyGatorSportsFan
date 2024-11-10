@@ -3,6 +3,7 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import User from "@/components/user";
 import {useState} from "react";
 import {Dropdown} from "react-native-element-dropdown";
+import Checkbox from "expo-checkbox";
 
 export default function ProfileManagement() {
     const navigation = useNavigation();
@@ -47,9 +48,20 @@ export default function ProfileManagement() {
     const [showEditWeight, setShowEditWeight] = useState(false);
     const [newWeight, setNewWeight] = useState('');
 
+    const [genders] = useState([
+        {label: 'Male', value: 'male'},
+        {label: 'Female', value: 'female'},
+        {label: 'Other', value: 'other'}
+    ]);
     const [showEditGender, setShowEditGender] = useState(false);
     const [newGender, setNewGender] = useState('');
 
+    const [showEditGoals, setShowEditGoals] = useState(false);
+    const [feelBetter, setFeelBetter] = useState(false);
+    const [loseWeight, setLoseWeight] = useState(false);
+
+    const [showEditGoalWeight, setShowEditGoalWeight] = useState(false);
+    const [goalWeight, setGoalWeight] = useState('');
 
     return (
         <View style={styles.container}>
@@ -141,8 +153,8 @@ export default function ProfileManagement() {
                     ></Dropdown>
                 </View>)}
 
-
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}>
+                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                                  onPress={() => setShowEditWeight(!showEditWeight)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Current Weight
                     </Text>
@@ -154,7 +166,19 @@ export default function ProfileManagement() {
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}>
+                {showEditWeight &&(
+                    <TextInput
+                        style={styles.editBox}
+                        placeholder="enter a weight..."
+                        keyboardType={"numeric"}
+                        editable={true}
+                        value={newWeight}
+                        defaultValue={newWeight}
+                        onChangeText={newWeight => setNewWeight(newWeight)}
+                        returnKeyType="done"/>
+                )}
+                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                                  onPress={() => setShowEditGender(!showEditGender)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Gender
                     </Text>
@@ -166,10 +190,20 @@ export default function ProfileManagement() {
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
+                {showEditGender && (
+                    <Dropdown style={[styles.dropdown]}
+                              data={genders}
+                              labelField={"label"}
+                              valueField={"value"}
+                              accessibilityLabel="Dropdown menu for selecting gender"
+                              onChange={item => {setNewGender(item.value);}}
+                    ></Dropdown>
+                )}
                 <Text style={{fontSize: 15, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
                     Goals
                 </Text>
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}>
+                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                    onPress={() => setShowEditGoals(!showEditGoals)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Goal(s)
                     </Text>
@@ -181,7 +215,20 @@ export default function ProfileManagement() {
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}>
+                {showEditGoals && (
+                    <View style = {[styles.row, {justifyContent: 'space-evenly'}]}>
+                        <Text style={{fontSize: 10, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
+                            Feel Better:
+                        </Text>
+                        <Checkbox value={loseWeight} onValueChange={setLoseWeight} />
+                        <Text style={{fontSize: 10, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
+                            Lose Weight:
+                        </Text>
+                        <Checkbox value={feelBetter} onValueChange={setFeelBetter} />
+                    </View>
+                )}
+                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                                  onPress={() => setShowEditGoalWeight(!showEditGoalWeight)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Goal Weight
                     </Text>
@@ -193,11 +240,21 @@ export default function ProfileManagement() {
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
-
+                {showEditGoalWeight && (
+                   <TextInput
+                            style={styles.editBox}
+                            placeholder="enter a weight..."
+                            keyboardType={"numeric"}
+                            editable={true}
+                            value={goalWeight}
+                            defaultValue={goalWeight}
+                            onChangeText={newWeight => setGoalWeight(newWeight)}
+                            returnKeyType="done"/>
+                )}
             </View>
 
-            <TouchableOpacity style = {[styles.confirmButton, {marginTop: 100, alignSelf: 'center'} ]} activeOpacity={0.5}
-                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, navigation) }>
+            <TouchableOpacity style = {[styles.confirmButton, {alignSelf: 'center'} ]} activeOpacity={0.5}
+                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, newWeight, newGender, feelBetter, loseWeight, goalWeight, navigation) }>
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
                     Confirm Changes
                 </Text>
@@ -245,7 +302,11 @@ export default function ProfileManagement() {
 }
 
 //TODO: Connect changes to backend
-function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, navigation: any){
+function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, newWeight: any, newGender:any, loseWeight: any, feelBetter:any, newGoalWeight: any, navigation: any){
+    if(newGoalWeight >= currentUser.currentWeight){
+        Alert.alert("Goal weight must be less than current weight.");
+        return;
+    }
     Alert.alert(
         "Confirmation",
         "Are you sure you want to make these changes?",
@@ -265,10 +326,23 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
                         currentUser.firstName = newFirstName;
                     if(newLastName != '')
                         currentUser.lastName = newLastName;
-                    if(newFt != null)
+                    if(newFt != '')
                         currentUser.heightFeet = newFt;
-                    if(newInch != null)
+                    if(newInch != '')
                         currentUser.heightInches = newInch;
+                    if(newWeight != '')
+                        currentUser.currentWeight = newWeight;
+                    if(newGender != '')
+                        currentUser.gender = newGender;
+                    console.log(JSON.stringify(currentUser));
+                    console.log("checkbox lW: " + loseWeight);
+                    if(loseWeight != currentUser.loseWeight) //goal selection changed
+                        currentUser.loseWeight = loseWeight;
+                    if(feelBetter != currentUser.feelBetter) //goal selection changed
+                        currentUser.feelBetter = feelBetter;
+                    if(newGoalWeight != ''){
+                        currentUser.goalWeight = newGoalWeight;
+                    }
 
                     navigation.navigate('HomePage', {currentUser} as never);
                 }
@@ -362,6 +436,9 @@ const styles = StyleSheet.create({
         height: 50,
         width: 50,
     },
+    checkbox: {
+        margin: 8,
+    },
     bottomIcons:{
         justifyContent: 'center',
         borderRadius: 40,
@@ -405,11 +482,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     dropdown:{
-        height: 50,
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 8,
-        paddingHorizontal: 8,
+        width: '80%',
+        marginRight: '5%',
+        alignSelf: 'flex-end',
     },
 
 });
