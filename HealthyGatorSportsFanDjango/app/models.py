@@ -14,7 +14,7 @@ class User(models.Model):
     gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')]) # The first value is the value stored in the DB, and the second value is the label displayed on the UI
     height_feet = models.CharField(max_length=10, default="")
     height_inches = models.CharField(max_length=10, default="")
-    goal_weight = models.DecimalField(max_digits=4, decimal_places=1)  # Weight in pounds
+    goal_weight = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)  # Weight in pounds
     goal_to_lose_weight = models.BooleanField(default=False)
     goal_to_feel_better = models.BooleanField(default=False)
     password = models.CharField(max_length=128, blank=True, null=True)  # Optional if signing in with Google
