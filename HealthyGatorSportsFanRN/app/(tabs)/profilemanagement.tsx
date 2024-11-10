@@ -244,7 +244,8 @@ export default function ProfileManagement() {
     );
 }
 
-function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: number, newInch: number, navigation: any){
+//TODO: Connect changes to backend
+function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, navigation: any){
     Alert.alert(
         "Confirmation",
         "Are you sure you want to make these changes?",
