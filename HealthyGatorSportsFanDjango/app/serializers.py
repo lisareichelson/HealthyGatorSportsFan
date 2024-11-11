@@ -16,7 +16,7 @@ from .models import UserData, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight']
+        fields = ['email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
         # required fields in models.py, but these are overidden temporarily
         extra_kwargs = {
             'birthdate': {'required': False, 'default': "2000-01-01"},
@@ -25,20 +25,24 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name': {'required': False, 'default': ''},
             'height_feet': {'required': False, 'default': 0},
             'height_inches': {'required': False, 'default': 0},
-            'goal_weight': {'required': False, 'default': 0.0}
+            'goal_weight': {'required': False, 'default': 0.0},
+            'goal_to_lose_weight': {'required': False, 'default': 0.0},
+            'goal_to_feel_better': {'required': False, 'default': 0.0}
         }
 
     def create(self, validated_data):
         return User.objects.create(
             email=validated_data['email'],
+            password=validated_data['password'],
             first_name = validated_data['first_name']
             last_name = validated_data['last_name']
-            password=validated_data['password'],
             birthdate=validated_data['birthdate'],
             gender=validated_data['gender'],
             height_feet=validated_data['height_feet'],
             height_inches=validated_data['height_inches'],
-            goal_weight=validated_data['goal_weight']
+            goal_weight=validated_data['goal_weight'],
+            goal_to_lose_weight=validated_data[goal_to_lose_weight],
+            goal_to_feel_better=validated_data[goal_to_feel_better]
             # These used to be set to default for this screen
             # birthdate="2000-01-01",
             # gender=validated_data.get('gender', "Other"),

@@ -59,7 +59,7 @@ const GoalCollection = () => {
             }
 
             <TouchableOpacity style = {[styles.bottomObject, {marginTop: 150} ]} activeOpacity={0.5}
-                              onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight, currentUser)}>
+                onPress={() => confirmGoals(navigation, feelBetter, loseWeight, startWeight, goalWeight, currentUser)}>
                 <Image
                     source={require('./../../assets/images/forwardarrow.png')}
                     style={{width: 50, height: 50}}
@@ -72,14 +72,14 @@ const GoalCollection = () => {
 export default GoalCollection
 
 function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
-    const userData: User = { ...currentUser };
-    //This is how to get the data from the currentUser object
-   // console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
+
+    //const userData: User = { ...currentUser }; //This is how to get the data from the currentUser object
+    console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
 
     // Access currentWeight from the nested currentUser structure
     const currentWeight = currentUser.currentUser.currentWeight || startWeight;
 
-    // Determine goal_type based on checkboxes
+    // Determine goal_type based on checkboxes (this will be used for UserData table entry)
     let goalType = null;
     if (feelBetter && loseWeight) {
         goalType = 'both';
@@ -89,19 +89,19 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         goalType = 'feelBetter';
     }
 
-    // Update goal_to_lose_weight and goal_to_feel_better accordingly
+    // Update goal_to_lose_weight and goal_to_feel_better accordingly (This will be used for User table entry)
     if (goalType === 'feelBetter') {
-        userData.goal_to_feel_better = true;
-        userData.goal_to_lose_weight = false;
+        currentUser.goal_to_feel_better = true;
+        currentUser.goal_to_lose_weight = false;
     } else if (goalType === 'loseWeight') {
-        userData.goal_to_lose_weight = true;
-        userData.goal_to_feel_better = false;
+        currentUser.goal_to_lose_weight = true;
+        currentUser.goal_to_feel_better = false;
     } else if (goalType === 'both') {
-        userData.goal_to_lose_weight = true;
-        userData.goal_to_feel_better = true;
+        currentUser.goal_to_lose_weight = true;
+        currentUser.goal_to_feel_better = true;
     } else {
-        userData.goal_to_lose_weight = false;
-        userData.goal_to_feel_better = false;
+        currentUser.goal_to_lose_weight = false;
+        currentUser.goal_to_feel_better = false;
     }
 
     if (loseWeight) {
@@ -114,22 +114,57 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     // Convert goalWeight to a float
     let goalWeightNum = parseFloat(goalWeight);
 
-    // Define the URL for the POST request
-    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${currentUser.currentUser.userId}/goals/`;
+    //Save the variables in the user object type
+    currentUser.goal_weight = goalWeightNum
+    currentUser.goal_type = goalType 
+    // NOTE: 'goal_type' and 'currentWeight' are frontend 'User' object member variables, but belong to UserData table
+    // NOTE: 'feelBetter' and 'loseWeight' are frontend 'User' object member variables not used at all in the backend
 
-    // Log payload being sent to backend
-    const requestBody = {
-        feelBetter,
-        loseWeight,
-        goal_weight: goalWeightNum,
-        goal_type: goalType,
-        goal_to_lose_weight: userData.goal_to_lose_weight,
-        goal_to_feel_better: userData.goal_to_feel_better,
-    };
+    console.log("User info just before API call: ", currentUser)
 
-    // TODO!!!
+    // At this point we have everything we need to make the User POST call to create the account
+    const url = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint
+    fetch(url, {
+        // send the user credentials to the backend
+        method: 'POST',
+        // this is a header to tell the server to parse the request body as JSON
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // convert the data into JSON format
+        body: JSON.stringify({
+            email: currentUser.email,
+            password: currentUser.password,
+            first_name: currentUser.firstName,
+            last_name: currentUser.lastName,
+            birthdate: currentUser.birthdate.toISOString().split('T')[0],
+            gender: currentUser.gender,
+            height_feet: currentUser.heightFeet,
+            height_inches: currentUser.heightInches,
+            goal_weight: currentUser.goalWeightNum,
+            goal_to_lose_weight: currentUser.goal_to_lose_weight,
+            goal_to_feel_better: currentUser.goal_to_feel_better,
+        }),
+    })
+    // check to see what status the server sends back
+    .then(response => { // this is an arrow function that takes 'response' as an argument, like function(response)
+        if (!response.ok) {
+            throw new Error('Failed to save user account');
+        }
+        // convert the JSON back into a JavaScript object so it can be passed to the next '.then' to log the data that was saved
+        return response.json();
+    })
+    .then(data => { // 'data' is the JavaScript object that was created after parsing the JSON from the server response
+        console.log('User account saved successfully:', data);
+        navigation.navigate('HomePage', { currentUser });
+    })
+    .catch(error => {
+        console.error('Error saving data:', error);
+        Alert.alert("Failed to create account, please try again!");
+    });
+
+    // Previous URL & POST API call for credentials only; maybe we can use this for reference when updating values in the profile management screen.
     /*
-    // API call to send the data to the backend to api/users
     const url = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint to your computer IP address
     fetch(url, {
         // send the user credentials to the backend
@@ -158,9 +193,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     });
     */
 
-    // TO-DO, clean this up!
+    // Previous URL & POST API call for basic info only; maybe we can use this for reference when updating values in the profile management screen.
     /*
-    // API call to send the basic info data to the backend
     const userId = userData.userId;
     const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${userId}/basicinfo/`;
     
@@ -199,6 +233,20 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         });
     */
 
+    // Previous URL & POST API call for goals only; maybe we can use this for reference when updating values in the profile management screen.
+    /*
+    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${currentUser.currentUser.userId}/goals/`;
+
+    // Log payload being sent to backend... (what is the purpose of this?)
+    const requestBody = {
+        feelBetter,
+        loseWeight,
+        goal_weight: goalWeightNum,
+        goal_type: goalType,
+        goal_to_lose_weight: userData.goal_to_lose_weight,
+        goal_to_feel_better: userData.goal_to_feel_better,
+    };
+
     // Perform the fetch operation
     fetch(url, {
         method: 'POST',
@@ -226,6 +274,7 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         console.error('Error saving goals:', error);
         Alert.alert("Failed to save your goals. Please try again!");
     });
+    */
     
 }
 

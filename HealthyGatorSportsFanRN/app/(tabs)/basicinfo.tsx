@@ -157,9 +157,10 @@ const BasicInformationCollection = () => {
 
 export default BasicInformationCollection
 
-function SaveAndContinue(navigation: any, userData: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
+function SaveAndContinue(navigation: any, currentUser: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
+    
     //Save the variables in the user object type
-    const currentUser: User = { ...userData };
+    // const currentUser: User = { ...userData };
     currentUser.gender = gender;
     currentUser.heightFeet = heightFeet;
     currentUser.heightInches = heightInches;
