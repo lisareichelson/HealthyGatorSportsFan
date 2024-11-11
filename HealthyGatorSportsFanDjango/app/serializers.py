@@ -28,17 +28,23 @@ class UserSerializer(serializers.ModelSerializer):
             'goal_weight': {'required': False, 'default': 0.0}
         }
 
-    # Only 'email' and 'password' are required for the createcredentialsscreen.tsx screen
     def create(self, validated_data):
         return User.objects.create(
             email=validated_data['email'],
+            first_name = validated_data['first_name']
+            last_name = validated_data['last_name']
             password=validated_data['password'],
-            # These are set to default for this screen
-            birthdate="2000-01-01",
-            gender=validated_data.get('gender', "Other"),
-            height_feet=validated_data.get('height_feet', 0),
-            height_inches=validated_data.get('height_inches', 0),
-            goal_weight=validated_data.get('goal_weight', 0.0)
+            birthdate=validated_data['birthdate'],
+            gender=validated_data['gender'],
+            height_feet=validated_data['height_feet'],
+            height_inches=validated_data['height_inches'],
+            goal_weight=validated_data['goal_weight']
+            # These used to be set to default for this screen
+            # birthdate="2000-01-01",
+            # gender=validated_data.get('gender', "Other"),
+            # height_feet=validated_data.get('height_feet', 0),
+            # height_inches=validated_data.get('height_inches', 0),
+            # goal_weight=validated_data.get('goal_weight', 0.0)
         )
     
     def update(self, instance, validated_data):
