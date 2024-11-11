@@ -138,7 +138,7 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
             password: currentUser.password,
             first_name: currentUser.firstName,
             last_name: currentUser.lastName,
-            birthdate: currentUser.birthdate.toISOString().split('T')[0],
+            birthdate: currentUser.birthdate, //.toISOString().split('T')[0],
             gender: currentUser.gender,
             height_feet: currentUser.heightFeet,
             height_inches: currentUser.heightInches,
@@ -162,6 +162,7 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     .catch(error => {
         console.error('Error saving data:', error);
         Alert.alert("Failed to create account, please try again!");
+        console.log("User info at time of error: ", currentUser);
     });
 
 
