@@ -81,48 +81,16 @@ function ConfirmData(email: any, password: any, passwordConfirmed: any, navigati
         return;
     }
 
-    //Save the email and password, if valid, to the database //TODO
     console.log(email);
     console.log(password);
 
-    
-     // API call to send the data to the backend to api/users
-     const url = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint to your computer IP address
-     fetch(url, {
-         // send the user credentials to the backend
-         method: 'POST',
-         // this is a header to tell the server to parse the request body as JSON
-         headers: {
-             'Content-Type': 'application/json',
-         },
-         // convert the data into JSON format
-         body: JSON.stringify({ email, password })
-     })
-     // check to see what status the server sends back
-     .then(response => { // this is an arrow function that takes 'response' as an argument, like function(response)
-         if (!response.ok) {
-             throw new Error('Failed to save user data');
-         }
-         // convert the JSON back into a JavaScript object so it can be passed to the next '.then' to log the data that was saved
-         return response.json();
-     })
-     .then(data => { // 'data' is the JavaScript object that was created after parsing the JSON from the server response
-         console.log('Data successfully saved:', data);
-        
-         //Save everything but the password to ID user in next screen
-        const currentUser = new User(data.user_id,'','','','','','',0,0,0,false,true,0);
-        currentUser.email = email;
+    //Store user info into frontend variable to send to backend at end of account creation
+    const currentUser = new User(0,'','','','','','',0,0,0,false,true,0);
+    currentUser.email = email;
+    currentUser.password = password;
 
-        // move to the next screen.
-        navigation.navigate('BasicInfo', {currentUser} as never);
-
-     })
-     .catch(error => {
-         console.error('Error saving data:', error);
-         Alert.alert("Failed to create account, please try again!");
-     });
-
-     // moved Lisa's code to 'then(data =>)' above, so that we can have access to user_id
+    // move to the next screen.
+    navigation.navigate('BasicInfo', {currentUser} as never);
 }
 
 const styles = StyleSheet.create({
