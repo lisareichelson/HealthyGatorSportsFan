@@ -122,6 +122,7 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 
     console.log("User info just before API call: ", currentUser)
 
+    // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
     const url = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint
     fetch(url, {
@@ -162,6 +163,13 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         console.error('Error saving data:', error);
         Alert.alert("Failed to create account, please try again!");
     });
+
+
+    // TO-DO: UserData POST API call
+
+    //================================
+    // Previous API Call for reference
+    //================================
 
     // Previous URL & POST API call for credentials only; maybe we can use this for reference when updating values in the profile management screen.
     /*
