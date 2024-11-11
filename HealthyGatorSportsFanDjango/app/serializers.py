@@ -34,8 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create(
             email=validated_data['email'],
             password=validated_data['password'],
-            first_name = validated_data['first_name']
-            last_name = validated_data['last_name']
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
             birthdate=validated_data['birthdate'],
             gender=validated_data['gender'],
             height_feet=validated_data['height_feet'],
