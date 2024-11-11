@@ -158,6 +158,47 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     });
     */
 
+    // TO-DO, clean this up!
+    /*
+    // API call to send the basic info data to the backend
+    const userId = userData.userId;
+    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${userId}/basicinfo/`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            first_name: firstName,
+            last_name: lastName,
+            birthdate: birthdate.toISOString().split('T')[0],
+            gender: gender,
+            height_feet: heightFeet,
+            height_inches: heightInches,
+            weight_value: weight,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to save user data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data successfully saved:', data);
+
+            // Explicitly check and set the weight_value to currentWeight
+            if (data.weight_value !== undefined) {
+                currentUser.currentWeight = data.weight_value;
+            } 
+        })
+        .catch(error => {
+            console.error('Error saving data:', error);
+            Alert.alert("Failed to save data. Please try again!");
+        });
+    */
+
     // Perform the fetch operation
     fetch(url, {
         method: 'POST',

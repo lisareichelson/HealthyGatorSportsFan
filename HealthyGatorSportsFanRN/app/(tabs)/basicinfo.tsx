@@ -5,13 +5,11 @@ import {SetStateAction, useState} from "react";
 import User from "@/components/user";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-
 const BasicInformationCollection = () => {
     const navigation = useNavigation();
     //Used to save user info as collected
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
-    const userId = currentUser.userId;
 
     const styles = SetStyles();
     const [genders] = useState([
@@ -40,8 +38,7 @@ const BasicInformationCollection = () => {
         {value: '8'},
         {value: '9'},
         {value: '10'},
-        {value: '11'},
-        {value: '12'}
+        {value: '11'}
     ]);
     const [weight, setWeight] = useState('');
     const [heightInch, setHeightInches] = useState('');
@@ -145,7 +142,7 @@ const BasicInformationCollection = () => {
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
+          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
@@ -161,62 +158,28 @@ const BasicInformationCollection = () => {
 export default BasicInformationCollection
 
 function SaveAndContinue(navigation: any, userData: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
-     //Save the variables in the user object type
-     const currentUser: User = { ...userData };
-     currentUser.gender = gender;
-     currentUser.heightFeet = heightFeet;
-     currentUser.heightInches = heightInches;
-     currentUser.firstName = firstName;
-     currentUser.lastName = lastName;
-     currentUser.birthDate = JSON.stringify(birthdate);
-     currentUser.currentWeight = weight;
+    //Save the variables in the user object type
+    const currentUser: User = { ...userData };
+    currentUser.gender = gender;
+    currentUser.heightFeet = heightFeet;
+    currentUser.heightInches = heightInches;
+    currentUser.firstName = firstName;
+    currentUser.lastName = lastName;
+    currentUser.birthDate = JSON.stringify(birthdate);
+    currentUser.currentWeight = weight;
 
+    console.log("User info so far: ", currentUser)
+
+    // DELETE???
      // save to database
-     const userDataCurrentWeight = {
-      user: currentUser.userId,
-      weight_value: weight,
-  };
+    // const userDataCurrentWeight = {
+    //   user: currentUser.userId,
+    //   weight_value: weight,
+    // };
 
-    // API call to send the data to the backend
-    const userId = userData.userId;
-    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${userId}/basicinfo/`;
-    
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            first_name: firstName,
-            last_name: lastName,
-            birthdate: birthdate.toISOString().split('T')[0],
-            gender: gender,
-            height_feet: heightFeet,
-            height_inches: heightInches,
-            weight_value: weight,
-        }),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to save user data');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Data successfully saved:', data);
+    // Continue to the next screen upon successful data submission
+    navigation.navigate('GoalCollection', { currentUser } as never);
 
-            // Explicitly check and set the weight_value to currentWeight
-            if (data.weight_value !== undefined) {
-                currentUser.currentWeight = data.weight_value;
-            } 
-
-            // Continue to the next screen upon successful data submission
-            navigation.navigate('GoalCollection', { currentUser } as never);
-        })
-        .catch(error => {
-            console.error('Error saving data:', error);
-            Alert.alert("Failed to save data. Please try again!");
-        });
 }
 
 function SetStyles() : any{
