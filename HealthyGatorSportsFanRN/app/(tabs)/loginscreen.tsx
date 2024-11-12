@@ -44,19 +44,21 @@ function ConfirmData(username: any, password: any, navigation: any){
     //Eventually design a backup email verification system for forgotten passwords.
 
     //TODO: Grab other needed information (from backend) here before navigating to the homepage
-    const currentUser = new User('','','','','','',0,0,0,false,true,0);
-    currentUser.username = username;
+    const currentUser = new User(1,'','','','','','',0,0,0, false,true,0, "both");
+    //currentUser.username = username;
 
     //TODO: REMOVE ME AFTER TESTING
     if ((username == "debug" || username == "Debug") && (password == "debug" || password == "Debug")){
         //For debug mode, use these default user data fields:
         currentUser.firstName = 'Lisa';
         currentUser.lastName = 'Reichelson';
+        currentUser.password = "Debug";
         currentUser.gender = 'female';
         currentUser.heightInches = 1;
         currentUser.heightFeet = 5;
         currentUser.currentWeight = 120;
         currentUser.goalWeight = 115;
+        currentUser.goalType = "both";
         currentUser.feelBetter = true;
         currentUser.loseWeight = true;
         currentUser.email = username;
