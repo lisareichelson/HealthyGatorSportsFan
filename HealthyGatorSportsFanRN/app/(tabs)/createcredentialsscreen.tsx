@@ -89,7 +89,7 @@ function ConfirmData(email: any, password: any, passwordConfirmed: any, navigati
     currentUser.email = email;
     currentUser.password = password;
 
-    // move to the next screen.
+    // move to the next screen
     navigation.navigate('BasicInfo', {currentUser} as never);
 }
 

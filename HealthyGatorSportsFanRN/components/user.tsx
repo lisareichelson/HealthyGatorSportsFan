@@ -43,6 +43,12 @@ class User {
 
         this.goalType = goalType;
     }
+
+    //Used to solve nesting issues within screens. Essentially a copy constructor.
+    cloneUser(){
+        return new User(this.firstName, this.lastName, this.birthDate, this.email, this.gender, this.heightFeet, this.heightInches, this.currentWeight, this.feelBetter, this.loseWeight, this.goalWeight, this.goal_to_feel_better, this.goal_to_lose_weight, this.goalType);
+    }
+
 }
 
 export default User;
