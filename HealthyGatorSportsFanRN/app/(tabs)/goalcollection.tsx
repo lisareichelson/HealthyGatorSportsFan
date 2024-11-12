@@ -162,6 +162,7 @@ function addNewUser(navigation: any, currentUser: any){
         currentUser.userId = data.user_id;
         console.log("UserId before function = ", currentUser.userId) // TO DELETE
         addNewUserInitialProgress(navigation, currentUser);
+        navigation.navigate('HomePage', { currentUser }); // TO DELETE! This is here for troubleshooting only. You should only go to the home page upon 2 successful API calls
     })
     .catch(error => {
         console.error('Error saving data:', error);
