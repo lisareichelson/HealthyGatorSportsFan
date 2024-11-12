@@ -10,6 +10,8 @@ const BasicInformationCollection = () => {
     //Used to save user info as collected
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
+    console.log("thisCurrentUser.email in basic info tab: ", currentUser.email)
+    
 
     const styles = SetStyles();
     const [genders] = useState([
@@ -166,7 +168,7 @@ function SaveAndContinue(navigation: any, currentUser: any, weight: number, gend
     currentUser.heightInches = heightInches;
     currentUser.firstName = firstName;
     currentUser.lastName = lastName;
-    currentUser.birthDate = JSON.stringify(birthdate);
+    currentUser.birthDate = birthdate.toISOString().split('T')[0]; //JSON.stringify(birthdate.toISOString().split('T')[0]);
     currentUser.currentWeight = weight;
 
     console.log("User info so far: ", currentUser)

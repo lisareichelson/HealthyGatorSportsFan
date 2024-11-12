@@ -7,13 +7,17 @@ import User from "@/components/user";
 const GoalCollection = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const currentUser = route.params as any;
+    //const currentUser = route.params as any;
+    const { currentUser } = route.params as { currentUser: any };
+    console.log("thisCurrentUser.email: in goalcollection tab: ", currentUser.email)
 
     const [feelBetter, setFeelBetter] = useState(false);
     const [loseWeight, setLoseWeight] = useState(false);
 
     // startWeight will automatically get initialized to the currentWeight (which is fetched from weight_value).
+    console.log("currentUser.currentWeight before setting startWeight: ", currentUser.currentWeight)
     const [startWeight, setStartWeight] = useState(currentUser.currentWeight || '');
+    console.log("startWeight after setting start weight: ", startWeight)
 
     const [goalWeight, setGoalWeight] = useState('');
 
@@ -73,14 +77,17 @@ export default GoalCollection
 
 function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWeight:any, goalWeight:any, currentUser: any){
 
-    //const userData: User = { ...currentUser }; //This is how to get the data from the currentUser object
-    console.log(JSON.stringify(currentUser) + "/n" + currentUser.currentUser.firstName);
+    const thisCurrentUser: User = { ...currentUser }; //This is how to get the data from the currentUser object
+    console.log("currentUser.firstName: ", currentUser.firstName);
+    //console.log(JSON.stringify(currentUser) + "/n" + currentUser.firstName);
 
     // Access currentWeight from the nested currentUser structure
-    const currentWeight = currentUser.currentUser.currentWeight || startWeight;
+    console.log("currentUser.currentWeight: ", currentUser.currentWeight)
+    const currentWeight = currentUser.currentWeight || startWeight;
+    console.log("startWeight: ", startWeight)
 
     // Determine goal_type based on checkboxes (this will be used for UserData table entry)
-    let goalType = null;
+    let goalType = '';
     if (feelBetter && loseWeight) {
         goalType = 'both';
     } else if (loseWeight) {
@@ -115,12 +122,29 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     let goalWeightNum = parseFloat(goalWeight);
 
     //Save the variables in the user object type
-    currentUser.goal_weight = goalWeightNum
-    currentUser.goal_type = goalType 
+    currentUser.goalWeight = goalWeightNum
+    currentUser.goalType = goalType 
     // NOTE: 'goal_type' and 'currentWeight' are frontend 'User' object member variables, but belong to UserData table
     // NOTE: 'feelBetter' and 'loseWeight' are frontend 'User' object member variables not used at all in the backend
 
     console.log("User info just before API call: ", currentUser)
+    console.log("currentUser.email just before API call: ", currentUser.email)
+    console.log("currentUser.firstName just before API call: ", currentUser.firstName)
+    console.log("currentUser.birthDate just before API call: ", currentUser.birthDate)
+    console.log("JSON.stringify(currentUser.birthdate) just before API call: ", JSON.stringify(currentUser.birthDate))
+    console.log("JSON STRING: ")
+    console.log(JSON.stringify({
+        email: currentUser.email,
+        password: currentUser.password,
+        first_name: currentUser.firstName,
+        last_name: currentUser.lastName,
+        birthdate: currentUser.birthDate,
+        gender: currentUser.gender,
+        height_feet: currentUser.heightFeet,
+        height_inches: currentUser.heightInches,
+        goal_weight: currentUser.goalWeight,
+        goal_to_lose_weight: currentUser.goal_to_lose_weight,
+        goal_to_feel_better: currentUser.goal_to_feel_better,}, function(k, v) { return v === undefined ? null : v; }))
 
     // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
@@ -138,11 +162,11 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
             password: currentUser.password,
             first_name: currentUser.firstName,
             last_name: currentUser.lastName,
-            birthdate: currentUser.birthdate, //.toISOString().split('T')[0],
+            birthdate: currentUser.birthDate, // "2000-01-01", 
             gender: currentUser.gender,
             height_feet: currentUser.heightFeet,
             height_inches: currentUser.heightInches,
-            goal_weight: currentUser.goalWeightNum,
+            goal_weight: currentUser.goalWeight,
             goal_to_lose_weight: currentUser.goal_to_lose_weight,
             goal_to_feel_better: currentUser.goal_to_feel_better,
         }),

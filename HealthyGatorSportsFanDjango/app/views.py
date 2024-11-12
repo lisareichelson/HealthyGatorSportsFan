@@ -54,6 +54,7 @@ def index(request):
 
 # API view to handle POST requests for data sent from the front-end (createcredentialsscreen.tsx)
 class CreateUserView(APIView):
+    logging.warning('In views.py CreateUserView')
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

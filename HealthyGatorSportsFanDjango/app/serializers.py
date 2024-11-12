@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import UserData, User
+import logging
 
 # Serializes models to JSON for the front end
 # Deserializes and validates data from the front end, then saves it to the database
@@ -31,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        logging.warning('In serializer, Creating user')
         return User.objects.create(
             email=validated_data['email'],
             password=validated_data['password'],
@@ -41,8 +43,8 @@ class UserSerializer(serializers.ModelSerializer):
             height_feet=validated_data['height_feet'],
             height_inches=validated_data['height_inches'],
             goal_weight=validated_data['goal_weight'],
-            goal_to_lose_weight=validated_data[goal_to_lose_weight],
-            goal_to_feel_better=validated_data[goal_to_feel_better]
+            goal_to_lose_weight=validated_data['goal_to_lose_weight'],
+            goal_to_feel_better=validated_data['goal_to_feel_better']
             # These used to be set to default for this screen
             # birthdate="2000-01-01",
             # gender=validated_data.get('gender', "Other"),
