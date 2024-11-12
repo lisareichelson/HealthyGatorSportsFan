@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView
+from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
@@ -30,6 +30,7 @@ urlpatterns = [
 
     # API endpoints for app
     path('api/users/', CreateUserView.as_view(), name='user-create'), # endpoint for user creation screen
+    path('api/users/<int:user_id>/recordData/', CreateUserDataView.as_view(), name='user-record-data'),
     path('api/users/<int:user_id>/basicinfo/', BasicInfoView.as_view(), name='user-basicinfo'),
     path('api/users/<int:user_id>/goals/', GoalCollectionView.as_view(), name='user-goals'),
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),

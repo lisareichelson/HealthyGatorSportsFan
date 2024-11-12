@@ -32,7 +32,6 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        logging.warning('In serializer, Creating user')
         return User.objects.create(
             email=validated_data['email'],
             password=validated_data['password'],
@@ -69,21 +68,28 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['weight_value', 'goal_type']
+        fields = ['goal_type', 'weight_value', 'feel_better_value']
         extra_kwargs = {
+            'goal_type': {'required': False},
             'weight_value': {'required': False, 'default': 0.0},
-            'goal_type': {'required': False}
+            'feel_better_value': {'required': False, 'default': 0.0}
         }
 
     def create(self, validated_data):
-        weight_value = validated_data.get('weight_value', 0.0)
-        goal_type = validated_data.get('goal_type', None)
-        return UserData.objects.create(weight_value=weight_value)
+        return UserData.objects.create(
+            goal_type=validated_data['goal_type'],
+            weight_value=validated_data['weight_value'],
+            feel_better_value=validated_data['feel_better_value'],
+        )
+        # goal_type = validated_data.get('goal_type', None)
+        # weight_value = validated_data.get('weight_value', 0.0)
+        # feel_better_value = validated_data.get('feel_better_value', 0.0)
 
     def update(self, instance, validated_data):
         # Update fields when new data comes from the basicinfo.tsx screen
-        instance.weight_value = validated_data.get('weight_value', instance.weight_value)
         instance.goal_type = validated_data.get('goal_type', instance.goal_type)
+        instance.weight_value = validated_data.get('weight_value', instance.weight_value)
+        instance.feel_better_value = validated_data.get('weight_value', instance.feel_better_value)
         instance.save()
         return instance
     

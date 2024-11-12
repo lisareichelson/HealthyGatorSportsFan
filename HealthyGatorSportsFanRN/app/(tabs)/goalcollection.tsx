@@ -118,10 +118,15 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     currentUser.goalType = goalType 
     // NOTE: 'goal_type' and 'currentWeight' are frontend 'User' object member variables, but belong to UserData table
 
+    addNewUser(navigation, currentUser);
+    
+}
+
+function addNewUser(navigation: any, currentUser: any){
     // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
-    const url = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint
-    fetch(url, {
+    const createUserUrl = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint
+    fetch(createUserUrl, {
         // send the user credentials to the backend
         method: 'POST',
         // this is a header to tell the server to parse the request body as JSON
@@ -153,15 +158,88 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     })
     .then(data => { // 'data' is the JavaScript object that was created after parsing the JSON from the server response
         console.log('User account saved successfully:', data);
-        navigation.navigate('HomePage', { currentUser });
+        console.log('data.user_id:', data.user_id); // TO DELETE
+        currentUser.userId = data.user_id;
+        console.log("UserId before function = ", currentUser.userId) // TO DELETE
+        addNewUserInitialProgress(navigation, currentUser);
     })
     .catch(error => {
         console.error('Error saving data:', error);
         Alert.alert("Failed to create account, please try again!");
     });
+}
+
+function addNewUserInitialProgress(navigation: any, currentUser: any){
+        // UserData POST API call
+        console.log("UserID = ", currentUser.userId) // TO DELETE
+        const createUserDataUrl = `https://normal-elegant-corgi.ngrok-free.app/api/users/${currentUser.userId}/recordData/`;
+        console.log("JSON:") // TO DELETE
+        console.log(JSON.stringify({
+            goal_type: currentUser.goalType,
+            weight_value: currentUser.currentWeight,
+            feel_better_value: 3
+        })) // TO DELETE
+    
+        fetch(createUserDataUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                goal_type: currentUser.goalType,
+                weight_value: currentUser.currentWeight,
+                feel_better_value: 3
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to save your goal progress.');
+            return response.json();
+        })
+        .then(data => {
+            console.log('Goal progress successfully saved:', data);
+            navigation.navigate('HomePage', { currentUser });
+        })
+        .catch(error => {
+            console.error('Error saving goal progress:', error);
+            Alert.alert("Failed to save your goals. Please try again!");
+        });
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: "center"
+    },
+    checkbox: {
+        margin: 8,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-around",
+        height: 40,
+        width: 200,
+        borderColor: 'gray',
+        borderWidth: 1.5,
+        borderRadius: 10,
+    },
+    weightBox:{
+        borderWidth: 1,
+        height: 30,
+    },
+    bottomObject: {
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 30,
+        alignSelf: 'flex-end',
+        padding: 20
+    },
+});
 
 
-    // TO-DO: UserData POST API call
+
 
     //================================
     // Previous API Call for reference
@@ -279,38 +357,3 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         Alert.alert("Failed to save your goals. Please try again!");
     });
     */
-    
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: "center"
-    },
-    checkbox: {
-        margin: 8,
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: "space-around",
-        height: 40,
-        width: 200,
-        borderColor: 'gray',
-        borderWidth: 1.5,
-        borderRadius: 10,
-    },
-    weightBox:{
-        borderWidth: 1,
-        height: 30,
-    },
-    bottomObject: {
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 30,
-        alignSelf: 'flex-end',
-        padding: 20
-    },
-});

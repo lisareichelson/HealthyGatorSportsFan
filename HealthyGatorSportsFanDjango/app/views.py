@@ -52,9 +52,8 @@ def index(request):
     }
     return render(request, "index.html", context)
 
-# API view to handle POST requests for data sent from the front-end (createcredentialsscreen.tsx)
+# API view to handle POST requests for user creation
 class CreateUserView(APIView):
-    logging.warning('In views.py CreateUserView')
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -64,6 +63,23 @@ class CreateUserView(APIView):
             response_data.update(serializer.data)
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# API view to handle POST requests for user data creation
+class CreateUserDataView(APIView):
+    def post(self, request, user_id):
+        # Retrieve the user by ID
+        user = User.objects.get(pk=user_id) # pk is primary key
+        user_serializer = UserSerializer(user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            user_data = UserData.objects.get_or_create(user=user)
+            user_data_serializer = UserDataSerializer(user_data, data=request.data, partial=True)
+            if user_data_serializer.is_valid():
+                userData = user_data_serializer.save()
+                response_data = {'data_id': userData.data_id}
+                response_data.update(user_data_serializer.data)
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 # API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
 class BasicInfoView(APIView):
