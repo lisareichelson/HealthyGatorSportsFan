@@ -89,19 +89,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     }
 
     // Update goal_to_lose_weight and goal_to_feel_better accordingly (This will be used for User table entry)
-    if (goalType === 'feelBetter') {
-        currentUser.goal_to_feel_better = true;
-        currentUser.goal_to_lose_weight = false;
-    } else if (goalType === 'loseWeight') {
-        currentUser.goal_to_lose_weight = true;
-        currentUser.goal_to_feel_better = false;
-    } else if (goalType === 'both') {
-        currentUser.goal_to_lose_weight = true;
-        currentUser.goal_to_feel_better = true;
-    } else {
-        currentUser.goal_to_lose_weight = false;
-        currentUser.goal_to_feel_better = false;
-    }
+    currentUser.goal_to_feel_better = goalType === 'feelBetter' || goalType === 'both';
+    currentUser.goal_to_lose_weight = goalType === 'loseWeight' || goalType === 'both';
 
     if (loseWeight) {
         if (parseFloat(goalWeight) > parseFloat(currentWeight)) {
