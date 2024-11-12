@@ -81,8 +81,8 @@ function ConfirmData(email: any, password: any, passwordConfirmed: any, navigati
         return;
     }
 
-    console.log(email);
-    console.log(password);
+    console.log("Email: ", email);
+    console.log("Password: ",password);
 
     //Store user info into frontend variable to send to backend at end of account creation
     const currentUser = new User(0,'','','','','','',0,0,0,false,true,0);

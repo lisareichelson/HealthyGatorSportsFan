@@ -10,8 +10,6 @@ const BasicInformationCollection = () => {
     //Used to save user info as collected
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
-    console.log("thisCurrentUser.email in basic info tab: ", currentUser.email)
-    
 
     const styles = SetStyles();
     const [genders] = useState([
@@ -171,14 +169,13 @@ function SaveAndContinue(navigation: any, currentUser: any, weight: number, gend
     currentUser.birthDate = birthdate.toISOString().split('T')[0]; //JSON.stringify(birthdate.toISOString().split('T')[0]);
     currentUser.currentWeight = weight;
 
-    console.log("User info so far: ", currentUser)
-
-    // DELETE???
-     // save to database
-    // const userDataCurrentWeight = {
-    //   user: currentUser.userId,
-    //   weight_value: weight,
-    // };
+    console.log("First name: ", currentUser.firstName);
+    console.log("Last name: ", currentUser.lastName);
+    console.log("Birth date: ", currentUser.birthDate);
+    console.log("Gender: ", currentUser.gender);
+    console.log("Height in feet: ", currentUser.heightFeet);
+    console.log("Height in inches: ", currentUser.heightInches);
+    console.log("Weight: ", currentUser.currentWeight);
 
     // Continue to the next screen upon successful data submission
     navigation.navigate('GoalCollection', { currentUser } as never);
