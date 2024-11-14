@@ -10,6 +10,8 @@ import CreateCredentials from "@/app/(tabs)/createcredentialsscreen";
 import HomePage from "@/app/(tabs)/homepage";
 import GoalCollection from "@/app/(tabs)/goalcollection";
 import NotificationsPage from "@/app/(tabs)/notifications";
+import GameSchedule from "@/app/(tabs)/gameschedule";
+import ProfileManagement from "@/app/(tabs)/profilemanagement";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +20,6 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-      <NavigationContainer independent={true}>
           <Stack.Navigator>
               <Stack.Screen
                   name="CreateOrSignIn"
@@ -33,6 +34,16 @@ export default function TabLayout() {
               <Stack.Screen
                   name="HomePage"
                   component={HomePage}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="GameSchedule"
+                  component={GameSchedule}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="ProfileManagement"
+                  component={ProfileManagement}
                   options={{headerShown: false}}
               />
               <Stack.Screen
@@ -61,7 +72,6 @@ export default function TabLayout() {
                   options={{headerShown: false}}
               />
           </Stack.Navigator>
-      </NavigationContainer>
    /* <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
