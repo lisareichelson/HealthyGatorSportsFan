@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--7brl&&mqp0y=9%ae82(02f)74p8hl7+d^1obwvrgu0=&b^(k*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app']
 
 
 # Application definition
@@ -83,8 +83,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'healthygatorsportsfan',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'amy',
+        'PASSWORD': 'amy',
     }
 }
 
@@ -132,5 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://b862-184-185-222-16.ngrok-free.app',
-    'https://normal-elegant-corgi.ngrok-free.app'
+    'https://normal-elegant-corgi.ngrok-free.app',
+    'https://sawfish-premium-unlikely.ngrok-free.app'
 ]
