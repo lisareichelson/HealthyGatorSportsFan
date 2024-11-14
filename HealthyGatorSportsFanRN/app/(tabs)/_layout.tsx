@@ -20,7 +20,6 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-      <NavigationContainer independent={true}>
           <Stack.Navigator>
               <Stack.Screen
                   name="CreateOrSignIn"
@@ -73,7 +72,6 @@ export default function TabLayout() {
                   options={{headerShown: false}}
               />
           </Stack.Navigator>
-      </NavigationContainer>
    /* <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
