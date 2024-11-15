@@ -137,6 +137,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Directory where Django's collectstatic command gathers all static files (CSS, JS, images)
+# Heroku requires this for serving static files in production.
+# All static assets are collected into one location before deployment.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # HealthyGatorSportsFanDjango/staticfiles
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
