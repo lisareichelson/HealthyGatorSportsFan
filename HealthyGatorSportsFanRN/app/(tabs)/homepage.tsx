@@ -8,8 +8,10 @@ import User from "@/components/user";
 export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
-    const user: any = route.params;
-    const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
+    const { currentUser } = route.params as { currentUser: any };
+
+    //const user: any = route.params;
+    //const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
     //console.log("User Data:" + JSON.stringify(currentUser));
 
     let currentOpponent = GetCurrentOpponentName();
@@ -87,7 +89,7 @@ export default function HomePage() {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('HomePage' as never) }>
+                                  onPress={() => NavigateToProcessLogging(currentUser, navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/plus.png')}
                         style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
@@ -121,6 +123,9 @@ function NavigateToNotifications(currentUser:any, navigation:any){
 }
 function NavigateToProfileManagement(currentUser:any, navigation:any){
     navigation.navigate('ProfileManagement', {currentUser} as never)
+}
+function NavigateToProcessLogging(currentUser:any, navigation:any){
+    navigation.navigate('ProcessLogging', {currentUser} as never)
 }
 
 function LogoutPopup(navigation: any){
