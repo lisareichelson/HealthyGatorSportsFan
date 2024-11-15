@@ -9,12 +9,19 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+# For accessing environment variables
+import os
 
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Use the PORT environment variable set by Heroku.
+# Gunicorn (see Procfile) uses the dynamic port assigned by Heroku, or defaults to 8000 if PORT is not set.
+# Running 'python manage.py runserver 0.0.0.0:8000' explicitly sets the port for local testing,
+# while 'python manage.py runserver' defaults to the fallback port (8000).
+PORT = os.getenv('PORT', '8000')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -25,7 +32,7 @@ SECRET_KEY = 'django-insecure--7brl&&mqp0y=9%ae82(02f)74p8hl7+d^1obwvrgu0=&b^(k*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app']
+ALLOWED_HOSTS = ['healthygatorsportsfan.herokuapp.com','127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app']
 
 
 # Application definition
