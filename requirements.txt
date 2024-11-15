@@ -15,6 +15,7 @@ psycopg-binary==3.2.3
 psycopg2==2.9.9
 pydantic==1.10.19
 python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
 pytz==2024.2
 requests==2.32.3
 six==1.16.0
