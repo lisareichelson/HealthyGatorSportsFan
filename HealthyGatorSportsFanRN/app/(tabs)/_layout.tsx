@@ -12,6 +12,7 @@ import GoalCollection from "@/app/(tabs)/goalcollection";
 import NotificationsPage from "@/app/(tabs)/notifications";
 import GameSchedule from "@/app/(tabs)/gameschedule";
 import ProfileManagement from "@/app/(tabs)/profilemanagement";
+import ProcessLogging from "@/app/(tabs)/progresslogging";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,11 @@ export default function TabLayout() {
               <Stack.Screen
                   name="GameSchedule"
                   component={GameSchedule}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="ProcessLogging"
+                  component={ProcessLogging}
                   options={{headerShown: false}}
               />
               <Stack.Screen
