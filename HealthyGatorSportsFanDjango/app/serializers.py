@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserData, User
+from .models import UserData, User, NotificationData
 import logging
 
 # Serializes models to JSON for the front end
@@ -93,5 +93,8 @@ class UserDataSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-# ToDo
 # Serializer for NotificationData
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotificationData
+        fields = '__all__'  # Or specify the fields you want to include

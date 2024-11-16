@@ -50,6 +50,7 @@ function ConfirmData(username: any, password: any, navigation: any){
     //TODO: REMOVE ME AFTER TESTING
     if ((username == "debug" || username == "Debug") && (password == "debug" || password == "Debug")){
         //For debug mode, use these default user data fields:
+        currentUser.userId = 54;
         currentUser.firstName = 'Lisa';
         currentUser.lastName = 'Reichelson';
         currentUser.password = "Debug";

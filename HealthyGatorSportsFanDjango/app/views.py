@@ -2,8 +2,8 @@ from django.shortcuts import render
 from .models import User, UserData, NotificationData
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from .serializers import UserSerializer, UserDataSerializer
+from rest_framework import status, generics
+from .serializers import UserSerializer, UserDataSerializer, NotificationSerializer
 import os
 import cfbd
 import pytz
@@ -128,6 +128,13 @@ class GoalCollectionView(APIView):
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# API view to handle GET requests for all notifications for a userID  
+class NotificationList(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        return NotificationData.objects.filter(user_id=user_id)  # Adjust based on your model's field
 
 # class SendNotificationView(APIView):
 #     def post(self, request):
