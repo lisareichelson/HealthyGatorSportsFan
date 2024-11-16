@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from celery.schedules import crontab, schedule
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure--7brl&&mqp0y=9%ae82(02f)74p8hl7+d^1obwvrgu0=&b^(k*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app', '4884-76-33-214-141.ngrok-free.app']
 
 
 # Application definition
@@ -83,8 +85,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'healthygatorsportsfan',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        #'USER': 'postgres',
+        #'PASSWORD': 'postgres',
     }
 }
 
@@ -132,5 +134,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://b862-184-185-222-16.ngrok-free.app',
-    'https://normal-elegant-corgi.ngrok-free.app'
+    'https://normal-elegant-corgi.ngrok-free.app',
+    'https://4884-76-33-214-141.ngrok-free.app',
 ]
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+CELERY_BEAT_SCHEDULE = {
+    'poll-cfbd-every-10-seconds': {
+        'task': 'app.tasks.poll_cfbd_task',
+        'schedule': schedule(10.0),  # 10 seconds
+    },
+}

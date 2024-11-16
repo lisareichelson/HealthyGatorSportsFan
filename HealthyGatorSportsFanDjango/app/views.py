@@ -9,9 +9,10 @@ import cfbd
 import pytz
 from django.http import JsonResponse
 from datetime import date, datetime
-from .utils import send_push_notification_next_game
+from .utils import send_push_notification_next_game, check_game_status
 from django.views.decorators.csrf import csrf_exempt
-
+from .management.commands import poll_cfbd
+from .management.commands.poll_cfbd import Command
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -212,11 +213,15 @@ def poll_cfbd_view(request):
         response = {"message": "No upcoming games found."}
         message = response["message"]
     push_token = os.getenv('EXPO_PUSH_TOKEN')
+    game_status = check_game_status(apiInstance)
+    poll_cfbd.send_notification(game_status)
+    print(game_status)
     if push_token:
         try:
             send_push_notification_next_game(push_token, message)
         except Exception as e:
             print(f"Error sending push notification: {e}")
+
     return JsonResponse(response)
 #class GetGameNotificationView(APIView):
 
