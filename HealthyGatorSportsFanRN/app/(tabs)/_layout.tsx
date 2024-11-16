@@ -18,50 +18,48 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-      <NavigationContainer independent={true}>
-          <Stack.Navigator>
-              <Stack.Screen
-                  name="CreateOrSignIn"
-                  component={CreateOrSignIn}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="WelcomeScreen"
-                  component={WelcomeScreen}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="HomePage"
-                  component={HomePage}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="LogInScreen"
-                  component={LogInScreen}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="CreateCredentialsScreen"
-                  component={CreateCredentials}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="BasicInfo"
-                  component={BasicInformationCollection}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="GoalCollection"
-                  component={GoalCollection}
-                  options={{headerShown: false}}
-              />
-              <Stack.Screen
-                  name="NotificationsPage"
-                  component={NotificationsPage}
-                  options={{headerShown: false}}
-              />
-          </Stack.Navigator>
-      </NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen
+                name="CreateOrSignIn"
+                component={CreateOrSignIn}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="WelcomeScreen"
+                component={WelcomeScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="HomePage"
+                component={HomePage}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="LogInScreen"
+                component={LogInScreen}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="CreateCredentialsScreen"
+                component={CreateCredentials}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="BasicInfo"
+                component={BasicInformationCollection}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="GoalCollection"
+                component={GoalCollection}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="NotificationsPage"
+                component={NotificationsPage}
+                options={{headerShown: false}}
+            />
+        </Stack.Navigator>
    /* <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
