@@ -38,7 +38,7 @@ export default function NotificationsPage() {
 
     const handlePollCFBD = async () => {
         try {
-          const response = await fetch('https://sawfish-premium-unlikely.ngrok-free.app/poll-cfbd/', {
+          const response = await fetch('https://healthygatorsportsfan.herokuapp.com/poll-cfbd/', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
