@@ -31,13 +31,21 @@ const NotificationsPage = ({ userId }: { userId: number }) => {
         fetchNotifications();
     }, [userId]);
 
-    console.log('notificationDatas (raw API response):', notificationDatas);
+    
+    // TO DELETE: This was used for print debugging:
+    //console.log('notificationDatas (raw API response):', notificationDatas);
+    
     const notificationList = notificationDatas.map(singleNotification => {
         return new NotificationData(singleNotification.notification_id, singleNotification.user, singleNotification.notification_title, singleNotification.notification_message, singleNotification.timestamp, singleNotification.read_status);
     });
+
+    // TO DELETE: This was used for print debugging:
+    /*
     notificationList.forEach((obj, index) => {
         console.log(`Notification ${index + 1} from list:`, obj);
     });
+    */
+    
 
     // The below code is for the "Press To Send Notification" button (frontend notification call from hardcoded strings)
     const [expoPushToken, setExpoPushToken] = useState('');
