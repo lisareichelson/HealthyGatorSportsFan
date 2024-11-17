@@ -1,51 +1,20 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Button, Platform, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Button, Platform, FlatList, ScrollView, Alert} from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import NotificationData from "@/components/notificationdata";
 
-const NotificationsPage = ({ userId }: { userId: number }) => {
+const NotificationsPage = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
 
-    // The below code is for getting Notifications
-    const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            try {
-                const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${currentUser.userId}/`);
-                const data = await response.json();
-                setNotificationDatas(data);
-                console.log('data:', data);
-            } catch (error) {
-                console.error('Error fetching notifications:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchNotifications();
-    }, [userId]);
-
+    const [newTitle, setNewTitle] = useState('');
+    const [newMessage, setNewMessage] = useState('');
     
-    // TO DELETE: This was used for print debugging:
-    //console.log('notificationDatas (raw API response):', notificationDatas);
-    
-    const notificationList = notificationDatas.map(singleNotification => {
-        return new NotificationData(singleNotification.notification_id, singleNotification.user, singleNotification.notification_title, singleNotification.notification_message, singleNotification.timestamp, singleNotification.read_status);
-    });
-
-    // TO DELETE: This was used for print debugging:
-    /*
-    notificationList.forEach((obj, index) => {
-        console.log(`Notification ${index + 1} from list:`, obj);
-    });
-    */
-    
+    const notificationList = getAllNotificationsForUser(currentUser.userId);
 
     // The below code is for the "Press To Send Notification" button (frontend notification call from hardcoded strings)
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -72,10 +41,6 @@ const NotificationsPage = ({ userId }: { userId: number }) => {
                 Notifications.removeNotificationSubscription(responseListener.current);
         };
     }, []);
-
-    if (loading) {
-        return <Text>Loading...</Text>;
-    }
 
     // The below code is for the "Get next game info" button (backend notification call from cfbd api)
     const handlePollCFBD = async () => {
@@ -128,22 +93,49 @@ const NotificationsPage = ({ userId }: { userId: number }) => {
                 </View>
             </View>
 
+            <View style={styles.buttonContainer}>
+                <TextInput
+                    style={styles.editBox}
+                    placeholder="Title"
+                    editable={true}
+                    value={newTitle}
+                    defaultValue={"TEST TITLE"}
+                    onChangeText={newTitle => setNewTitle(newTitle)}
+                />
+                <TextInput
+                    style={styles.editBox}
+                    placeholder="Message"
+                    editable={true}
+                    value={newMessage}
+                    defaultValue={"TEST MESSAGE"}
+                    onChangeText={newMessage => setNewMessage(newMessage)}
+                />
+            </View>
+            
+            <TouchableOpacity style={styles.button} onPress={() => createNotification(currentUser.userId, newTitle, newMessage)}>
+                <Text style={styles.buttonText}>Create notification</Text>
+            </TouchableOpacity>
+
             <Text style={{ fontSize: 15 }}>The buttons below are for notification testing purposes only.</Text>
             
-            <TouchableOpacity style={styles.button} onPress={handlePollCFBD}>
-                <Text style={styles.buttonText}>Get next game info</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.button} onPress={async () => {{ await sendPushNotification(expoPushToken); }}}>
-                <Text style={styles.buttonText}>Press to Send Notification</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+
+                <TouchableOpacity style={styles.buttonForContainer} onPress={handlePollCFBD}>
+                    <Text style={styles.buttonForContainerText}>Get next game info</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.buttonForContainer} onPress={async () => {{ await sendPushNotification(expoPushToken); }}}>
+                    <Text style={styles.buttonForContainerText}>Press to Send Notification</Text>
+                </TouchableOpacity>
+                
+            </View>           
 
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: 15, fontFamily: 'System' }}>Title: {notification && notification.request.content.title} </Text>
                 <Text style={{ fontSize: 15, fontFamily: 'System' }}>Body: {notification && notification.request.content.body}</Text>
             </View>
 
-        </View>        
+        </View>  
     );
 }
 
@@ -215,6 +207,12 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
+    },
+    editBox:{
+        flex: 1,
+        borderWidth: 1,
+        marginRight: '5%',
+        margin: 5,
     },
     card: {
         marginBottom: 15,
@@ -326,4 +324,78 @@ async function registerForPushNotificationsAsync() {
     } else {
         handleRegistrationError('Must use physical device for push notifications');
     }
+}
+
+
+// API Call functions
+
+function createNotification(userID: number, title: string, message: string){
+    // Notification Data POST API call
+
+    const handleCreateNotification = async () => {
+        try {
+            const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    user: userID,
+                    notification_title: title,
+                    notification_message: message,
+                    read_status: false
+                 }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Alert.alert('Success', 'Notification created!', [{ text: 'OK' }]);
+                console.log('Notification data saved successfully:', data);
+                //return response.json();
+            } else {
+                Alert.alert('Error', data.detail || 'Something went wrong', [{ text: 'OK' }]);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
+        }
+    };
+
+    handleCreateNotification();
+
+}
+
+function getAllNotificationsForUser(userId: number){
+    // Notification Data POST API call
+
+    const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
+    
+    const fetchNotifications = async () => {
+        try {
+            const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${userId}/`);
+            const data = await response.json();
+            setNotificationDatas(data);
+            // console.log('data:', data);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        } finally {
+            // setLoading(false);
+        }
+    };
+
+    const notificationList = notificationDatas.map(singleNotification => {
+        return new NotificationData(singleNotification.notification_id, singleNotification.user, singleNotification.notification_title, singleNotification.notification_message, singleNotification.timestamp, singleNotification.read_status);
+    });
+    // TO DELETE: This was used for print debugging:
+    /*
+    notificationList.forEach((obj, index) => {
+        console.log(`Notification ${index + 1} from list:`, obj);
+    });
+    */
+
+    fetchNotifications();
+
+    return notificationList
+
+
 }

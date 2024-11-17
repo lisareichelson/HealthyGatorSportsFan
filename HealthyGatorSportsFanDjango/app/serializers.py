@@ -98,3 +98,4 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotificationData
         fields = '__all__'  # Or specify the fields you want to include
+        # fields = ['user', 'notification_title','notification_message', 'read_status']

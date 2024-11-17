@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 import logging
 logging.basicConfig(level=logging.INFO)
 
+from rest_framework.decorators import api_view
+
 # Create your views here.
 
 # Best practice is one view per page
@@ -135,6 +137,18 @@ class NotificationList(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         return NotificationData.objects.filter(user_id=user_id)  # Adjust based on your model's field
+
+# API view to handle POST requests to create a new notification
+class NotificationDataView(APIView):
+    def post(self, request):
+        serializer = NotificationSerializer(data=request.data)
+        print(request.data)
+        if serializer.is_valid():
+            serializer.save()
+            print("seializer is valid")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
 
 # class SendNotificationView(APIView):
 #     def post(self, request):
