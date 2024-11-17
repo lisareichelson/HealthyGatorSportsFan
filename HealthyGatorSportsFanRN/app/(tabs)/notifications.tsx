@@ -13,11 +13,6 @@ const NotificationsPage = () => {
     const [newTitle, setNewTitle] = useState('');
     const [newMessage, setNewMessage] = useState('');
 
-    const [refreshKey, setRefreshKey] = useState(0);
-    const handleRefresh = () => {
-        setRefreshKey(prevKey => prevKey + 1); // Update the key to trigger re-render
-    };
-
     const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const loadNotifications = async () => {
@@ -34,9 +29,7 @@ const NotificationsPage = () => {
     };
       
     useEffect(() => {
-        console.log('useEffect has been entered and screen has been rendered');
         loadNotifications();
-        console.log('... in useEffect after async load');
     }, []);
 
 
@@ -60,6 +53,17 @@ const NotificationsPage = () => {
       Alert.alert('Error', 'Failed to delete notification');
     }
   };
+
+    // Function to handle deleting a notification
+    const handleDeleteAllNotificationPress = async (userId: number) => {
+        try {
+            console.log("userID for deleteAll notifications: ", userId);
+            await deleteAllNotifications(userId);
+            await loadNotifications(); // Refresh the notifications after deletion
+        } catch (error) {
+          Alert.alert('Error', 'Failed to delete notifications');
+        }
+    };
 
     // const handleCreateNotificationPress = () => {
     //     createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
@@ -144,7 +148,7 @@ const NotificationsPage = () => {
                 <TouchableOpacity style={styles.buttonForContainer}>
                     <Text style={styles.buttonForContainerText}>Mark all as read</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonForContainer}>
+                <TouchableOpacity style={styles.buttonForContainer} onPress={() => handleDeleteAllNotificationPress(currentUser.userId)}>
                     <Text style={styles.buttonForContainerText}>Clear all</Text>
                 </TouchableOpacity>
             </View>
@@ -396,7 +400,7 @@ async function registerForPushNotificationsAsync() {
 // Notification Data POST API call
 const createNotification = async (expoPushToken: string, userID: number, title: string, message: string) => {
     try {
-        const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add', {
+        const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -438,7 +442,7 @@ export const fetchNotifications = async (userId: number) => {
 
 export const deleteNotification = async (notification_id: number) => {
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${notification_id}/delete`, {
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${notification_id}/delete/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -454,6 +458,43 @@ export const deleteNotification = async (notification_id: number) => {
     } catch (error) {
         Alert.alert('Error');
         console.error('Error deleting notification:', error);
-        console.log('notification_id:', notification_id); // TO DELETE
     }
+};
+
+export const deleteAllNotifications = async (userId: number) => {
+    // try {
+    //     const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/deleteAll/${userId}/`, {
+    //         method: 'DELETE',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //     });
+    //     if (!response.ok) {
+    //         const errorData = await response.json();
+    //         throw new Error(errorData.error || 'An error occurred');
+    //     }
+    //     const data = await response.json();
+    //     Alert.alert('Success', data.message);
+    // } catch (error) {
+    //     Alert.alert('Error');
+    //     console.error('Error deleting notifications:', error);
+    // }
+
+
+    try {
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/deleteAll/${userId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.status === 204) {
+            console.log('Deleted successfully');
+        } else {
+            console.error('Failed to delete:', response.status);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    
 };

@@ -127,25 +127,35 @@ class GoalCollectionView(APIView):
                     'user_data': user_data_serializer.data
                 }, status=status.HTTP_200_OK)
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 # API view to handle GET requests for all notifications for a userID  
 class NotificationList(generics.ListAPIView):
     serializer_class = NotificationSerializer
-
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         return NotificationData.objects.filter(user_id=user_id)  # Adjust based on your model's field
-
+    
+class BulkDeleteNotifications(APIView):
+    def delete(self, request, user_id):
+        print("Entered BulkDeleteNotifications View")  
+        try:
+            notifications = NotificationData.objects.filter(user_id=user_id)
+            deleted_count, _ = notifications.delete()
+            if deleted_count > 0:
+                return Response({'message': f'Deleted {deleted_count} notifications.'}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({'message': 'No notifications found for this user.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print("Errors:", e)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                
 # API view to handle CRUD requests for a single notification
 class NotificationDetail(APIView):
     def post(self, request):
         serializer = NotificationSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             serializer.save()
-            print("seializer is valid")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
     def delete(self, request, notification_id):
