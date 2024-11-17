@@ -1,16 +1,15 @@
-import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState} from "react";
 import User from "@/components/user";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-
 const BasicInformationCollection = () => {
     const navigation = useNavigation();
     //Used to save user info as collected
     const route = useRoute();
-    const userData = route.params;
+    const { currentUser } = route.params as { currentUser: any };
 
     const styles = SetStyles();
     const [genders] = useState([
@@ -39,8 +38,7 @@ const BasicInformationCollection = () => {
         {value: '8'},
         {value: '9'},
         {value: '10'},
-        {value: '11'},
-        {value: '12'}
+        {value: '11'}
     ]);
     const [weight, setWeight] = useState('');
     const [heightInch, setHeightInches] = useState('');
@@ -144,7 +142,7 @@ const BasicInformationCollection = () => {
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-                          onPress={() => SaveAndContinue(navigation, userData, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
+          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
           <Image
               source={require('./../../assets/images/forwardarrow.png')}
               style={{width:50, height:50}}
@@ -159,18 +157,29 @@ const BasicInformationCollection = () => {
 
 export default BasicInformationCollection
 
-function SaveAndContinue(navigation: any, userData: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
-     //Save the variables in the user object type
-     const currentUser: User = { ...userData };
-     currentUser.gender = gender;
-     currentUser.currentWeight = weight;
-     currentUser.heightFeet = heightFeet;
-     currentUser.heightInches = heightInches;
-     currentUser.firstName = firstName;
-     currentUser.lastName = lastName;
-     currentUser.birthDate = JSON.stringify(birthdate);
+function SaveAndContinue(navigation: any, currentUser: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
+    
+    //Save the variables in the user object type
+    // const currentUser: User = { ...userData };
+    currentUser.gender = gender;
+    currentUser.heightFeet = heightFeet;
+    currentUser.heightInches = heightInches;
+    currentUser.firstName = firstName;
+    currentUser.lastName = lastName;
+    currentUser.birthDate = birthdate.toISOString().split('T')[0]; //JSON.stringify(birthdate.toISOString().split('T')[0]);
+    currentUser.currentWeight = weight;
 
-     navigation.navigate('GoalCollection' , {currentUser} as never)
+    console.log("First name: ", currentUser.firstName);
+    console.log("Last name: ", currentUser.lastName);
+    console.log("Birth date: ", currentUser.birthDate);
+    console.log("Gender: ", currentUser.gender);
+    console.log("Height in feet: ", currentUser.heightFeet);
+    console.log("Height in inches: ", currentUser.heightInches);
+    console.log("Weight: ", currentUser.currentWeight);
+
+    // Continue to the next screen upon successful data submission
+    navigation.navigate('GoalCollection', { currentUser } as never);
+
 }
 
 function SetStyles() : any{

@@ -3,8 +3,7 @@ from .models import User, UserData, NotificationData
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserDataSerializer
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserDataSerializer
 import os
 import cfbd
 import pytz
@@ -18,6 +17,26 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # Create your views here.
+
+# Best practice is one view per page
+
+# 'request' is the entire HTTP object (headers, request method like GET, POST, others), etc...)
+# 'request.data' is used to access parsed data like the JSON or form data
+# 'request.body' is used to access raw data that is not parsed
+# 'self' refers to the current instance
+
+# API view to handle POST requests for data sent from Postman
+#class WeightView(APIView):
+    #def post(self, request):
+
+        ## Print for debugging
+        #print("Received Data:", request.data)
+
+        #serializer = UserDataSerializer(data=request.data) # Validate the data
+        #if serializer.is_valid():
+            #serializer.save() # Save the validated data to the database
+            #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #  for testing with Django's web interface
 def index(request):
@@ -34,32 +53,82 @@ def index(request):
     }
     return render(request, "index.html", context)
 
-# 'request' is the entire HTTP object (headers, request method like GET, POST, others), etc...)
-# 'request.data' is used to access parsed data like the JSON or form data
-# 'request.body' is used to access raw data that is not parsed
-# 'self' refers to the current instance
-
-# API view to handle POST requests for data sent from Postman
-class WeightView(APIView):
-    def post(self, request):
-
-        # Print for debugging
-        print("Received Data:", request.data)
-
-        serializer = UserDataSerializer(data=request.data) # Validate the data
-        if serializer.is_valid():
-            serializer.save() # Save the validated data to the database
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-# API view to handle POST requests for data sent from createcredentialsscreen.tsx (username and password)
+# API view to handle POST requests for user creation
 class CreateUserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            # Prepare the response data including the user_id
+            response_data = {'user_id': user.user_id}
+            response_data.update(serializer.data)
+            return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# API view to handle POST requests for user data creation
+class CreateUserDataView(APIView):
+    def post(self, request, user_id):
+        # Retrieve the user by ID
+        user = User.objects.get(pk=user_id) # pk is primary key
+        user_data = UserData.objects.create(user=user)
+        # Update user data with new information
+        user_serializer = UserSerializer(user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            user_data_serializer = UserDataSerializer(user_data, data=request.data, partial=True)
+            if user_data_serializer.is_valid():
+                userData = user_data_serializer.save()
+                response_data = {'data_id': userData.data_id}
+                response_data.update(user_data_serializer.data)
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
+class BasicInfoView(APIView):
+    def post(self, request, user_id):
+        # Retrieve the user by ID
+        user = User.objects.get(pk=user_id) # pk is primary key
+        # Separate weight_value for UserData
+        weight_value = request.data.pop('weight_value', None) # return 'None' if no weight available
+        # Update user data with new information
+        user_serializer = UserSerializer(user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            # Handle UserData creation if weight is provided
+            if weight_value is not None:
+                user_data = UserData.objects.create(user=user)
+                user_data_serializer = UserDataSerializer(user_data, data={'weight_value': weight_value}, partial=True)
+                if user_data_serializer.is_valid():
+                    user_data_serializer.save()
+                else:
+                    print("UserData errors:", user_data_serializer.errors)
+                    return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Return the user data with success status
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
+        # Log and return errors if the user data is invalid
+        print("User errors:", user_serializer.errors)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# API view to handle POST requests for data sent from the front-end (goalcollection.tsx)  
+class GoalCollectionView(APIView):
+    def post(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        user_serializer = UserSerializer(user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            user_data = UserData.objects.create(user=user)
+            user_data_serializer = UserDataSerializer(user_data, data=request.data, partial=True)
+            if user_data_serializer.is_valid():
+                user_data_serializer.save()
+                return Response({
+                    'user': user_serializer.data,
+                    'user_data': user_data_serializer.data
+                }, status=status.HTTP_200_OK)
+            return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # class SendNotificationView(APIView):
 #     def post(self, request):

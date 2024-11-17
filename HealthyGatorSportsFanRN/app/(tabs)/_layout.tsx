@@ -10,6 +10,9 @@ import CreateCredentials from "@/app/(tabs)/createcredentialsscreen";
 import HomePage from "@/app/(tabs)/homepage";
 import GoalCollection from "@/app/(tabs)/goalcollection";
 import NotificationsPage from "@/app/(tabs)/notifications";
+import GameSchedule from "@/app/(tabs)/gameschedule";
+import ProfileManagement from "@/app/(tabs)/profilemanagement";
+import ProcessLogging from "@/app/(tabs)/progresslogging";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,48 +21,63 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="CreateOrSignIn"
-                component={CreateOrSignIn}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="WelcomeScreen"
-                component={WelcomeScreen}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="HomePage"
-                component={HomePage}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="LogInScreen"
-                component={LogInScreen}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="CreateCredentialsScreen"
-                component={CreateCredentials}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="BasicInfo"
-                component={BasicInformationCollection}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="GoalCollection"
-                component={GoalCollection}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="NotificationsPage"
-                component={NotificationsPage}
-                options={{headerShown: false}}
-            />
-        </Stack.Navigator>
+          <Stack.Navigator>
+              <Stack.Screen
+                  name="CreateOrSignIn"
+                  component={CreateOrSignIn}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="WelcomeScreen"
+                  component={WelcomeScreen}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="HomePage"
+                  component={HomePage}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="GameSchedule"
+                  component={GameSchedule}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="ProcessLogging"
+                  component={ProcessLogging}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="ProfileManagement"
+                  component={ProfileManagement}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="LogInScreen"
+                  component={LogInScreen}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="CreateCredentialsScreen"
+                  component={CreateCredentials}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="BasicInfo"
+                  component={BasicInformationCollection}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="GoalCollection"
+                  component={GoalCollection}
+                  options={{headerShown: false}}
+              />
+              <Stack.Screen
+                  name="NotificationsPage"
+                  component={NotificationsPage}
+                  options={{headerShown: false}}
+              />
+          </Stack.Navigator>
    /* <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,

@@ -5,14 +5,11 @@ import {TeamLogo} from "@/components/getTeamImages";
 import User from "@/components/user";
 
 
-export default function HomePage() {
+export default function ProgressLogging() {
     const navigation = useNavigation();
     const route = useRoute();
+    const user: any = route.params;
     const { currentUser } = route.params as { currentUser: any };
-
-    //const user: any = route.params;
-    //const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
-    //console.log("User Data:" + JSON.stringify(currentUser));
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();
@@ -32,7 +29,7 @@ export default function HomePage() {
                     Hey, Albert!
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToNotifications(currentUser, navigation) }>
+                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
                     <Image
                         source={require('./../../assets/images/bell.png')}
                         style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
@@ -42,27 +39,27 @@ export default function HomePage() {
             <View style={styles.middleContent}>
                 <View style={styles.scoreBox}>
                     <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-                    <Image
-                        source={require('../../assets/images/teamLogos/gatorlogo.png')}
-                        style={{width:100, height:100, objectFit: 'contain'}}
-                    />
+                        <Image
+                            source={require('../../assets/images/teamLogos/gatorlogo.png')}
+                            style={{width:100, height:100, objectFit: 'contain'}}
+                        />
                         <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
                             University of Florida
                         </Text>
                     </View>
                     <View style={styles.scoreBoxText}>
-                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-                       {CurrentGameData[0]} - {CurrentGameData[1]}
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-                        Q{CurrentGameData[2]} - {CurrentGameData[3]}:{CurrentGameData[4]}
-                    </Text>
+                        <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+                            {CurrentGameData[0]} - {CurrentGameData[1]}
+                        </Text>
+                        <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+                            Q{CurrentGameData[2]} - {CurrentGameData[3]}:{CurrentGameData[4]}
+                        </Text>
                     </View>
                     <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-                    <Image
-                        source={OpponentLogo}
-                        style={{width:100, height:100, objectFit: 'contain'}}
-                    />
+                        <Image
+                            source={OpponentLogo}
+                            style={{width:100, height:100, objectFit: 'contain'}}
+                        />
                         <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
                             {CurrentOpponentFullName}
                         </Text>
@@ -72,24 +69,24 @@ export default function HomePage() {
 
             </View>
             <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 50, alignSelf:'center'}}>
-                Welcome to the placeholder home screen!
+                Welcome to the placeholder PROGRESS LOGGING SCREEN!!!
             </Text>
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+                                  onPress={() => NavigateToHomePage(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
+                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToProcessLogging(currentUser, navigation) }>
+                                  onPress={() => NavigateToHomePage(currentUser, navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/plus.png')}
                         style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
@@ -103,7 +100,7 @@ export default function HomePage() {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => LogoutPopup(navigation)}>
+                                  onPress={() => LogoutPopup(navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
                         style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
@@ -113,19 +110,6 @@ export default function HomePage() {
             </View>
         </View>
     );
-}
-
-function NavigateToGameSchedule(currentUser:any, navigation:any){
-    navigation.navigate('GameSchedule', {currentUser} as never)
-}
-function NavigateToNotifications(currentUser:any, navigation:any){
-    navigation.navigate('NotificationsPage', {currentUser} as never)
-}
-function NavigateToProfileManagement(currentUser:any, navigation:any){
-    navigation.navigate('ProfileManagement', {currentUser} as never)
-}
-function NavigateToProcessLogging(currentUser:any, navigation:any){
-    navigation.navigate('ProcessLogging', {currentUser} as never)
 }
 
 function LogoutPopup(navigation: any){
@@ -150,6 +134,15 @@ function LogoutPopup(navigation: any){
     );
 }
 
+function NavigateToHomePage(currentUser:any, navigation:any){
+    navigation.navigate('HomePage', {currentUser} as never)
+}
+function NavigateToNotifications(currentUser:any, navigation:any){
+    navigation.navigate('NotificationsPage', {currentUser} as never)
+}
+function NavigateToProfileManagement(currentUser:any, navigation:any){
+    navigation.navigate('ProfileManagement', {currentUser} as never)
+}
 
 //TODO: call backend API to get who we are playing next
 function GetCurrentOpponentName():string{
