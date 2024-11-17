@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDataView
+from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDetail
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
@@ -34,7 +34,8 @@ urlpatterns = [
     path('api/users/<int:user_id>/basicinfo/', BasicInfoView.as_view(), name='user-basicinfo'), # no longer used
     path('api/users/<int:user_id>/goals/', GoalCollectionView.as_view(), name='user-goals'), # no longer used
     path('notifications/<int:user_id>/', NotificationList.as_view(), name='notification-list'),
-    path('notificationdata/add', NotificationDataView.as_view(), name='notification-create'),
+    path('notificationdata/add', NotificationDetail.as_view(), name='notification-create'),
+    path('notifications/<int:notification_id>/delete', NotificationDetail.as_view(), name='notification-delete'),
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
 
 ]

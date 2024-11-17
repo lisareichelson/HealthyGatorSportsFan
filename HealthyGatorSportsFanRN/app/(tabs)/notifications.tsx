@@ -10,44 +10,68 @@ const NotificationsPage = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
-
     const [newTitle, setNewTitle] = useState('');
     const [newMessage, setNewMessage] = useState('');
-    
+
+    const [refreshKey, setRefreshKey] = useState(0);
+    const handleRefresh = () => {
+        setRefreshKey(prevKey => prevKey + 1); // Update the key to trigger re-render
+    };
 
     const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-  
     const loadNotifications = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchNotifications(currentUser.userId);
-        setNotificationDatas(data);
-      } catch (error) {
-        // Handle error (e.g., show an alert)
-      } finally {
-        setLoading(false);
-      }
+        setLoading(true);
+        try {
+            const data = await fetchNotifications(currentUser.userId);
+            setNotificationDatas(data);
+        } catch (error) {
+            Alert.alert('Error');
+            console.error('Error loading notifications:', error);
+        } finally {
+            setLoading(false);
+        }
     };
-
-    const notificationList = notificationDatas.map(singleNotification => {
-        return new NotificationData(singleNotification.notification_id, singleNotification.user, singleNotification.notification_title, singleNotification.notification_message, singleNotification.timestamp, singleNotification.read_status);
-    });
-    // TO DELETE: This was used for print debugging:
-    /*
-    notificationList.forEach((obj, index) => {
-        console.log(`Notification ${index + 1} from list:`, obj);
-    });
-    */
-
-    const handleCreateNotificationPress = () => {
-        createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
-        loadNotifications();
-      };
-  
+      
     useEffect(() => {
-      loadNotifications();
+        console.log('useEffect has been entered and screen has been rendered');
+        loadNotifications();
+        console.log('... in useEffect after async load');
     }, []);
+
+
+    // Function to handle creating a notification
+  const handleCreateNotificationPress = async () => {
+    try {
+      await createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
+      await sendPushNotification(expoPushToken, newTitle, newMessage);
+      await loadNotifications(); // Refresh the notifications after creation
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create notification');
+    }
+  };
+
+  // Function to handle deleting a notification
+  const handleDeleteNotificationPress = async (notification_id: number) => {
+    try {
+      await deleteNotification(notification_id);
+      await loadNotifications(); // Refresh the notifications after deletion
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete notification');
+    }
+  };
+
+    // const handleCreateNotificationPress = () => {
+    //     createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
+    //     loadNotifications();
+    //     handleRefresh();
+    // };
+
+    // const handleDeleteNotificationPress = (notification_id: number) => {
+    //     deleteNotification(notification_id);
+    //     loadNotifications();
+    //     handleRefresh();
+    // };
 
     // The below code is for sending a notification from frontend
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -101,10 +125,15 @@ const NotificationsPage = () => {
 
             <View style={styles.shadowContainer}>
                 <ScrollView>
-                    {notificationList.map((obj, index) => (
+                    {notificationDatas.map((obj, index) => (
                         <View key={index} style={styles.card}>
-                            <Text style={styles.cardTitle}>{`Title: ${obj.notification_title}`}</Text>
-                            <Text style={styles.cardText}>{`Message: ${obj.notification_message}`}</Text>
+                            <View style={styles.cardHeader}>
+                                <Text style={styles.cardTitle}>{`${obj.notification_title}`}</Text>
+                                <TouchableOpacity style={styles.closeButton} onPress={() => handleDeleteNotificationPress(obj.notification_id)}>
+                                    <Text style={{fontWeight: 'bold', fontSize: 25}}>×</Text>
+                                </TouchableOpacity>
+                            </View>                            
+                            <Text style={styles.cardText}>{`${obj.notification_message}`}</Text>
                             <Text style={styles.cardText}>{`Timestamp: ${obj.timestamp}`}</Text>
                         </View>
                     ))}
@@ -248,8 +277,8 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     card: {
-        marginBottom: 15,
-        padding: 15,
+        marginBottom: 5,
+        padding: 10,
         backgroundColor: '#fff',
         borderRadius: 10,
         shadowColor: '#000',
@@ -262,12 +291,21 @@ const styles = StyleSheet.create({
         elevation: 5, // For Android shadow
     },
     cardTitle: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
+        flex: 1, // Allows the title to take available space
     },
     cardText: {
-        fontSize: 16,
-        marginTop: 5,
+        fontSize: 14,
+        //marginTop: 5,
+    },
+    closeButton: {
+        alignItems: 'flex-end'
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        alignItems: 'center', // Aligns items vertically centered
+        justifyContent: 'space-between',
     },
     separator: {
         height: 1, // Height of the line
@@ -335,7 +373,7 @@ async function registerForPushNotificationsAsync() {
             return;
         }
         const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-        console.log("projectID: " + projectId);
+        // console.log("projectID: " + projectId);
         if (!projectId) {
             handleRegistrationError('Project ID not found');
         }
@@ -345,7 +383,7 @@ async function registerForPushNotificationsAsync() {
                     projectId,
                 })
             ).data;
-            console.log(pushTokenString);
+            //console.log(pushTokenString);
             return pushTokenString;
         } catch (e: unknown) {
             handleRegistrationError(`${e}`);
@@ -355,39 +393,34 @@ async function registerForPushNotificationsAsync() {
     }
 }
 
-function createNotification(expoPushToken: string, userID: number, title: string, message: string){
-    // Notification Data POST API call
-    const handleCreateNotification = async () => {
-        try {
-            const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    user: userID,
-                    notification_title: title,
-                    notification_message: message,
-                    read_status: false
-                 }),
-            });
+// Notification Data POST API call
+const createNotification = async (expoPushToken: string, userID: number, title: string, message: string) => {
+    try {
+        const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                user: userID,
+                notification_title: title,
+                notification_message: message,
+                read_status: false
+             }),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (response.ok) {
-                Alert.alert('Success', 'Notification created!', [{ text: 'OK' }]);
-                console.log('Notification data saved successfully:', data);
-                //return response.json();
-            } else {
-                Alert.alert('Error', data.detail || 'Something went wrong', [{ text: 'OK' }]);
-            }
-        } catch (error) {
-            Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
+        if (response.ok) {
+            Alert.alert('Success', 'Notification created!', [{ text: 'OK' }]);
+            console.log('Notification data saved successfully:', data);
+        } else {
+            Alert.alert('Error', data.detail || 'Something went wrong', [{ text: 'OK' }]);
         }
-    };
-    handleCreateNotification();
-    sendPushNotification(expoPushToken, title, message);
-}
+    } catch (error) {
+        Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
+    }
+};
 
 export const fetchNotifications = async (userId: number) => {
     try {
@@ -402,3 +435,25 @@ export const fetchNotifications = async (userId: number) => {
       throw error; // Rethrow the error for handling in the component
     }
   };
+
+export const deleteNotification = async (notification_id: number) => {
+    try {
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${notification_id}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            Alert.alert('Success', 'Notification deleted!', [{ text: 'OK' }]);
+            console.log('Notification deleted successfully');
+        } else {
+            throw new Error('Failed to delete notification');
+        }
+    } catch (error) {
+        Alert.alert('Error');
+        console.error('Error deleting notification:', error);
+        console.log('notification_id:', notification_id); // TO DELETE
+    }
+};

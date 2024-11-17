@@ -138,8 +138,8 @@ class NotificationList(generics.ListAPIView):
         user_id = self.kwargs['user_id']
         return NotificationData.objects.filter(user_id=user_id)  # Adjust based on your model's field
 
-# API view to handle POST requests to create a new notification
-class NotificationDataView(APIView):
+# API view to handle CRUD requests for a single notification
+class NotificationDetail(APIView):
     def post(self, request):
         serializer = NotificationSerializer(data=request.data)
         print(request.data)
@@ -148,6 +148,13 @@ class NotificationDataView(APIView):
             print("seializer is valid")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, notification_id):
+        try:
+            notification = NotificationData.objects.get(notification_id=notification_id)
+            notification.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except NotificationData.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 # class SendNotificationView(APIView):
