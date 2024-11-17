@@ -14,9 +14,42 @@ const NotificationsPage = () => {
     const [newTitle, setNewTitle] = useState('');
     const [newMessage, setNewMessage] = useState('');
     
-    const notificationList = getAllNotificationsForUser(currentUser.userId);
 
-    // The below code is for the "Press To Send Notification" button (frontend notification call from hardcoded strings)
+    const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+  
+    const loadNotifications = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchNotifications(currentUser.userId);
+        setNotificationDatas(data);
+      } catch (error) {
+        // Handle error (e.g., show an alert)
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const notificationList = notificationDatas.map(singleNotification => {
+        return new NotificationData(singleNotification.notification_id, singleNotification.user, singleNotification.notification_title, singleNotification.notification_message, singleNotification.timestamp, singleNotification.read_status);
+    });
+    // TO DELETE: This was used for print debugging:
+    /*
+    notificationList.forEach((obj, index) => {
+        console.log(`Notification ${index + 1} from list:`, obj);
+    });
+    */
+
+    const handleCreateNotificationPress = () => {
+        createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
+        loadNotifications();
+      };
+  
+    useEffect(() => {
+      loadNotifications();
+    }, []);
+
+    // The below code is for sending a notification from frontend
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
     const notificationListener = useRef<Notifications.Subscription>();
@@ -42,7 +75,7 @@ const NotificationsPage = () => {
         };
     }, []);
 
-    // The below code is for the "Get next game info" button (backend notification call from cfbd api)
+    // The below code is for sending a notification from backend
     const handlePollCFBD = async () => {
         try {
             const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/poll-cfbd/', {
@@ -112,7 +145,7 @@ const NotificationsPage = () => {
                 />
             </View>
             
-            <TouchableOpacity style={styles.button} onPress={() => createNotification(expoPushToken, currentUser.userId, newTitle, newMessage)}>
+            <TouchableOpacity style={styles.button} onPress={handleCreateNotificationPress}>
                 <Text style={styles.buttonText}>Create notification</Text>
             </TouchableOpacity>
 
@@ -247,9 +280,6 @@ const styles = StyleSheet.create({
       },
 });
 
-
-// Notification functions
-
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -325,12 +355,8 @@ async function registerForPushNotificationsAsync() {
     }
 }
 
-
-// API Call functions
-
 function createNotification(expoPushToken: string, userID: number, title: string, message: string){
     // Notification Data POST API call
-
     const handleCreateNotification = async () => {
         try {
             const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add', {
@@ -359,44 +385,20 @@ function createNotification(expoPushToken: string, userID: number, title: string
             Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
         }
     };
-
     handleCreateNotification();
-
     sendPushNotification(expoPushToken, title, message);
-
 }
 
-function getAllNotificationsForUser(userId: number){
-    // Notification Data POST API call
-
-    const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
-    
-    const fetchNotifications = async () => {
-        try {
-            const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${userId}/`);
-            const data = await response.json();
-            setNotificationDatas(data);
-            // console.log('data:', data);
-        } catch (error) {
-            console.error('Error fetching notifications:', error);
-        } finally {
-            // setLoading(false);
-        }
-    };
-
-    const notificationList = notificationDatas.map(singleNotification => {
-        return new NotificationData(singleNotification.notification_id, singleNotification.user, singleNotification.notification_title, singleNotification.notification_message, singleNotification.timestamp, singleNotification.read_status);
-    });
-    // TO DELETE: This was used for print debugging:
-    /*
-    notificationList.forEach((obj, index) => {
-        console.log(`Notification ${index + 1} from list:`, obj);
-    });
-    */
-
-    fetchNotifications();
-
-    return notificationList
-
-
-}
+export const fetchNotifications = async (userId: number) => {
+    try {
+      const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${userId}/`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      throw error; // Rethrow the error for handling in the component
+    }
+  };
