@@ -67,7 +67,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True 
 
-ROOT_URLCONF = 'project.urls'
+ROOT_URLCONF = 'HealthyGatorSportsFanDjango.project.urls'
 
 TEMPLATES = [
     {
@@ -85,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+WSGI_APPLICATION = 'HealthyGatorSportsFanDjango.project.wsgi.application'
 
 
 # Database
