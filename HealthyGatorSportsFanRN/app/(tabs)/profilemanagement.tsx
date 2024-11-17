@@ -276,7 +276,7 @@ export default function ProfileManagement() {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToHomePage(currentUser, navigation) }>
+                                  onPress={() => NavigateToProgressLogging(currentUser, navigation) }>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/plus.png')}
                         style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
@@ -429,6 +429,25 @@ function NavigateToNotifications(currentUser:any, navigation:any){
                 style: "destructive",
                 onPress: () => {
                     navigation.navigate('NotificationsPage', {currentUser} as never)
+                }
+            }
+        ]
+    );
+}
+function NavigateToProgressLogging(currentUser:any, navigation:any){
+    Alert.alert(
+        "Confirmation",
+        "Are you sure you want to abandon your changes?",
+        [
+            {
+                text: "No",
+                style: "cancel"
+            },
+            {
+                text: "Yes",
+                style: "destructive",
+                onPress: () => {
+                    navigation.navigate('ProcessLogging', {currentUser} as never)
                 }
             }
         ]
