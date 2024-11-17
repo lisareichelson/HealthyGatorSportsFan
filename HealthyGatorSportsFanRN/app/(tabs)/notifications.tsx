@@ -112,7 +112,7 @@ const NotificationsPage = () => {
                 />
             </View>
             
-            <TouchableOpacity style={styles.button} onPress={() => createNotification(currentUser.userId, newTitle, newMessage)}>
+            <TouchableOpacity style={styles.button} onPress={() => createNotification(expoPushToken, currentUser.userId, newTitle, newMessage)}>
                 <Text style={styles.buttonText}>Create notification</Text>
             </TouchableOpacity>
 
@@ -124,7 +124,7 @@ const NotificationsPage = () => {
                     <Text style={styles.buttonForContainerText}>Get next game info</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity style={styles.buttonForContainer} onPress={async () => {{ await sendPushNotification(expoPushToken); }}}>
+                <TouchableOpacity style={styles.buttonForContainer} onPress={async () => {{ await sendPushNotification(expoPushToken, "Test Notification", "Hello, you got a notification!"); }}}>
                     <Text style={styles.buttonForContainerText}>Press to Send Notification</Text>
                 </TouchableOpacity>
                 
@@ -258,13 +258,12 @@ Notifications.setNotificationHandler({
     }),
 });
 
-async function sendPushNotification(expoPushToken: string) {
+async function sendPushNotification(expoPushToken: string, title: string, body: string) {
     const message = {
         to: expoPushToken,
         sound: 'default',
-        title: 'Test Notification',
-        body: 'Hello, you got a notification!',
-        // data: { someData: 'goes here' },
+        title: title,
+        body: body,
     };
 
     await fetch('https://exp.host/--/api/v2/push/send', {
@@ -329,7 +328,7 @@ async function registerForPushNotificationsAsync() {
 
 // API Call functions
 
-function createNotification(userID: number, title: string, message: string){
+function createNotification(expoPushToken: string, userID: number, title: string, message: string){
     // Notification Data POST API call
 
     const handleCreateNotification = async () => {
@@ -362,6 +361,8 @@ function createNotification(userID: number, title: string, message: string){
     };
 
     handleCreateNotification();
+
+    sendPushNotification(expoPushToken, title, message);
 
 }
 
