@@ -17,6 +17,16 @@ from dotenv import load_dotenv
 # Load environment variables from the .env file
 load_dotenv()
 
+# Package to handle Heroku database configuration 
+import dj_database_url
+
+# Configure the database connection using DATABASE_URL environment variable
+# Set a connection max age to reuse database connections (improves performance)
+# Enforce SSL for secure database connections on Heroku
+DATABASES = {
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+}
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
