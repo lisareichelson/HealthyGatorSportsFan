@@ -20,13 +20,6 @@ load_dotenv()
 # Package to handle Heroku database configuration 
 import dj_database_url
 
-# Configure the database connection using DATABASE_URL environment variable
-# Set a connection max age to reuse database connections (improves performance)
-# Enforce SSL for secure database connections on Heroku
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-}
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -98,16 +91,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'HealthyGatorSportsFanDjango.project.wsgi.application'
 
 
-# Database
+# Database (local)
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': os.getenv('DATABASE_NAME'),
+#        'USER': os.getenv('DATABASE_USER'),
+#        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+#    }
+#}
+
+# Database (Heroku)
+# Configure the database connection using DATABASE_URL environment variable
+# Set a connection max age to reuse database connections (improves performance)
+# Enforce SSL for secure database connections on Heroku
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-    }
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 
