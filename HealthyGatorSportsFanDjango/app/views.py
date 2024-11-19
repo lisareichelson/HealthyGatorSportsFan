@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -128,6 +129,18 @@ class GoalCollectionView(APIView):
                 }, status=status.HTTP_200_OK)
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class UserLoginView(APIView):
+    def get(self, request):
+        email = request.query_params.get('email')
+        password = request.query_params.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
     
 # API view to handle GET requests for all notifications for a userID  
 class NotificationList(generics.ListAPIView):
