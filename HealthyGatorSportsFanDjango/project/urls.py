@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
+import os
+if os.getenv('RUN_ENV', 'local') == 'local':
+    from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
+else:
+    from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
