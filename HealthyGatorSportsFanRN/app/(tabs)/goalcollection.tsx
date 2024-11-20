@@ -5,7 +5,9 @@ import Checkbox from 'expo-checkbox';
 import User from "@/components/user";
 
 // Determine the environment
-const RUN_ENV = process.env.RUN_ENV || 'local'; // Default to 'local' if RUN_ENV is not set
+//const RUN_ENV = process.env.RUN_ENV || 'local'; // Default to 'local' if RUN_ENV is not set
+
+const RUN_ENV = 'heroku';
 
 // Initialize the API URLs
 let createUserUrl: any;
