@@ -68,7 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['goal_type', 'weight_value', 'feel_better_value']
+        fields = ['data_id', 'user', 'timestamp', 'goal_type', 'weight_value', 'feel_better_value']        
         extra_kwargs = {
             'goal_type': {'required': False},
             'weight_value': {'required': False, 'default': 0.0},

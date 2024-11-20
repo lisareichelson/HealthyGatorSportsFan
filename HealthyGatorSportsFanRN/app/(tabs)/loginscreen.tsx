@@ -69,66 +69,72 @@ async function ConfirmData(email: any, password: any, navigation: any){
         navigation.navigate('HomePage', {currentUser} as never);
     }
     else{
-        try {
-            const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/login/?email=${email}&password=${password}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                console.log('User data:', data);
-                // Handle successful login (e.g., navigate to another screen)
-                currentUser.userId = 54;
-                currentUser.firstName = data.first_name;
-                currentUser.lastName = data.last_name;
-                currentUser.password = data.password;
-                currentUser.gender = data.gender;
-                currentUser.heightInches = data.height_inches;
-                currentUser.heightFeet = data.height_feet;
-                // TODO: Going to have to split this into 2 API calls: 1 to get the User entry from password & email, and 1 to get latest userData from this userId 
-                currentUser.currentWeight = 120;
-                currentUser.goalWeight = 115;
-                currentUser.goalType = "both";
-                currentUser.feelBetter = true;
-                currentUser.loseWeight = true;
-                currentUser.email = email;
-                navigation.navigate('HomePage', {currentUser} as never);
-            } else {
-                const errorData = await response.json();
-                Alert.alert('Error', errorData.detail || 'Something went wrong', [{ text: 'OK' }]);
-            }
-        } catch (err) {
-            console.error('Error during login:', err);
-            Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
-        }
+        await handleLogin(currentUser, email, password, navigation);      
     }    
 }
 
-// const handleLogin = async () => {
-//     try {
-//         const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/login/?email=${email}&password=${password}`, {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//         });
+const handleLogin = async (currentUser: any, email: any, password: any, navigation: any) => {
+    try {
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/login/?email=${email}&password=${password}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-//         if (response.ok) {
-//             const data = await response.json();
-//             console.log('User data:', data);
-//             // Handle successful login (e.g., navigate to another screen)
-//         } else {
-//             const errorData = await response.json();
-//             Alert.alert('Error', errorData.detail || 'Something went wrong', [{ text: 'OK' }]);
-//         }
-//     } catch (err) {
-//         console.error('Error during login:', err);
-//         Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
-//     }
-// };
+        if (response.ok) {
+            const data = await response.json();
+            console.log('User:', data);
+            // Handle successful login (load data, load user data, then navigate to another screen)
+            currentUser.userId = data.user_id;
+            currentUser.email = data.email;
+            currentUser.password = data.password;
+            currentUser.firstName = data.first_name;
+            currentUser.lastName = data.last_name;
+            currentUser.birthDate = data.birthdate;
+            currentUser.gender = data.gender;
+            currentUser.heightInches = data.height_inches;
+            currentUser.heightFeet = data.height_feet;
+            currentUser.goalWeight = data.goal_weight;
+            currentUser.feelBetter = data.goal_to_lose_weight;
+            currentUser.loseWeight = data.goal_to_feel_better;
+            currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
+            currentUser.goal_to_feel_better = data.goal_to_feel_better;
+            await getLatestUserData(currentUser); 
+            navigation.navigate('HomePage', {currentUser} as never);     
+        } else {
+            const errorData = await response.json();
+            Alert.alert('Error', errorData.detail || 'Something went wrong getting the user', [{ text: 'OK' }]);
+        }
+    } catch (err) {
+        console.error('Error during login:', err);
+        Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
+    }
+};
+
+const getLatestUserData = async (currentUser: any) => {
+    try {
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/userdata/recent/${currentUser.userId}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('UserData:', data);
+            currentUser.currentWeight = data.weight_value;
+            currentUser.goalType = data.goal_type;
+        } else {
+            const errorData = await response.json();
+            Alert.alert('Error', errorData.detail || 'Something went wrong getting latest userData', [{ text: 'OK' }]);
+        }
+    } catch (err) {
+        console.error('Error during login:', err);
+        Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
+    }
+};
 
 const styles = StyleSheet.create({
     container: {

@@ -85,6 +85,18 @@ class CreateUserDataView(APIView):
                 return Response(response_data, status=status.HTTP_201_CREATED)
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LatestUserDataView(APIView):
+    def get(self, request, user_id):
+        try:
+            recent_data = UserData.objects.filter(user_id=user_id).order_by('-timestamp').first()
+            if recent_data:
+                serializer = UserDataSerializer(recent_data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "No data found for this user."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 # API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
 class BasicInfoView(APIView):
