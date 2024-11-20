@@ -11,7 +11,12 @@ from django.http import JsonResponse
 from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate
+from django.conf import settings
+from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
+# from django.contrib.auth import authenticate, login, logout
+# from django.contrib import messages
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -142,17 +147,43 @@ class GoalCollectionView(APIView):
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class UserLoginView(APIView):
     def get(self, request):
         email = request.query_params.get('email')
         password = request.query_params.get('password')
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            serializer = UserSerializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            # Fetch the user by email
+            user = User.objects.get(username=email) #I have tried email=email too, with no success
+            user_serializer = UserSerializer(user, data=request.data, partial=True)
+            # Check if the provided password matches
+            if user_serializer.check_password(password):
+                # If the password is correct, serialize and return user data
+                serializer = UserSerializer(user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+# # Shannon, 11/19/2024: Below is an attempt I made at a more advanced auth method using django's built-in auth. I opted for simplicity for now.
+# class UserLoginView(APIView):
+#     def get(self, request):
+#         email = request.query_params.get('email')
+#         password = request.query_params.get('password')
+#         # Check if a user with the provided username exists
+#         if not User.objects.filter(email=email).exists():
+#             # Display an error message if the username does not exist
+#             messages.error(request, 'Invalid email')
+#             return Response({"error": "Invalid email"}, status=status.HTTP_404_NOT_FOUND)
+#         user = authenticate(username=email, password=password)
+#         if user is not None:
+#             login(request, user) #login() function takes an HttpRequest object and a User object, and saves the user's ID in the session.
+#             serializer = UserSerializer(user)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+#     def logout_view(request):
+#         logout(request)
     
 # API view to handle GET requests for all notifications for a userID  
 class NotificationList(generics.ListAPIView):
