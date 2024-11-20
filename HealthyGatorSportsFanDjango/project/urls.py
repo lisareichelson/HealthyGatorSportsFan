@@ -17,9 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 # for pushing to heroku
-#from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
+from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 # for running locally
-from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
+#from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
