@@ -114,7 +114,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 function addNewUser(navigation: any, currentUser: any){
     // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
-    const createUserUrl = 'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/'; // Adjust the endpoint
+    //const createUserUrl = 'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/'; // for pushing to heroku
+    const createUserUrl = 'https://sawfish-premium-unlikely.ngrok-free.app/api/users/'; // for running locally
     fetch(createUserUrl, {
         // send the user credentials to the backend
         method: 'POST',
@@ -162,7 +163,8 @@ function addNewUser(navigation: any, currentUser: any){
 function addNewUserInitialProgress(navigation: any, currentUser: any){
         // UserData POST API call
         console.log("UserID = ", currentUser.userId) // TO DELETE
-        const createUserDataUrl = `https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/${currentUser.userId}/recordData/`;
+        //const createUserDataUrl = `https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/${currentUser.userId}/recordData/`; // for pushing to Heroku
+        const createUserDataUrl = `https://sawfish-premium-unlikely.ngrok-free.app/api/users/${currentUser.userId}/recordData/`; // for running locally
         console.log("JSON:") // TO DELETE
         console.log(JSON.stringify({
             goal_type: currentUser.goalType,

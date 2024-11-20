@@ -44,7 +44,20 @@ ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com','127.0.0.1',
 
 
 # Application definition
+# for pushing to heroku
+#INSTALLED_APPS = [
+#    'django.contrib.admin',
+#    'django.contrib.auth',
+#    'django.contrib.contenttypes',
+#    'django.contrib.sessions',
+#    'django.contrib.messages',
+#    'django.contrib.staticfiles',
+#    'HealthyGatorSportsFanDjango.app',
+#    'rest_framework',
+#    'corsheaders',
+#]
 
+# for running locally
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,7 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'HealthyGatorSportsFanDjango.app',
+    'app',
     'rest_framework',
     'corsheaders',
 ]
@@ -71,7 +84,10 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True 
 
-ROOT_URLCONF = 'HealthyGatorSportsFanDjango.project.urls'
+# for pushing to heroku
+#ROOT_URLCONF = 'HealthyGatorSportsFanDjango.project.urls'
+# for running locally
+ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
@@ -89,28 +105,29 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'HealthyGatorSportsFanDjango.project.wsgi.application'
+# for pushing to Heroku
+#WSGI_APPLICATION = 'HealthyGatorSportsFanDjango.project.wsgi.application'
 
 
-# Database (local)
+# Database (for running locally)
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': os.getenv('DATABASE_NAME'),
-#        'USER': os.getenv('DATABASE_USER'),
-#        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-#    }
-#}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+    }
+}
 
-# Database (Heroku)
+# Database (for pushing to heroku)
 # Configure the database connection using DATABASE_URL environment variable
 # Set a connection max age to reuse database connections (improves performance)
 # Enforce SSL for secure database connections on Heroku
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-}
+#DATABASES = {
+#    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+#}
 
 
 # Password validation
