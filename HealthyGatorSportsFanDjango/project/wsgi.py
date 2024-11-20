@@ -11,9 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-RUN_ENV = os.getenv('RUN_ENV', 'local')
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 
-                      'project.settings' if RUN_ENV == 'local' else 'HealthyGatorSportsFanDjango.project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HealthyGatorSportsFanDjango.project.settings')
 
 application = get_wsgi_application()

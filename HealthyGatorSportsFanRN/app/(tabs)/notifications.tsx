@@ -5,17 +5,6 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
-// Determine the environment
-const RUN_ENV = process.env.RUN_ENV || 'local'; // Default to 'local' if RUN_ENV is not set
-
-// Set the base URL dynamically
-let pollCFBDUrl: string;
-if (RUN_ENV === 'heroku') {
-    pollCFBDUrl = 'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/poll-cfbd/';
-} else {
-    pollCFBDUrl = 'https://sawfish-premium-unlikely.ngrok-free.app/poll-cfbd/';
-}
-
 export default function NotificationsPage() {
     const navigation = useNavigation();
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -49,7 +38,7 @@ export default function NotificationsPage() {
 
     const handlePollCFBD = async () => {
         try {
-            const response = await fetch(pollCFBDUrl, {
+          const response = await fetch('https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/poll-cfbd/', {
             method: 'POST',
             headers: {
               Accept: 'application/json',

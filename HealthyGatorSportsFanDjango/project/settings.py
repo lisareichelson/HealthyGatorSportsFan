@@ -9,62 +9,42 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-
 # For accessing environment variables
 import os
+
 # For accessing environment variables from your .env file
 from dotenv import load_dotenv
-# Package to handle Heroku database configuration 
-import dj_database_url
-# For building paths
-from pathlib import Path
-
-
 # Load environment variables from the .env file
 load_dotenv()
 
+# Package to handle Heroku database configuration 
+import dj_database_url
 
-# Environment switch
-RUN_ENV = os.getenv('RUN_ENV', 'local')
-
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG is true when RUN_ENV is set to local
-DEBUG = RUN_ENV == 'local'
-
-
-# Set ALLOWED_HOSTS based on RUN_ENV
-if RUN_ENV == 'heroku':
-    ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com']
-elif RUN_ENV == 'local':
-    ALLOWED_HOSTS = [
-        '127.0.0.1', 
-        'localhost', 
-        '192.168.68.124', 
-        'b862-184-185-222-16.ngrok-free.app', 
-        'sawfish-premium-unlikely.ngrok-free.app'
-    ]
-
 
 # Use the PORT environment variable set by Heroku.
 # Gunicorn (see Procfile) uses the dynamic port assigned by Heroku, or defaults to 8000 if PORT is not set.
 # Running 'python manage.py runserver 0.0.0.0:8000' explicitly sets the port for local testing,
 # while 'python manage.py runserver' defaults to the fallback port (8000).
-# PORT = os.getenv('PORT', '8000')
+PORT = os.getenv('PORT', '8000')
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com','127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app']
 
 
 # Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -72,11 +52,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'HealthyGatorSportsFanDjango.app',
     'rest_framework',
     'corsheaders',
-    'app' if RUN_ENV == 'local' else 'HealthyGatorSportsFanDjango.app',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -90,13 +69,9 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-
 CORS_ALLOW_ALL_ORIGINS = True 
 
-
-ROOT_URLCONF = 'project.urls' if RUN_ENV == 'local' else 'HealthyGatorSportsFanDjango.project.urls'
-WSGI_APPLICATION = 'project.wsgi.application' if RUN_ENV == 'local' else 'HealthyGatorSportsFanDjango.project.wsgi.application'
-
+ROOT_URLCONF = 'HealthyGatorSportsFanDjango.project.urls'
 
 TEMPLATES = [
     {
@@ -114,23 +89,28 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'HealthyGatorSportsFanDjango.project.wsgi.application'
+
 
 # Database (local)
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-if RUN_ENV == 'local':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DATABASE_NAME'),
-            'USER': os.getenv('DATABASE_USER'),
-            'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        }
-    }
-else:
-    DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-    }
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': os.getenv('DATABASE_NAME'),
+#        'USER': os.getenv('DATABASE_USER'),
+#        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+#    }
+#}
+
+# Database (Heroku)
+# Configure the database connection using DATABASE_URL environment variable
+# Set a connection max age to reuse database connections (improves performance)
+# Enforce SSL for secure database connections on Heroku
+DATABASES = {
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+}
 
 
 # Password validation
