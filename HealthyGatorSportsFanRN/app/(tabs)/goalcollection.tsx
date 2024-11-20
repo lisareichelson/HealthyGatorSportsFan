@@ -123,12 +123,6 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 }
 
 function addNewUser(navigation: any, currentUser: any){
-
-
-    // DEBUG
-    console.log('addNewUser - API URL (createUserUrl):', createUserUrl);
-
-
     // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
     fetch(createUserUrl, {
@@ -191,9 +185,6 @@ function addNewUserInitialProgress(navigation: any, currentUser: any){
         feel_better_value: 3
     })) // TO DELETE
     
-    //DEBUG
-    console.log('addNewUserInitialProgress - API URL (createUserDataUrl):', createUserDataUrl);
-
     fetch(createUserDataUrl, {
         method: 'POST',
         headers: {
