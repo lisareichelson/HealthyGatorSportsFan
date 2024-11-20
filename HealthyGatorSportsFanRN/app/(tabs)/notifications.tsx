@@ -6,9 +6,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 // Determine the environment
-//const RUN_ENV = process.env.RUN_ENV || 'local'; // Default to 'local' if RUN_ENV is not set
-
-const RUN_ENV = 'heroku';
+const RUN_ENV = process.env.RUN_ENV || 'local'; // Default to 'local' if RUN_ENV is not set
 
 // Set the base URL dynamically
 let pollCFBDUrl: string;
