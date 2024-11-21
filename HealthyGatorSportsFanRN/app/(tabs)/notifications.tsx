@@ -5,6 +5,11 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import NotificationData from "@/components/notificationdata";
+import Config from 'react-native-config';
+
+// DEBUG
+console.log(Config.LOCAL_BACKEND_URL);
+
 
 const NotificationsPage = () => {
     const navigation = useNavigation();
@@ -106,8 +111,20 @@ const NotificationsPage = () => {
     // The below code is for sending a notification from backend
     const handlePollCFBD = async () => {
         try {
+
+            let pollUrl = '';
+
+            if (process.env.RUN_ENV === 'development') {
+                pollUrl = `${Config.LOCAL_BACKEND_URL}/poll-cfbd/`; // Use local URL
+            } else {
+                pollUrl = `${Config.HEROKU_BACKEND_URL}/poll-cfbd/`; // Use Heroku URL
+            }
+
+          // TO DELETE (old way of doing it PR #18)
           //const response = await fetch('https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/poll-cfbd/', { // for pushing to heroku
-          const response = await fetch('https://sawfish-premium-unlikely.ngrok-free.app/poll-cfbd/', { // for running locally
+          //const response = await fetch('https://sawfish-premium-unlikely.ngrok-free.app/poll-cfbd/', { // for running locally
+
+          const response = await fetch(pollUrl, {
             method: 'POST',
             headers: {
               Accept: 'application/json',

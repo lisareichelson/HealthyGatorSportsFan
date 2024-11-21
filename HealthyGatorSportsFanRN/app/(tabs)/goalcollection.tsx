@@ -3,6 +3,14 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
 import User from "@/components/user";
+import Config from 'react-native-config';
+
+// DEBUG
+console.log('Config:', Config);  // Print the entire config object.
+
+// DEBUG
+console.log(Config.LOCAL_BACKEND_URL);
+
 
 const GoalCollection = () => {
     const navigation = useNavigation();
@@ -114,8 +122,18 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 function addNewUser(navigation: any, currentUser: any){
     // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
+    
+    let createUserUrl = '';
+    if (process.env.RUN_ENV === 'development') {
+        createUserUrl = `${Config.LOCAL_BACKEND_URL}/api/users/`; // Use local URL
+    } else {
+        createUserUrl = `${Config.HEROKU_BACKEND_URL}/api/users/`; // Use Heroku URL
+    }
+    
+    // TO DELETE (old way of doing it PR #18)
     //const createUserUrl = 'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/'; // for pushing to heroku
-    const createUserUrl = 'https://sawfish-premium-unlikely.ngrok-free.app/api/users/'; // for running locally
+    //const createUserUrl = 'https://sawfish-premium-unlikely.ngrok-free.app/api/users/'; // for running locally
+
     fetch(createUserUrl, {
         // send the user credentials to the backend
         method: 'POST',
@@ -163,8 +181,18 @@ function addNewUser(navigation: any, currentUser: any){
 function addNewUserInitialProgress(navigation: any, currentUser: any){
         // UserData POST API call
         console.log("UserID = ", currentUser.userId) // TO DELETE
+
+        let createUserDataUrl = '';
+        if (process.env.RUN_ENV === 'development') {
+            createUserDataUrl = `${Config.LOCAL_BACKEND_URL}/api/users/${currentUser.userId}/recordData/`; // Use local URL
+        } else {
+            createUserDataUrl = `${Config.HEROKU_BACKEND_URL}/api/users/${currentUser.userId}/recordData/`; // Use Heroku URL
+        }
+
+        // TO DELETE (old way of doing it PR #18)
         //const createUserDataUrl = `https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/${currentUser.userId}/recordData/`; // for pushing to Heroku
-        const createUserDataUrl = `https://sawfish-premium-unlikely.ngrok-free.app/api/users/${currentUser.userId}/recordData/`; // for running locally
+        //const createUserDataUrl = `https://sawfish-premium-unlikely.ngrok-free.app/api/users/${currentUser.userId}/recordData/`; // for running locally
+
         console.log("JSON:") // TO DELETE
         console.log(JSON.stringify({
             goal_type: currentUser.goalType,
