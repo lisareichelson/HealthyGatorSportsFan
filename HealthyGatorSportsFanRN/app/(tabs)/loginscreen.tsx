@@ -69,7 +69,7 @@ async function ConfirmData(email: any, password: any, navigation: any){
         navigation.navigate('HomePage', {currentUser} as never);
     }
     else{
-        await handleLogin(currentUser, email, password, navigation);      
+        await handleLogin(currentUser, email, password, navigation);    
     }    
 }
 
@@ -99,9 +99,9 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
             currentUser.feelBetter = data.goal_to_lose_weight;
             currentUser.loseWeight = data.goal_to_feel_better;
             currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
-            currentUser.goal_to_feel_better = data.goal_to_feel_better;
-            await getLatestUserData(currentUser); 
-            navigation.navigate('HomePage', {currentUser} as never);     
+            currentUser.goal_to_feel_better = data.goal_to_feel_better; 
+            console.log("After 1st API call the currentUser = ", currentUser); 
+            await getLatestUserData(currentUser, navigation); 
         } else {
             const errorData = await response.json();
             Alert.alert('Error', errorData.detail || 'Something went wrong getting the user', [{ text: 'OK' }]);
@@ -112,9 +112,10 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
     }
 };
 
-const getLatestUserData = async (currentUser: any) => {
+const getLatestUserData = async (currentUser: any, navigation: any) => {
+    console.log("Before 2nd API call the currentUser = ", currentUser)  
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/userdata/recent/${currentUser.userId}/`, {
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/userdata/latest/${currentUser.userId}/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -126,6 +127,7 @@ const getLatestUserData = async (currentUser: any) => {
             console.log('UserData:', data);
             currentUser.currentWeight = data.weight_value;
             currentUser.goalType = data.goal_type;
+            navigation.navigate('HomePage', {currentUser} as never);
         } else {
             const errorData = await response.json();
             Alert.alert('Error', errorData.detail || 'Something went wrong getting latest userData', [{ text: 'OK' }]);

@@ -18,7 +18,7 @@ import logging
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
+        fields = ['user_id', 'email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
         # required fields in models.py, but these are overidden temporarily
         extra_kwargs = {
             'birthdate': {'required': False, 'default': "2000-01-01"},

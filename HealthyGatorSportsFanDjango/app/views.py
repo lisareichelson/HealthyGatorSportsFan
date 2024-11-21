@@ -94,6 +94,7 @@ class CreateUserDataView(APIView):
 
 class LatestUserDataView(APIView):
     def get(self, request, user_id):
+        print("Ok you made it here")
         try:
             recent_data = UserData.objects.filter(user_id=user_id).order_by('-timestamp').first()
             if recent_data:
@@ -160,9 +161,8 @@ class UserLoginView(APIView):
         try:
             # Fetch the user by email
             user = User.objects.get(email=email)
-            # user_serializer = UserSerializer(user, data=request.data, partial=True)
             # Check if the provided password matches
-            print("User's password backend: ", user.password)
+            print("User's password from DB: ", user.password)
             if user.check_password(password):
                 # If the password is correct, serialize and return user data
                 serializer = UserSerializer(user)
