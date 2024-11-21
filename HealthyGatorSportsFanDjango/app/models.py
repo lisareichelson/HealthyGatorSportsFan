@@ -1,11 +1,16 @@
 from django.db import models
+from django.contrib.auth.hashers import check_password as django_check_password
+
+# from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+# from django.contrib.auth import get_user_model
+# User = get_user_model()
 
 # Create your models here.
 
 # Best practice is one model per database table, so each model represents a table.
 
 # User model
-class User(models.Model):
+class User(models.Model): #AbstractUser): #AbstractBaseUser, PermissionsMixin):
     user_id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100, default="")
@@ -20,10 +25,27 @@ class User(models.Model):
     password = models.CharField(max_length=128, blank=True, null=True)  # Optional if signing in with Google
     #google_acct_id = models.CharField(max_length=255, blank=True, null=True)  # Optional if creating an account directly
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['user_id', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better', 'password']  # Add any additional required fields here
+
     # When an instance is referenced, prints the user ID and name instead of the default "User object (1)"
     def __str__(self):
-        return f"User ID: {self.user_id}, Name: {self.email}"
+        return f"User ID: {self.user_id}, Email: {self.email}"
     
+    # @property
+    # def is_anonymous(self):
+    #     """
+    #     Always return False. This is a way of comparing User objects to
+    #     anonymous users.
+    #     """
+    #     return False
+
+    def check_password(self, password_entered):
+        if (password_entered == self.password):
+            return True
+        else:
+            return False
+        
 # UserData model
 class UserData(models.Model):
     data_id = models.AutoField(primary_key=True)

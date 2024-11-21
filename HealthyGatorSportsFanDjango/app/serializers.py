@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import UserData, User, NotificationData
+
 import logging
 
 # Serializes models to JSON for the front end
@@ -63,6 +64,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.goal_weight = validated_data.get('goal_weight', instance.goal_weight)
         instance.save()
         return instance
+
     
 # Serializer for UserData
 class UserDataSerializer(serializers.ModelSerializer):

@@ -75,8 +75,8 @@ async function ConfirmData(email: any, password: any, navigation: any){
 
 const handleLogin = async (currentUser: any, email: any, password: any, navigation: any) => {
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/login/?email=${email}&password=${password}/`, {
-            method: 'GET',
+        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/login/?email=${email}&password=${password}`, {
+                method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },

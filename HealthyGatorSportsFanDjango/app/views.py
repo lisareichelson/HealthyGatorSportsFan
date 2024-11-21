@@ -14,12 +14,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 # from django.contrib.auth import authenticate, login, logout
 # from django.contrib import messages
 
 import logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from rest_framework.decorators import api_view
 
@@ -151,18 +152,25 @@ class UserLoginView(APIView):
     def get(self, request):
         email = request.query_params.get('email')
         password = request.query_params.get('password')
+        users = User.objects.all()  # Fetch all users from the database
+        print("Email & password: ", email, " & ", password)
+        print("Count of users: ", User.objects.count())
+        users = User.objects.all()
+        print("Users found: ", {users})
         try:
             # Fetch the user by email
-            user = User.objects.get(username=email) #I have tried email=email too, with no success
-            user_serializer = UserSerializer(user, data=request.data, partial=True)
+            user = User.objects.get(email=email)
+            # user_serializer = UserSerializer(user, data=request.data, partial=True)
             # Check if the provided password matches
-            if user_serializer.check_password(password):
+            print("User's password backend: ", user.password)
+            if user.check_password(password):
                 # If the password is correct, serialize and return user data
                 serializer = UserSerializer(user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
+            print("User does not exist, loser") 
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 # # Shannon, 11/19/2024: Below is an attempt I made at a more advanced auth method using django's built-in auth. I opted for simplicity for now.
