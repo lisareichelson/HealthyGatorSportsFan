@@ -14,9 +14,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.hashers import check_password
-# from django.contrib.auth.models import User
-# from django.contrib.auth import authenticate, login, logout
-# from django.contrib import messages
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -154,7 +151,7 @@ class UserLoginView(APIView):
         email = request.query_params.get('email')
         password = request.query_params.get('password')
         users = User.objects.all()  # Fetch all users from the database
-        print("Email & password: ", email, " & ", password)
+        print("Email & password from query parameters: ", email, " & ", password)
         print("Count of users: ", User.objects.count())
         users = User.objects.all()
         print("Users found: ", {users})
@@ -170,7 +167,6 @@ class UserLoginView(APIView):
             else:
                 return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
-            print("User does not exist, loser") 
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 # # Shannon, 11/19/2024: Below is an attempt I made at a more advanced auth method using django's built-in auth. I opted for simplicity for now.

@@ -100,11 +100,10 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
             currentUser.loseWeight = data.goal_to_feel_better;
             currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
             currentUser.goal_to_feel_better = data.goal_to_feel_better; 
-            console.log("After 1st API call the currentUser = ", currentUser); 
             await getLatestUserData(currentUser, navigation); 
         } else {
             const errorData = await response.json();
-            Alert.alert('Error', errorData.detail || 'Something went wrong getting the user', [{ text: 'OK' }]);
+            Alert.alert('Error', errorData.detail || 'Username or password incorrect', [{ text: 'OK' }]);
         }
     } catch (err) {
         console.error('Error during login:', err);
