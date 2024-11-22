@@ -9,27 +9,55 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+# For accessing environment variables
+import os
+
+# For accessing environment variables from your .env file
+from dotenv import load_dotenv
+# Load environment variables from the .env file
+load_dotenv()
+
+# Package to handle Heroku database configuration 
+import dj_database_url
 
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Use the PORT environment variable set by Heroku.
+# Gunicorn (see Procfile) uses the dynamic port assigned by Heroku, or defaults to 8000 if PORT is not set.
+# Running 'python manage.py runserver 0.0.0.0:8000' explicitly sets the port for local testing,
+# while 'python manage.py runserver' defaults to the fallback port (8000).
+PORT = os.getenv('PORT', '8000')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--7brl&&mqp0y=9%ae82(02f)74p8hl7+d^1obwvrgu0=&b^(k*'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app']
+ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com','127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app']
 
 
 # Application definition
+# for pushing to heroku
+#INSTALLED_APPS = [
+#    'django.contrib.admin',
+#    'django.contrib.auth',
+#    'django.contrib.contenttypes',
+#    'django.contrib.sessions',
+#    'django.contrib.messages',
+#    'django.contrib.staticfiles',
+#    'HealthyGatorSportsFanDjango.app',
+#    'rest_framework',
+#    'corsheaders',
+#]
 
+# for running locally
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,6 +72,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,6 +84,9 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True 
 
+# for pushing to heroku
+#ROOT_URLCONF = 'HealthyGatorSportsFanDjango.project.urls'
+# for running locally
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
@@ -73,20 +105,29 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+# for pushing to Heroku
+#WSGI_APPLICATION = 'HealthyGatorSportsFanDjango.project.wsgi.application'
 
 
-# Database
+# Database (for running locally)
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'healthygatorsportsfan',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
     }
 }
+
+# Database (for pushing to heroku)
+# Configure the database connection using DATABASE_URL environment variable
+# Set a connection max age to reuse database connections (improves performance)
+# Enforce SSL for secure database connections on Heroku
+#DATABASES = {
+#    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+#}
 
 
 # Password validation
@@ -125,6 +166,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Directory where Django's collectstatic command gathers all static files (CSS, JS, images)
+# Heroku requires this for serving static files in production.
+# All static assets are collected into one location before deployment.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # HealthyGatorSportsFanDjango/staticfiles
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -132,5 +181,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://b862-184-185-222-16.ngrok-free.app',
-    'https://normal-elegant-corgi.ngrok-free.app'
+    'https://normal-elegant-corgi.ngrok-free.app',
+    'https://sawfish-premium-unlikely.ngrok-free.app',
+    'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com'
 ]
