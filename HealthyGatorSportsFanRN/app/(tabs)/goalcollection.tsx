@@ -3,6 +3,7 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
 import User from "@/components/user";
+import { AppUrls } from '@/constants/AppUrls';
 
 const GoalCollection = () => {
     const navigation = useNavigation();
@@ -114,8 +115,7 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
 function addNewUser(navigation: any, currentUser: any){
     // User POST API call
     // At this point we have everything we need to make the User POST call to create the account
-    //const createUserUrl = 'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/'; // for pushing to heroku
-    const createUserUrl = 'https://sawfish-premium-unlikely.ngrok-free.app/api/users/'; // for running locally
+    const createUserUrl = `${AppUrls.url}/api/users/`;
     fetch(createUserUrl, {
         // send the user credentials to the backend
         method: 'POST',
@@ -123,7 +123,7 @@ function addNewUser(navigation: any, currentUser: any){
         headers: {
             'Content-Type': 'application/json',
         },
-        // convert the data into JSON formatS
+        // convert the data into JSON format
         body: JSON.stringify({
             email: currentUser.email,
             password: currentUser.password,
@@ -163,8 +163,7 @@ function addNewUser(navigation: any, currentUser: any){
 function addNewUserInitialProgress(navigation: any, currentUser: any){
         // UserData POST API call
         console.log("UserID = ", currentUser.userId) // TO DELETE
-        //const createUserDataUrl = `https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/api/users/${currentUser.userId}/recordData/`; // for pushing to Heroku
-        const createUserDataUrl = `https://sawfish-premium-unlikely.ngrok-free.app/api/users/${currentUser.userId}/recordData/`; // for running locally
+        const createUserDataUrl = `${AppUrls.url}/api/users/${currentUser.userId}/recordData/`;
         console.log("JSON:") // TO DELETE
         console.log(JSON.stringify({
             goal_type: currentUser.goalType,
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
 
     // Previous URL & POST API call for credentials only; maybe we can use this for reference when updating values in the profile management screen.
     /*
-    const url = 'https://normal-elegant-corgi.ngrok-free.app/api/users/'; // Adjust the endpoint to your computer IP address
+    const url = `${AppUrls.url}/api/users/`; 
     fetch(url, {
         // send the user credentials to the backend
         method: 'POST',
@@ -270,7 +269,7 @@ const styles = StyleSheet.create({
     // Previous URL & POST API call for basic info only; maybe we can use this for reference when updating values in the profile management screen.
     /*
     const userId = userData.userId;
-    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${userId}/basicinfo/`;
+    const url = `${AppUrls.url}/api/users/${userId}/basicinfo/`;
     
     fetch(url, {
         method: 'POST',
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
 
     // Previous URL & POST API call for goals only; maybe we can use this for reference when updating values in the profile management screen.
     /*
-    const url = `https://normal-elegant-corgi.ngrok-free.app/api/users/${currentUser.currentUser.userId}/goals/`;
+    const url = `${AppUrls.url}/api/users/${currentUser.currentUser.userId}/goals/`;
 
     // Log payload being sent to backend... (what is the purpose of this?)
     const requestBody = {
