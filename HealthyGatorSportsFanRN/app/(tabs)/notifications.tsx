@@ -106,16 +106,17 @@ const NotificationsPage = () => {
     // The below code is for sending a notification from backend
     const handlePollCFBD = async () => {
         try {
-            const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/poll-cfbd/', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: 'Poll request sent' }),
-            });
-            const data = await response.json();
-            console.log(data);
+          //const response = await fetch('https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/poll-cfbd/', { // for pushing to heroku
+          const response = await fetch('https://sawfish-premium-unlikely.ngrok-free.app/poll-cfbd/', { // for running locally
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: 'Poll request sent' }),
+          });
+          const data = await response.json();
+          console.log(data);
         } catch (error) {
             console.error('Error sending poll request:', error);
         }
