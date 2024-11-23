@@ -12,8 +12,6 @@ from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.hashers import check_password
 
 import logging
 logging.basicConfig(level=logging.INFO)
