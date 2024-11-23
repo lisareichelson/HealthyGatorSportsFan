@@ -2,6 +2,7 @@ import {StyleSheet, View, Text, TouchableOpacity, TextInput, Alert} from 'react-
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import User from "@/components/user";
+import { AppUrls } from '@/constants/AppUrls';
 
 export default function LogInScreen() {
     const navigation = useNavigation();
@@ -75,7 +76,7 @@ async function ConfirmData(email: any, password: any, navigation: any){
 
 const handleLogin = async (currentUser: any, email: any, password: any, navigation: any) => {
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/login/?email=${email}&password=${password}`, {
+        const response = await fetch(`${AppUrls.url}/api/login/?email=${email}&password=${password}`, {
                 method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
