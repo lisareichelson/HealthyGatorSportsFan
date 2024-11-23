@@ -11,9 +11,13 @@ from django.http import JsonResponse
 from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.hashers import check_password
 
 import logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from rest_framework.decorators import api_view
 
@@ -84,6 +88,19 @@ class CreateUserDataView(APIView):
                 return Response(response_data, status=status.HTTP_201_CREATED)
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LatestUserDataView(APIView):
+    def get(self, request, user_id):
+        print("Ok you made it here")
+        try:
+            recent_data = UserData.objects.filter(user_id=user_id).order_by('-timestamp').first()
+            if recent_data:
+                serializer = UserDataSerializer(recent_data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "No data found for this user."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 # API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
 class BasicInfoView(APIView):
@@ -128,6 +145,49 @@ class GoalCollectionView(APIView):
                 }, status=status.HTTP_200_OK)
             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserLoginView(APIView):
+    def get(self, request):
+        email = request.query_params.get('email')
+        password = request.query_params.get('password')
+        users = User.objects.all()  # Fetch all users from the database
+        print("Email & password from query parameters: ", email, " & ", password)
+        print("Count of users: ", User.objects.count())
+        users = User.objects.all()
+        print("Users found: ", {users})
+        try:
+            # Fetch the user by email
+            user = User.objects.get(email=email)
+            # Check if the provided password matches
+            print("User's password from DB: ", user.password)
+            if user.check_password(password):
+                # If the password is correct, serialize and return user data
+                serializer = UserSerializer(user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+# # Shannon, 11/19/2024: Below is an attempt I made at a more advanced auth method using django's built-in auth. I opted for simplicity for now.
+# class UserLoginView(APIView):
+#     def get(self, request):
+#         email = request.query_params.get('email')
+#         password = request.query_params.get('password')
+#         # Check if a user with the provided username exists
+#         if not User.objects.filter(email=email).exists():
+#             # Display an error message if the username does not exist
+#             messages.error(request, 'Invalid email')
+#             return Response({"error": "Invalid email"}, status=status.HTTP_404_NOT_FOUND)
+#         user = authenticate(username=email, password=password)
+#         if user is not None:
+#             login(request, user) #login() function takes an HttpRequest object and a User object, and saves the user's ID in the session.
+#             serializer = UserSerializer(user)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+#     def logout_view(request):
+#         logout(request)
     
 # API view to handle GET requests for all notifications for a userID  
 class NotificationList(generics.ListAPIView):

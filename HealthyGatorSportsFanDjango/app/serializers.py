@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import UserData, User, NotificationData
+
 import logging
 
 # Serializes models to JSON for the front end
@@ -17,7 +18,7 @@ import logging
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
+        fields = '__all__' #['user_id', 'email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
         # required fields in models.py, but these are overidden temporarily
         extra_kwargs = {
             'birthdate': {'required': False, 'default': "2000-01-01"},
@@ -63,12 +64,13 @@ class UserSerializer(serializers.ModelSerializer):
         instance.goal_weight = validated_data.get('goal_weight', instance.goal_weight)
         instance.save()
         return instance
+
     
 # Serializer for UserData
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['goal_type', 'weight_value', 'feel_better_value']
+        fields = ['data_id', 'user', 'timestamp', 'goal_type', 'weight_value', 'feel_better_value']        
         extra_kwargs = {
             'goal_type': {'required': False},
             'weight_value': {'required': False, 'default': 0.0},

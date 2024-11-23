@@ -20,7 +20,7 @@ from django.urls import path
 #from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 # for running locally
 #from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView (before merge)
-from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDetail, BulkDeleteNotifications
+from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDetail, BulkDeleteNotifications, UserLoginView, LatestUserDataView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
@@ -34,9 +34,11 @@ urlpatterns = [
 
     # API endpoints for app
     path('api/users/', CreateUserView.as_view(), name='user-create'), # endpoint for user creation screen
-    path('api/users/<int:user_id>/recordData/', CreateUserDataView.as_view(), name='user-record-data'), # no longer used
+    path('api/users/<int:user_id>/recordData/', CreateUserDataView.as_view(), name='user-record-data'),
+    path('api/userdata/latest/<int:user_id>/', LatestUserDataView.as_view(), name='get-latest-user-data'),
     path('api/users/<int:user_id>/basicinfo/', BasicInfoView.as_view(), name='user-basicinfo'), # no longer used
     path('api/users/<int:user_id>/goals/', GoalCollectionView.as_view(), name='user-goals'), # no longer used
+    path('api/login/', UserLoginView.as_view(), name='user-login'),
     path('notifications/<int:user_id>/', NotificationList.as_view(), name='notification-list'),
     path('notificationdata/add/', NotificationDetail.as_view(), name='notification-create'),
     path('notifications/<int:notification_id>/delete/', NotificationDetail.as_view(), name='notification-delete'),
