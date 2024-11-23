@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import Checkbox from 'expo-checkbox';
 import User from "@/components/user";
@@ -16,8 +16,12 @@ const GoalCollection = () => {
 
     // startWeight will automatically get initialized to the currentWeight (which is fetched from weight_value).
     const [startWeight, setStartWeight] = useState(currentUser.currentWeight || '');
-
     const [goalWeight, setGoalWeight] = useState('');
+
+    //The following function prevents the user from going backwards a screen.
+    usePreventRemove(true, ({ data }) => {
+        //console.log("Back button prevented.");
+    });
 
     return (
         <View style={styles.container}>

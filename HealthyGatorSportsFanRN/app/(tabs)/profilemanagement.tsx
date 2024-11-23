@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import User from "@/components/user";
 import {useState} from "react";
 import {Dropdown} from "react-native-element-dropdown";
@@ -61,6 +61,28 @@ export default function ProfileManagement() {
 
     const [showEditGoalWeight, setShowEditGoalWeight] = useState(false);
     const [goalWeight, setGoalWeight] = useState('');
+
+    function dataEntered():boolean{
+        if (newFirstName != ''|| newLastName != '')
+            return true;
+        if (heightFt.valueOf() != '' || heightInch.valueOf() != '')
+            return true;
+         if (newWeight.valueOf() != '')
+             return true;
+         if (newGender != '')
+             return true;
+         if (feelBetter)
+             return true;
+         if (loseWeight)
+             return true;
+
+        return goalWeight.valueOf() != '';
+    }
+
+    //The following function prevents the user from going backwards a screen ONLY IF data has been entered.
+    usePreventRemove(dataEntered(), ({ data }) => {
+        //console.log("Back button prevented.");
+    });
 
     return (
         <View style={styles.container}>
@@ -303,52 +325,77 @@ export default function ProfileManagement() {
 
 //TODO: Connect changes to backend
 function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, newWeight: any, newGender:any, loseWeight: any, feelBetter:any, newGoalWeight: any, navigation: any){
+    let okayToContinue = true;
     if(newGoalWeight >= currentUser.currentWeight){
         Alert.alert("Goal weight must be less than current weight.");
         return;
     }
-    Alert.alert(
-        "Confirmation",
-        "Are you sure you want to make these changes?",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {
-                text: "Confirm Changes",
-                style: "destructive",
-                onPress: () => {
-                    // Navigate back to the welcome page.
-                    console.log("Changing User Data");
-                    //Save the altered currentUser & send it back to the home page
-                    if(newFirstName != '')
-                        currentUser.firstName = newFirstName;
-                    if(newLastName != '')
-                        currentUser.lastName = newLastName;
-                    if(newFt != '')
-                        currentUser.heightFeet = newFt;
-                    if(newInch != '')
-                        currentUser.heightInches = newInch;
-                    if(newWeight != '')
-                        currentUser.currentWeight = newWeight;
-                    if(newGender != '')
-                        currentUser.gender = newGender;
-                    console.log(JSON.stringify(currentUser));
-                    console.log("checkbox lW: " + loseWeight);
-                    if(loseWeight != currentUser.loseWeight) //goal selection changed
-                        currentUser.loseWeight = loseWeight;
-                    if(feelBetter != currentUser.feelBetter) //goal selection changed
-                        currentUser.feelBetter = feelBetter;
-                    if(newGoalWeight != ''){
-                        currentUser.goalWeight = newGoalWeight;
+    if(newGoalWeight != '' && !currentUser.goal_to_lose_weight && loseWeight == false){
+        okayToContinue = false;
+        Alert.alert(
+            "Confirmation",
+            "You can't have a goal weight if your goal is not to lose weight!",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Okay",
+                    style: "destructive",
+                    onPress: () => {
+                        // Manually select lose weight as a goal for the user.
+                        loseWeight = true;
+                        okayToContinue = true;
                     }
-
-                    navigation.navigate('HomePage', {currentUser} as never);
                 }
-            }
-        ]
-    );
+            ]
+        );
+    }
+    if (okayToContinue){
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to make these changes?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Confirm Changes",
+                    style: "destructive",
+                    onPress: () => {
+                        // Navigate back to the welcome page.
+                        console.log("Changing User Data");
+                        //Save the altered currentUser & send it back to the home page
+                        if (newFirstName != '')
+                            currentUser.firstName = newFirstName;
+                        if (newLastName != '')
+                            currentUser.lastName = newLastName;
+                        if (newFt != '')
+                            currentUser.heightFeet = newFt;
+                        if (newInch != '')
+                            currentUser.heightInches = newInch;
+                        if (newWeight != '')
+                            currentUser.currentWeight = newWeight;
+                        if (newGender != '')
+                            currentUser.gender = newGender;
+                        console.log(JSON.stringify(currentUser));
+                        console.log("checkbox lW: " + loseWeight);
+                        if (loseWeight != currentUser.loseWeight) //goal selection changed
+                            currentUser.loseWeight = loseWeight;
+                        if (feelBetter != currentUser.feelBetter) //goal selection changed
+                            currentUser.feelBetter = feelBetter;
+                        if (newGoalWeight != '') {
+                            currentUser.goalWeight = newGoalWeight;
+                        }
+
+                        navigation.navigate('HomePage', {currentUser} as never);
+                    }
+                }
+            ]
+        );
+    }
 
 }
 

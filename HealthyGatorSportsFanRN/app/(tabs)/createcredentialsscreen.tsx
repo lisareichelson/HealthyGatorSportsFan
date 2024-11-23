@@ -3,7 +3,6 @@ import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import User from "@/components/user";
 
-//PLACEHOLDER CODE: Insert this between the welcome screen and the next screens once the google sign in is working.
 export default function CreateCredentials() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');

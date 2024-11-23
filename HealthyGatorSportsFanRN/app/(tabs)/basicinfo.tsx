@@ -2,7 +2,7 @@ import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, 
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState} from "react";
-import User from "@/components/user";
+import { usePreventRemove } from '@react-navigation/native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const BasicInformationCollection = () => {
@@ -50,6 +50,10 @@ const BasicInformationCollection = () => {
     const [isVisible, setIsVisible] = useState(false);
     //This is the displayed string representing the birthdate.
     const [birthDayStr, setBirthDayStr] = useState("Enter birthdate");
+    //The following function prevents the user from going backwards a screen.
+    usePreventRemove(true, ({ data }) => {
+        //console.log("Back button prevented.");
+    });
 
     const handleDate = (selectedDate: SetStateAction<Date>) => {
          setBirthdate(selectedDate);

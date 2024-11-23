@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
 import User from "@/components/user";
@@ -8,11 +8,13 @@ import User from "@/components/user";
 export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
-    const { currentUser } = route.params as { currentUser: any };
-
-    //const user: any = route.params;
-    //const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
-    //console.log("User Data:" + JSON.stringify(currentUser));
+    //const { currentUser } = route.params as { currentUser: any };
+    const user: any = route.params;
+    const currentUser: User = user.currentUser.cloneUser();
+    //The following function prevents the user from going backwards a screen.
+    usePreventRemove(true, ({ data }) => {
+        //console.log("Back button prevented.");
+    });
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();
@@ -20,6 +22,25 @@ export default function HomePage() {
         `${currentOpponent}`,
     );
     let CurrentGameData = GetCurrentScoreAndTime();
+
+    //Gets text to display in goals box depending on goal progress
+    function GetGoalsText(): string{
+        if(currentUser.goal_to_lose_weight){
+            // @ts-ignore
+            return "Weight left to lose: " + (currentUser.currentWeight - currentUser.goalWeight);
+        }
+        else
+            return "Keep at it!";
+    }
+
+    //Gets text to display for goal type
+    function GetGoals(): string{
+        if(currentUser.goalType == "both"){
+            return "Lose weight and feel better";
+        }
+        else
+            return currentUser.goalType as string;
+    }
 
     return (
         <View style={styles.container}>
@@ -67,13 +88,20 @@ export default function HomePage() {
                             {CurrentOpponentFullName}
                         </Text>
                     </View>
-
                 </View>
 
             </View>
-            <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 50, alignSelf:'center'}}>
-                Welcome to the placeholder home screen!
-            </Text>
+            <View style={styles.weightBox}>
+                <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center', textAlign:'center'}}>
+                    Current Goals: {GetGoals()}
+                </Text>
+                <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
+                    Current Weight: {currentUser.currentWeight}
+                </Text>
+                <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
+                    {GetGoalsText()}
+                </Text>
+            </View>
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
                     <Image
@@ -216,12 +244,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         borderWidth: 1.5,
-        borderRadius: 30,
-        borderColor: 'grey',
+        borderRadius: 10,
+        borderColor: 'white',
         width: '90%',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
     },
     scoreBoxText:{
         flexDirection: 'column',
+    },
+    weightBox:{
+        flexDirection:'column',
+        width: '80%', // Adjust as needed
+        height: '20%', // Adjust as needed
+        borderRadius: 10,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+        marginTop: '15%',
+        alignSelf: 'center',
+        justifyContent:'space-around',
     }
 });
