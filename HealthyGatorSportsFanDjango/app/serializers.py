@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             'height_inches': {'required': False, 'default': 0},
             'goal_weight': {'required': False, 'default': 0.0},
             'goal_to_lose_weight': {'required': False, 'default': 0.0},
-            'goal_to_feel_better': {'required': False, 'default': 0.0}
+            'goal_to_feel_better': {'required': False, 'default': 0.0},
         }
 
     def create(self, validated_data):

@@ -1,9 +1,10 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import User from "@/components/user";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {Dropdown} from "react-native-element-dropdown";
 import Checkbox from "expo-checkbox";
+import { AppUrls } from '@/constants/AppUrls';
 
 export default function ProfileManagement() {
     const navigation = useNavigation();
@@ -11,15 +12,15 @@ export default function ProfileManagement() {
     const userData = route.params;
     const user: any = route.params;
     const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
-   // console.log("User Data profile management:" + JSON.stringify(currentUser));
+    // console.log("User Data profile management:" + JSON.stringify(currentUser));
 
     const [showEditName, setShowEditName] = useState(false);
     const [newFirstName, setNewFirstName] = useState('');
     const [newLastName, setNewLastName] = useState('');
 
     const [showEditHeight, setShowEditHeight] = useState(false);
-    const [heightInch, setHeightInches] = useState('');
-    const [heightFt, setHeightFeet] = useState('');
+    const [heightInch, setNewHeightInches] = useState('');
+    const [heightFt, setNewHeightFeet] = useState('');
     const [newHeightFeet] = useState([
         {value: '0'},
         {value: '1'},
@@ -46,6 +47,7 @@ export default function ProfileManagement() {
         {value: '11'}
     ]);
 
+    // Shannon 11/23/2024 - These variables are used for "Current Weight" which I removed from this page by commenting out
     const [showEditWeight, setShowEditWeight] = useState(false);
     const [newWeight, setNewWeight] = useState('');
 
@@ -58,11 +60,25 @@ export default function ProfileManagement() {
     const [newGender, setNewGender] = useState('');
 
     const [showEditGoals, setShowEditGoals] = useState(false);
-    const [feelBetter, setFeelBetter] = useState(false);
-    const [loseWeight, setLoseWeight] = useState(false);
+    const [newFeelBetter, setNewFeelBetter] = useState(currentUser.feelBetter);
+    const [newLoseWeight, setNewLoseWeight] = useState(currentUser.loseWeight);
+    // console.log("newFeelBetter = ", newFeelBetter, " & newLoseWeight = ", newLoseWeight);
 
     const [showEditGoalWeight, setShowEditGoalWeight] = useState(false);
-    const [goalWeight, setGoalWeight] = useState('');
+    const [newGoalWeight, setNewGoalWeight] = useState('');
+
+    // useEffect(() => {
+    //     console.log("Current user on page load: ", currentUser);
+    //     // Upon load, initialize "new" values to current values so these are the default values which get passed to the API until they are changed
+    //     setNewFirstName(currentUser.firstName);
+    //     setNewLastName(currentUser.lastName);
+    //     setNewHeightFeet(currentUser.heightFeet.toString());
+    //     setNewHeightInches(currentUser.heightInches.toString());
+    //     setNewGender(currentUser.gender);
+    //     setNewFeelBetter(currentUser.goal_to_feel_better);
+    //     setNewLoseWeight(currentUser.goal_to_lose_weight);
+    //     setNewGoalWeight(currentUser.goalWeight.toString());
+    // }, []);
 
     return (
         <View style={styles.container}>
@@ -71,8 +87,8 @@ export default function ProfileManagement() {
                     source={require('./../../assets/images/clipboardgator.jpg')}
                     style={{width:55, height:55}}
                 />
-                <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                    Hey, Albert!
+                <Text style={{fontSize: 25, fontFamily: 'System'}}>
+                    Hey, {currentUser.firstName}!
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
                                   onPress={() => NavigateToNotifications(currentUser, navigation) }>
@@ -139,7 +155,7 @@ export default function ProfileManagement() {
                               labelField={"value"}
                               valueField={"value"}
                               accessibilityLabel="Dropdown menu for selecting height in feet"
-                              onChange={item => { setHeightFeet(item.value);}}
+                              onChange={item => { setNewHeightFeet(item.value);}}
                               renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
                     ></Dropdown>
 
@@ -149,12 +165,12 @@ export default function ProfileManagement() {
                               labelField={"value"}
                               valueField={"value"}
                               accessibilityLabel="Dropdown menu for selecting additional height in inches"
-                              onChange={item => {setHeightInches(item.value);}}
+                              onChange={item => {setNewHeightInches(item.value);}}
                               renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
                     ></Dropdown>
                 </View>)}
 
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                {/* <TouchableOpacity style = {styles.row} activeOpacity={0.5}
                                   onPress={() => setShowEditWeight(!showEditWeight)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Current Weight
@@ -177,7 +193,8 @@ export default function ProfileManagement() {
                         defaultValue={newWeight}
                         onChangeText={newWeight => setNewWeight(newWeight)}
                         returnKeyType="done"/>
-                )}
+                )} */}
+
                 <TouchableOpacity style = {styles.row} activeOpacity={0.5}
                                   onPress={() => setShowEditGender(!showEditGender)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
@@ -218,14 +235,14 @@ export default function ProfileManagement() {
                 </TouchableOpacity>
                 {showEditGoals && (
                     <View style = {[styles.row, {justifyContent: 'space-evenly'}]}>
-                        <Text style={{fontSize: 10, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
+                        <Text style={{fontSize: 12, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
                             Feel Better:
                         </Text>
-                        <Checkbox value={loseWeight} onValueChange={setLoseWeight} />
-                        <Text style={{fontSize: 10, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
+                        <Checkbox value={newFeelBetter} onValueChange={setNewFeelBetter} style={styles.checkbox}/>
+                        <Text style={{fontSize: 12, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
                             Lose Weight:
                         </Text>
-                        <Checkbox value={feelBetter} onValueChange={setFeelBetter} />
+                        <Checkbox value={newLoseWeight} onValueChange={setNewLoseWeight} />
                     </View>
                 )}
                 <TouchableOpacity style = {styles.row} activeOpacity={0.5}
@@ -247,15 +264,15 @@ export default function ProfileManagement() {
                             placeholder="enter a weight..."
                             keyboardType={"numeric"}
                             editable={true}
-                            value={goalWeight}
-                            defaultValue={goalWeight}
-                            onChangeText={newWeight => setGoalWeight(newWeight)}
+                            value={newGoalWeight}
+                            defaultValue={newGoalWeight}
+                            onChangeText={newWeight => setNewGoalWeight(newWeight)}
                             returnKeyType="done"/>
                 )}
             </View>
 
             <TouchableOpacity style = {[styles.confirmButton, {alignSelf: 'center'} ]} activeOpacity={0.5}
-                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, newWeight, newGender, feelBetter, loseWeight, goalWeight, navigation) }>
+                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, newWeight, newGender, newFeelBetter, newLoseWeight, newGoalWeight, navigation) }>
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
                     Confirm Changes
                 </Text>
@@ -304,11 +321,27 @@ export default function ProfileManagement() {
 }
 
 //TODO: Connect changes to backend
-function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, newWeight: any, newGender:any, loseWeight: any, feelBetter:any, newGoalWeight: any, navigation: any){
+function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, newWeight: any, newGender:any, newFeelBetter:any, newLoseWeight: any, newGoalWeight: any, navigation: any){
+    if(newFirstName === '')
+        newFirstName = currentUser.firstName;
+    if(newLastName === '')
+        newLastName = currentUser.lastName;
+    if(newFt === '')
+        newFt = currentUser.heightFeet;
+    if(newInch === '')
+        newInch = currentUser.heightInches;
+    if(newGender === '')
+        newGender = currentUser.gender;
+    console.log("checkbox lw: " + newLoseWeight);
+    console.log("checkbox fb: " + newFeelBetter);
+    if(newGoalWeight === ''){
+        newGoalWeight = currentUser.goalWeight;
+    }
     if(newGoalWeight >= currentUser.currentWeight){
         Alert.alert("Goal weight must be less than current weight.");
         return;
     }
+    console.log("currentUser before API call: ", currentUser);
     Alert.alert(
         "Confirmation",
         "Are you sure you want to make these changes?",
@@ -320,33 +353,8 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
             {
                 text: "Confirm Changes",
                 style: "destructive",
-                onPress: () => {
-                    // Navigate back to the welcome page.
-                    console.log("Changing User Data");
-                    //Save the altered currentUser & send it back to the home page
-                    if(newFirstName != '')
-                        currentUser.firstName = newFirstName;
-                    if(newLastName != '')
-                        currentUser.lastName = newLastName;
-                    if(newFt != '')
-                        currentUser.heightFeet = newFt;
-                    if(newInch != '')
-                        currentUser.heightInches = newInch;
-                    if(newWeight != '')
-                        currentUser.currentWeight = newWeight;
-                    if(newGender != '')
-                        currentUser.gender = newGender;
-                    console.log(JSON.stringify(currentUser));
-                    console.log("checkbox lW: " + loseWeight);
-                    if(loseWeight != currentUser.loseWeight) //goal selection changed
-                        currentUser.loseWeight = loseWeight;
-                    if(feelBetter != currentUser.feelBetter) //goal selection changed
-                        currentUser.feelBetter = feelBetter;
-                    if(newGoalWeight != ''){
-                        currentUser.goalWeight = newGoalWeight;
-                    }
-
-                    navigation.navigate('HomePage', {currentUser} as never);
+                onPress: async () => {
+                    await updateUser(currentUser, newFirstName, newLastName, newGender, newFt, newInch, newFeelBetter, newLoseWeight, newGoalWeight, navigation);
                 }
             }
         ]
@@ -477,6 +485,60 @@ function LogoutPopup(navigation: any){
     );
 }
 
+const updateUser = async (currentUser: any, newFirstName: string, newLastName: string, newGender: string, newFt: number, newInch: number, newFeelBetter: boolean, newLoseWeight: boolean, newGoalWeight: number, navigation: any) => {
+    const updatedData = {
+        first_name: newFirstName,
+        last_name: newLastName,
+        gender: newGender,
+        height_feet: newFt,
+        height_inches: newInch,
+        goal_to_feel_better: newFeelBetter,
+        goal_to_lose_weight: newLoseWeight,
+        goal_weight: newGoalWeight,
+    };
+    console.log("API Request Body: ", JSON.stringify(updatedData));
+
+    try {
+        const response = await fetch(`${AppUrls.url}/api/users/${currentUser.userId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData),
+        });
+
+        if (response.ok) {
+            Alert.alert('Profile updated successfully!');
+            //If API call is successful, update the currentUser in the frontend & navigate back to the home page
+            currentUser.firstName = newFirstName;
+            currentUser.lastName = newLastName;
+            currentUser.heightFeet = newFt;
+            currentUser.heightInches = newInch;
+            currentUser.gender = newGender;
+            currentUser.loseWeight = newLoseWeight;
+            currentUser.goal_to_lose_weight = newLoseWeight;
+            currentUser.feelBetter = newFeelBetter;
+            currentUser.goal_to_feel_better = newFeelBetter;
+            // if(newFeelBetter && newLoseWeight)
+            //     currentUser.goalType = "both";
+            // if(newFeelBetter && !newLoseWeight)
+            //     currentUser.goalType = "feelBetter";
+            // if(!newFeelBetter && newLoseWeight)
+            //     currentUser.goalType = "loseWeight";
+            currentUser.goalWeight = newGoalWeight;
+            console.log("Current user after API call & updates: ", currentUser);
+            // Navigate back to the welcome page.
+            navigation.navigate('HomePage', {currentUser} as never);
+        } else {
+            const errorData = await response.json();
+            Alert.alert('Error updating profile', JSON.stringify(errorData));
+        }
+    } catch (error) {
+        console.error('Network error: ', error);
+        Alert.alert("Network error");
+    }
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -507,6 +569,7 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         margin: 8,
+        alignSelf: 'center',
     },
     bottomIcons:{
         justifyContent: 'center',

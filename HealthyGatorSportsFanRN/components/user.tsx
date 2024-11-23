@@ -15,15 +15,15 @@ class User {
     //Goal-Related Data
     feelBetter: boolean;
     loseWeight: boolean;
-    goalWeight?: number;
+    goalWeight: number;
 
     goal_to_feel_better: boolean;
     goal_to_lose_weight: boolean;
 
-    goalType?: string;
+    goalType: string;
 
 
-    constructor(userId: number, email: string, password: string, fName: string, lName: string, bDate: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:boolean, loseWeight: boolean, goalWeight?: number, goalType?: string) {
+    constructor(userId: number, email: string, password: string, fName: string, lName: string, bDate: string, gender: string, hFeet: number, hInches: number, cWeight: number, feelBetter:boolean, loseWeight: boolean, goalWeight: number, goalType: string) {
         this.userId = userId;
         this.email = email;
         this.password = password;

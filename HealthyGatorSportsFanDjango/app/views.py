@@ -68,6 +68,21 @@ class CreateUserView(APIView):
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class UserUpdateView(APIView):
+    def put(self, request, user_id):
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        print("request.data: ", request.data)
+        serializer = UserSerializer(user, data=request.data, partial=True)  # Allow partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            print(serializer.errors)  # Debugging line
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 # API view to handle POST requests for user data creation
 class CreateUserDataView(APIView):
     def post(self, request, user_id):
@@ -89,7 +104,6 @@ class CreateUserDataView(APIView):
 
 class LatestUserDataView(APIView):
     def get(self, request, user_id):
-        print("Ok you made it here")
         try:
             recent_data = UserData.objects.filter(user_id=user_id).order_by('-timestamp').first()
             if recent_data:
