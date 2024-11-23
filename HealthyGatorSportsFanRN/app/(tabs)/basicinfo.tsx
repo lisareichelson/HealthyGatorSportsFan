@@ -13,32 +13,34 @@ const BasicInformationCollection = () => {
 
     const styles = SetStyles();
     const [genders] = useState([
-        {label: 'Male', value: 'male'},
-        {label: 'Female', value: 'female'},
-        {label: 'Other', value: 'other'}
+      {label: 'Male', value: 'male'},
+      {label: 'Female', value: 'female'},
+      {label: 'Other', value: 'other'}
     ]);
     const [heightFeet] = useState([
-        {value: '1'},
-        {value: '2'},
-        {value: '3'},
-        {value: '4'},
-        {value: '5'},
-        {value: '6'},
-        {value: '7'},
-        {value: '8'}
+      {value: '0'},
+      {value: '1'},
+      {value: '2'},
+      {value: '3'},
+      {value: '4'},
+      {value: '5'},
+      {value: '6'},
+      {value: '7'},
+      {value: '8'}
     ]);
     const [heightInches] = useState([
-        {value: '1'},
-        {value: '2'},
-        {value: '3'},
-        {value: '4'},
-        {value: '5'},
-        {value: '6'},
-        {value: '7'},
-        {value: '8'},
-        {value: '9'},
-        {value: '10'},
-        {value: '11'}
+      {value: '0'},
+      {value: '1'},
+      {value: '2'},
+      {value: '3'},
+      {value: '4'},
+      {value: '5'},
+      {value: '6'},
+      {value: '7'},
+      {value: '8'},
+      {value: '9'},
+      {value: '10'},
+      {value: '11'}
     ]);
     const [weight, setWeight] = useState('');
     const [heightInch, setHeightInches] = useState('');

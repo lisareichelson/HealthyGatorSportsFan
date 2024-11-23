@@ -21,6 +21,7 @@ export default function ProfileManagement() {
     const [heightInch, setHeightInches] = useState('');
     const [heightFt, setHeightFeet] = useState('');
     const [newHeightFeet] = useState([
+        {value: '0'},
         {value: '1'},
         {value: '2'},
         {value: '3'},
@@ -31,6 +32,7 @@ export default function ProfileManagement() {
         {value: '8'}
     ]);
     const [newHeightInches] = useState([
+        {value: '0'},
         {value: '1'},
         {value: '2'},
         {value: '3'},
