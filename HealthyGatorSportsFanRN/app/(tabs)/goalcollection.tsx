@@ -99,6 +99,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
             return;
         }
     }
+    if (goalWeight === '') {goalWeight = 0;}
+    console.log("goalWeight = ", goalWeight);
 
     // Convert goalWeight to a float
     let goalWeightNum = parseFloat(goalWeight);
