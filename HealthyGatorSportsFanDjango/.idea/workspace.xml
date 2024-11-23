@@ -4,7 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38c59a7d-87de-4856-9d6c-1f0e75f29828" name="Changes" comment="Added functionality to poll next game using Celery" />
+    <list default="true" id="38c59a7d-87de-4856-9d6c-1f0e75f29828" name="Changes" comment="Added functionality to poll next game using Celery">
+      <change afterPath="$PROJECT_DIR$/app/migrations/0017_user_last_login.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/migrations/0018_remove_user_last_login.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/constants/AppUrls.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Procfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/goalcollection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/goalcollection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/homepage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/homepage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/loginscreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/loginscreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/notifications.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/app/(tabs)/notifications.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../HealthyGatorSportsFanRN/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,21 +71,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Django Server.HealthyGatorSportsFanDjango.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;celeryTesting&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Django Server.HealthyGatorSportsFanDjango.executor": "Debug",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Merging celeryTesting",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="HealthyGatorSportsFanDjango" type="Python.DjangoServer" factoryName="Django server">
       <module name="HealthyGatorSportsFanDjango" />
@@ -143,21 +165,6 @@
           <url>file://$PROJECT_DIR$/app/management/commands/poll_cfbd.py</url>
           <line>59</line>
           <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/views.py</url>
-          <line>175</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils.py</url>
-          <line>39</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils.py</url>
-          <line>4</line>
-          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
