@@ -115,7 +115,7 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
 const getLatestUserData = async (currentUser: any, navigation: any) => {
     console.log("Before 2nd API call the currentUser = ", currentUser)  
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/api/userdata/latest/${currentUser.userId}/`, {
+        const response = await fetch(`${AppUrls.url}/api/userdata/latest/${currentUser.userId}/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
