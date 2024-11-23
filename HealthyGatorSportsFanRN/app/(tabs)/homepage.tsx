@@ -29,7 +29,7 @@ export default function HomePage() {
                     style={{width:55, height:55}}
                 />
                 <Text style={{fontSize: 25, fontFamily: 'System'}}>
-                    Hey, Albert!
+                    Hey, {currentUser.firstName}!
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
                                   onPress={() => NavigateToNotifications(currentUser, navigation) }>

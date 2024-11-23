@@ -5,6 +5,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import NotificationData from "@/components/notificationdata";
+import { AppUrls } from '@/constants/AppUrls';
 
 const NotificationsPage = () => {
     const navigation = useNavigation();
@@ -400,7 +401,7 @@ async function registerForPushNotificationsAsync() {
 // Notification Data POST API call
 const createNotification = async (expoPushToken: string, userID: number, title: string, message: string) => {
     try {
-        const response = await fetch('https://normal-elegant-corgi.ngrok-free.app/notificationdata/add/', {
+        const response = await fetch(`${AppUrls.url}/notificationdata/add/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -428,7 +429,7 @@ const createNotification = async (expoPushToken: string, userID: number, title: 
 
 export const fetchNotifications = async (userId: number) => {
     try {
-      const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${userId}/`);
+      const response = await fetch(`${AppUrls.url}/notifications/${userId}/`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -442,7 +443,7 @@ export const fetchNotifications = async (userId: number) => {
 
 export const deleteNotification = async (notification_id: number) => {
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/${notification_id}/delete/`, {
+        const response = await fetch(`${AppUrls.url}/notifications/${notification_id}/delete/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -463,7 +464,7 @@ export const deleteNotification = async (notification_id: number) => {
 
 export const deleteAllNotifications = async (userId: number) => {
     // try {
-    //     const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/deleteAll/${userId}/`, {
+    //     const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
     //         method: 'DELETE',
     //         headers: {
     //             'Content-Type': 'application/json',
@@ -482,7 +483,7 @@ export const deleteAllNotifications = async (userId: number) => {
 
 
     try {
-        const response = await fetch(`https://normal-elegant-corgi.ngrok-free.app/notifications/deleteAll/${userId}/`, {
+        const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
