@@ -1,0 +1,1 @@
+web: gunicorn HealthyGatorSportsFanDjango.project.wsgi:application
