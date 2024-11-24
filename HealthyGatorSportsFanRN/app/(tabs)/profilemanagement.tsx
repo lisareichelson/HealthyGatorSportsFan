@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import User from "@/components/user";
 import {useState, useEffect} from "react";
 import {Dropdown} from "react-native-element-dropdown";
@@ -79,6 +79,29 @@ export default function ProfileManagement() {
     //     setNewLoseWeight(currentUser.goal_to_lose_weight);
     //     setNewGoalWeight(currentUser.goalWeight.toString());
     // }, []);
+
+    function dataEntered():boolean{
+        if (newFirstName != ''|| newLastName != '')
+            return true;
+        if (heightFt.valueOf() != '' || heightInch.valueOf() != '')
+            return true;
+        if (newWeight.valueOf() != '')
+            return true;
+        if (newGender != '')
+            return true;
+        if (newFeelBetter)
+            return true;
+        if (newLoseWeight)
+            return true;
+
+        return newGoalWeight.valueOf() != '';
+    }
+
+    //The following function prevents the user from going backwards a screen ONLY IF data has been entered.
+    usePreventRemove(dataEntered(), ({ data }) => {
+        //console.log("Back button prevented.");
+    });
+
 
     return (
         <View style={styles.container}>
@@ -355,6 +378,26 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
     if(newGoalWeight >= currentUser.currentWeight){
         Alert.alert("Goal weight must be less than current weight.");
         return;
+    }
+    if(newGoalWeight != '' && !currentUser.goal_to_lose_weight && newLoseWeight == false){
+        Alert.alert(
+            "Confirmation",
+            "You can't have a goal weight if your goal is not to lose weight!",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Okay",
+                    style: "destructive",
+                    onPress: () => {
+                        // Manually select lose weight as a goal for the user.
+                        newLoseWeight = true;
+                    }
+                }
+            ]
+        );
     }
     console.log("currentUser before API call: ", currentUser);
     Alert.alert(

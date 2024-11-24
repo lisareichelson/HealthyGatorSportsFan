@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, TouchableOpacity, Image, Alert} from 'react-native';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import StarRating from 'react-native-star-rating-widget';
 import User from "@/components/user";
@@ -12,6 +12,17 @@ export default function ProgressLogging() {
     const [newWeight, setNewWeight] = useState(currentUser.currentWeight);
     const [rating, setRating] = useState(0);
 
+    function dataEntered():boolean{
+        if (rating != 0)
+            return true;
+        return newWeight != currentUser.currentWeight;
+    }
+
+    //The following function prevents the user from going backwards a screen ONLY IF data has been entered.
+    usePreventRemove(dataEntered(), ({ data }) => {
+        //console.log("Back button prevented.");
+    });
+
     return (
         <View style={styles.container}>
             <View style={styles.topMenu}>
@@ -23,7 +34,7 @@ export default function ProgressLogging() {
                     Enter Progress
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
+                                  onPress={() => NavigateToNotifications(currentUser, navigation) }>
                     <Image
                         source={require('./../../assets/images/bell.png')}
                         style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
