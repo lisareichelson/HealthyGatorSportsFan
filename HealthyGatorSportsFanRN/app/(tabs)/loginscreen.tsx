@@ -95,11 +95,11 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
             currentUser.gender = data.gender;
             currentUser.heightInches = data.height_inches;
             currentUser.heightFeet = data.height_feet;
-            currentUser.goalWeight = data.goal_weight;
             currentUser.feelBetter = data.goal_to_feel_better;
+            currentUser.goal_to_feel_better = data.goal_to_feel_better; 
             currentUser.loseWeight = data.goal_to_lose_weight;
             currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
-            currentUser.goal_to_feel_better = data.goal_to_feel_better; 
+            currentUser.goalWeight = data.goal_weight;
             await getLatestUserData(currentUser, navigation); 
         } else {
             const errorData = await response.json();

@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, TouchableOpacity, Image, Alert} from 'react-native';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import StarRating from 'react-native-star-rating-widget';
 import User from "@/components/user";
@@ -15,6 +15,17 @@ export default function ProgressLogging() {
 
     const [isGoalToLoseWeight, setIsGoalToLoseWeight] = useState(currentUser.loseWeight);
     const [isGoalToFeelBetter, setIsGoalToFeelBetter] = useState(currentUser.feelBetter);
+
+    function dataEntered():boolean{
+        if (rating != 0)
+            return true;
+        return newWeight != currentUser.currentWeight;
+    }
+
+    //The following function prevents the user from going backwards a screen ONLY IF data has been entered.
+    usePreventRemove(dataEntered(), ({ data }) => {
+        //console.log("Back button prevented.");
+    });
 
     return (
         <View style={styles.container}>

@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import check_password as django_check_password
 # Best practice is one model per database table, so each model represents a table.
 
 # User model
-class User(models.Model): #AbstractUser): #AbstractBaseUser, PermissionsMixin):
+class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100, default="")
@@ -27,14 +27,6 @@ class User(models.Model): #AbstractUser): #AbstractBaseUser, PermissionsMixin):
     # When an instance is referenced, prints the user ID and name instead of the default "User object (1)"
     def __str__(self):
         return f"User ID: {self.user_id}, Email: {self.email}"
-    
-    # @property
-    # def is_anonymous(self):
-    #     """
-    #     Always return False. This is a way of comparing User objects to
-    #     anonymous users.
-    #     """
-    #     return False
 
     def check_password(self, password_entered):
         if (password_entered == self.password):
