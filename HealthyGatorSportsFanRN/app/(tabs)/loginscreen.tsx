@@ -125,7 +125,7 @@ const getLatestUserData = async (currentUser: any, navigation: any) => {
             const data = await response.json();
             console.log('UserData:', data);
             currentUser.currentWeight = data.weight_value;
-            currentUser.goalType = data.goal_type;
+            currentUser.goalType = data.goal_type; // This is the goal type as of their last user data entry, but it may not match their current goals. Best practice it to use the booleans in the User to detect current goal type.
             navigation.navigate('HomePage', {currentUser} as never);
         } else {
             const errorData = await response.json();

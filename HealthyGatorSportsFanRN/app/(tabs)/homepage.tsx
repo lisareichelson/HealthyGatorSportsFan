@@ -1,6 +1,6 @@
 import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
-import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
-import {useState} from "react";
+import {useNavigation, usePreventRemove, useRoute, useFocusEffect} from "@react-navigation/native";
+import React, {useState, useEffect} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
 import User from "@/components/user";
 
@@ -9,11 +9,7 @@ export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
-    // console.log("currentUser in home screen: ", currentUser);
-
-    //const user: any = route.params;
-    //const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
-    //console.log("User Data:" + JSON.stringify(currentUser));
+    //console.log("currentUser in home screen:" + JSON.stringify(currentUser));
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();
@@ -31,7 +27,7 @@ export default function HomePage() {
     function GetGoalsText(): string{
         if(currentUser.goal_to_lose_weight){
             // @ts-ignore
-            return "Weight left to lose: " + (currentUser.currentWeight - currentUser.goalWeight) + " pounds";
+            return "Weight left to lose: " + Math.floor(currentUser.currentWeight - currentUser.goalWeight) + " pounds";
         }
         else
             return "Keep at it!";
@@ -39,11 +35,15 @@ export default function HomePage() {
 
     //Gets text to display for goal type
     function GetGoals(): string{
-        if(currentUser.goalType == "both"){
+        if(currentUser.feelBetter && currentUser.loseWeight){
             return "Lose weight and feel better";
         }
-        else
-            return currentUser.goalType as string;
+        else if(currentUser.feelBetter && !currentUser.loseWeight){
+            return "Feel better";
+        }
+        else { //(!currentUser.feelBetter && currentUser.loseWeight)
+            return "Lose weight";
+        }
     }
 
     return (

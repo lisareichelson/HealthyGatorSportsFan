@@ -72,11 +72,14 @@ export default function ProgressLogging() {
                     </View>
                 </View>
             )}
+
+            {isGoalToLoseWeight && (
             <View>
                 <Text style={{fontSize: 20, fontFamily: 'System', color: 'grey', alignSelf: 'center', marginTop: '5%'}}>
                     Your goal: {Math.floor(currentUser.goalWeight)}
                 </Text>
             </View>
+            )}
 
             {isGoalToFeelBetter && (
             <View style = {styles.shadowContainerRating}>
@@ -150,50 +153,64 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
     } else if (currentUser.feelBetter) {
         currentUser.goalType = 'feelBetter';
     }
-    Alert.alert(
-        "Confirmation",
-        "Are you sure you want to log this data?",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {
-                text: "Confirm Changes",
-                style: "destructive",
-                onPress: () => {
-                    addUserProgress(currentUser, rating, newWeight, navigation);
-                    if (currentUser.goalWeight && newWeight < currentUser.goalWeight){
-                        Alert.alert(
-                            "Confirmation",
-                            "Congratulations!! You have reached your weight goal. We'll reset your goal to feel-better only for now. Please continue to the profile management screen to update your goals.",
-                            [
-                                {
-                                    //text: "Nevermind!!",
-                                    //style: "cancel"
-                                },
-                                {
-                                    text: "Continue",
-                                    style: "destructive",
-                                    onPress: async () => {
-                                        // Reset the goal types & give the user the option to reset it in the profile management screen.
-                                        // As a safety measure, since the user has to have a goal, we'll flag currentUser's feelBetter as true and loseWeight as false
-                                        let newFeelBetter = true;
-                                        let newLoseWeight = false;
-                                        await updateUserGoals(currentUser, newFeelBetter, newLoseWeight, navigation);                        
+
+    if (currentUser.feelBetter && (rating === 0|| rating === null)){
+        Alert.alert(
+            "Missing Information",
+            "Uh oh! Make sure you rate how you're feeling before you submit.",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ]
+        );
+    }
+    else {
+        // If weight control is not updated, the current weight value will be sent as the progress
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to log this data?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Confirm Changes",
+                    style: "destructive",
+                    onPress: async () => {
+                        let goHome = true;
+                        if (currentUser.goalWeight && newWeight <= currentUser.goalWeight) {goHome = false}
+                        await addUserProgress(currentUser, rating, newWeight, navigation, goHome);
+                        if (currentUser.goalWeight && newWeight <= currentUser.goalWeight){
+                            Alert.alert(
+                                "Confirmation",
+                                "Congratulations!! You have reached your weight goal. We'll reset your goal to feel-better only for now. Please continue to the profile management screen to update your goals.",
+                                [
+                                    {
+                                        //text: "Nevermind!!",
+                                        //style: "cancel"
+                                    },
+                                    {
+                                        text: "Continue",
+                                        style: "destructive",
+                                        onPress: async () => {
+                                            // Reset the goal types & give the user the option to reset it in the profile management screen.
+                                            // As a safety measure, since the user has to have a goal, we'll flag currentUser's feelBetter as true and loseWeight as false
+                                            let newFeelBetter = true;
+                                            let newLoseWeight = false;
+                                            await updateUserGoals(currentUser, newFeelBetter, newLoseWeight, navigation);                        
+                                        }
                                     }
-                                }
-                            ]
-                        );
+                                ]
+                            );
+                        }                        
                     }
-                    else {
-                        navigation.navigate('HomePage', {currentUser} as never); // Navigate to home screen if goals dont need to be updated.
-                    }
-                    
                 }
-            }
-        ]
-    );
+            ]
+        );
+    }
 }
 function LogoutPopup(navigation: any){
     Alert.alert(
@@ -292,14 +309,7 @@ function NavigateToNotifications(currentUser:any, navigation:any){
         ]
     );
 }
-function addUserProgress(currentUser: any, rating: number, newWeight: any, navigation: any){
-    console.log("UserID = ", currentUser.userId) // TO DELETE
-    console.log(JSON.stringify({
-        goal_type: currentUser.goalType,
-        weight_value: newWeight,
-        feel_better_value: rating
-    }))  // TO DELETE
-
+async function addUserProgress(currentUser: any, rating: number, newWeight: number, navigation: any, goHome: boolean){
     // UserData POST API call
     fetch(`${AppUrls.url}/api/users/${currentUser.userId}/recordData/`, {
         method: 'POST',
@@ -317,12 +327,13 @@ function addUserProgress(currentUser: any, rating: number, newWeight: any, navig
         return response.json();
     })
     .then(data => {
-        console.log('Goal progress successfully saved:', data);
+        console.log('Progress successfully logged:', data);
         currentUser.currentWeight = newWeight;
+        if(goHome){navigation.navigate('HomePage', {currentUser} as never);}
     })
     .catch(error => {
-        console.error('Error saving goal progress:', error);
-        Alert.alert("Failed to save your goals. Please try again!");
+        console.error('Error saving progress:', error);
+        Alert.alert("Failed to save your progress. Please try again!");
     });
 }
 
@@ -343,7 +354,6 @@ const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLose
         });
 
         if (response.ok) {
-            Alert.alert('Goals updated successfully!');
             //If API call is successful, update the currentUser in the frontend & navigate to the profile management page so the user can further define their goals
             currentUser.loseWeight = false;
             currentUser.goal_to_lose_weight = false;
