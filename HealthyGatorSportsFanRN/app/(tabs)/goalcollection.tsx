@@ -150,9 +150,7 @@ function addNewUser(navigation: any, currentUser: any){
     })
     .then(data => { // 'data' is the JavaScript object that was created after parsing the JSON from the server response
         console.log('User account saved successfully:', data);
-        console.log('data.user_id:', data.user_id); // TO DELETE
         currentUser.userId = data.user_id;
-        console.log("UserId before function = ", currentUser.userId) // TO DELETE
         addNewUserInitialProgress(navigation, currentUser);
         navigation.navigate('HomePage', { currentUser }); // TO DELETE! This is here for troubleshooting only. You should only go to the home page upon 2 successful API calls
     })
@@ -164,9 +162,7 @@ function addNewUser(navigation: any, currentUser: any){
 
 function addNewUserInitialProgress(navigation: any, currentUser: any){
         // UserData POST API call
-        console.log("UserID = ", currentUser.userId) // TO DELETE
         const createUserDataUrl = `${AppUrls.url}/api/users/${currentUser.userId}/recordData/`;
-        console.log("JSON:") // TO DELETE
         console.log(JSON.stringify({
             goal_type: currentUser.goalType,
             weight_value: currentUser.currentWeight,

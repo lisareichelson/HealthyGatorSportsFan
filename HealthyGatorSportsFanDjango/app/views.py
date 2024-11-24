@@ -59,6 +59,7 @@ def index(request):
 # API view to handle POST requests for user creation
 class CreateUserView(APIView):
     def post(self, request):
+        print("request.data for CreateUserView: ", request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -74,7 +75,7 @@ class UserUpdateView(APIView):
             user = User.objects.get(user_id=user_id)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        print("request.data: ", request.data)
+        print("request.data for UserUpdateView: ", request.data)
         serializer = UserSerializer(user, data=request.data, partial=True)  # Allow partial updates
         if serializer.is_valid():
             serializer.save()

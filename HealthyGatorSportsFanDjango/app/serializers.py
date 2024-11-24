@@ -62,6 +62,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance.height_feet = validated_data.get('height_feet', instance.height_feet)
         instance.height_inches = validated_data.get('height_inches', instance.height_inches)
         instance.goal_weight = validated_data.get('goal_weight', instance.goal_weight)
+        instance.goal_to_feel_better = validated_data.get('goal_to_feel_better', instance.goal_to_feel_better)
+        instance.goal_to_lose_weight = validated_data.get('goal_to_lose_weight', instance.goal_to_lose_weight)
         instance.save()
         return instance
 

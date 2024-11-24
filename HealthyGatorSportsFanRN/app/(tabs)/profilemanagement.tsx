@@ -82,6 +82,7 @@ export default function ProfileManagement() {
 
     return (
         <View style={styles.container}>
+
             <View style={styles.topMenu}>
                 <Image
                     source={require('./../../assets/images/clipboardgator.jpg')}
@@ -97,11 +98,14 @@ export default function ProfileManagement() {
                         style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
+                
             </View>
-            <View style = {styles.personalDetails}>
-                <Text style={{fontSize: 15, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
+
+            <View style = {styles.section}>
+                <Text style={{fontSize: 20, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
                     Personal Details
                 </Text>
+
                 <TouchableOpacity style = {styles.row} activeOpacity={0.5}
                 onPress={() => setShowEditName(!showEditName)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
@@ -149,24 +153,28 @@ export default function ProfileManagement() {
                     />
                 </TouchableOpacity>
                 {showEditHeight && (<View style = {styles.rowHeight}>
-                    <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Feet:</Text>
-                    <Dropdown style={[styles.dropdown, {width: '30%'}]}
-                              data={newHeightFeet}
-                              labelField={"value"}
-                              valueField={"value"}
-                              accessibilityLabel="Dropdown menu for selecting height in feet"
-                              onChange={item => { setNewHeightFeet(item.value);}}
-                              renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
+                    <Text style={{marginLeft: '10%', fontSize: 16, fontFamily: 'System'}}>Feet:</Text>
+                    <Dropdown style={[styles.dropdown, {marginRight: '5%'}]}
+                            data={newHeightFeet}
+                            labelField={"value"}
+                            valueField={"value"}
+                            accessibilityLabel="Dropdown menu for selecting height in feet"
+                            placeholderStyle={{ fontSize: 14, textAlign: 'center', color: 'grey'}}
+                            selectedTextStyle={{ fontSize: 16, textAlign: 'center' }}
+                            onChange={item => { setNewHeightFeet(item.value);}}
+                            renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
                     ></Dropdown>
 
-                    <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Inches:</Text>
-                    <Dropdown style={[styles.dropdown, {width: '30%'}]}
-                              data={newHeightInches}
-                              labelField={"value"}
-                              valueField={"value"}
-                              accessibilityLabel="Dropdown menu for selecting additional height in inches"
-                              onChange={item => {setNewHeightInches(item.value);}}
-                              renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
+                    <Text style={{fontSize: 16, fontFamily: 'System'}}>Inches:</Text>
+                    <Dropdown style={[styles.dropdown, {marginRight: '5%'}]}
+                            data={newHeightInches}
+                            labelField={"value"}
+                            valueField={"value"}
+                            accessibilityLabel="Dropdown menu for selecting additional height in inches"
+                            placeholderStyle={{ fontSize: 14, textAlign: 'center',color: 'grey' }}
+                            selectedTextStyle={{ fontSize: 14, textAlign: 'center' }}
+                            onChange={item => {setNewHeightInches(item.value);}}
+                            renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
                     ></Dropdown>
                 </View>)}
 
@@ -208,16 +216,24 @@ export default function ProfileManagement() {
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
                     />
                 </TouchableOpacity>
-                {showEditGender && (
-                    <Dropdown style={[styles.dropdown]}
-                              data={genders}
-                              labelField={"label"}
-                              valueField={"value"}
-                              accessibilityLabel="Dropdown menu for selecting gender"
-                              onChange={item => {setNewGender(item.value);}}
+                {showEditGender && (<View style = {styles.rowHeight}>
+                    <Dropdown style={[styles.dropdown, {marginLeft: '10%', padding: 5}]}
+                            data={genders}
+                            labelField={"label"}
+                            valueField={"value"}
+                            accessibilityLabel="Dropdown menu for selecting gender"
+                            placeholderStyle={{ fontSize: 14, color: 'grey' }}
+                            selectedTextStyle={{ fontSize: 14}}
+                            onChange={item => {setNewGender(item.value);}}
                     ></Dropdown>
+                    </View>
                 )}
-                <Text style={{fontSize: 15, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
+
+            </View>
+
+            <View style = {styles.section}>
+
+                <Text style={{fontSize: 20, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
                     Goals
                 </Text>
                 <TouchableOpacity style = {styles.row} activeOpacity={0.5}
@@ -234,19 +250,19 @@ export default function ProfileManagement() {
                     />
                 </TouchableOpacity>
                 {showEditGoals && (
-                    <View style = {[styles.row, {justifyContent: 'space-evenly'}]}>
-                        <Text style={{fontSize: 12, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
+                    <View style = {[styles.row, {justifyContent: 'space-evenly', borderRadius: 10}]}>
+                        <Text style={{fontSize: 14, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
                             Feel Better:
                         </Text>
                         <Checkbox value={newFeelBetter} onValueChange={setNewFeelBetter} style={styles.checkbox}/>
-                        <Text style={{fontSize: 12, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
+                        <Text style={{fontSize: 14, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
                             Lose Weight:
                         </Text>
-                        <Checkbox value={newLoseWeight} onValueChange={setNewLoseWeight} />
+                        <Checkbox value={newLoseWeight} onValueChange={setNewLoseWeight} style={styles.checkbox}/>
                     </View>
                 )}
                 <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                                  onPress={() => setShowEditGoalWeight(!showEditGoalWeight)}>
+                                onPress={() => setShowEditGoalWeight(!showEditGoalWeight)}>
                     <Text style={{fontSize: 20, fontFamily: 'System'}}>
                         Goal Weight
                     </Text>
@@ -259,9 +275,9 @@ export default function ProfileManagement() {
                     />
                 </TouchableOpacity>
                 {showEditGoalWeight && (
-                   <TextInput
+                <TextInput
                             style={styles.editBox}
-                            placeholder="enter a weight..."
+                            placeholder="Enter a weight..."
                             keyboardType={"numeric"}
                             editable={true}
                             value={newGoalWeight}
@@ -277,7 +293,6 @@ export default function ProfileManagement() {
                     Confirm Changes
                 </Text>
             </TouchableOpacity>
-
 
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
@@ -320,7 +335,7 @@ export default function ProfileManagement() {
     );
 }
 
-//TODO: Connect changes to backend
+
 function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, newWeight: any, newGender:any, newFeelBetter:any, newLoseWeight: any, newGoalWeight: any, navigation: any){
     if(newFirstName === '')
         newFirstName = currentUser.firstName;
@@ -361,7 +376,6 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
     );
 
 }
-
 function GetGoalWeightStr(currentUser: User): String{
     if(currentUser.loseWeight){
         return String(currentUser.goalWeight);
@@ -369,7 +383,6 @@ function GetGoalWeightStr(currentUser: User): String{
     else
         return "N/A";
 }
-
 function GetGoalsText(currentUser: User):String{
     let goalStr: String = "";
     if (currentUser.loseWeight){
@@ -386,7 +399,6 @@ function GetGoalsText(currentUser: User):String{
     }
     return goalStr;
 }
-
 function NavigateToGameSchedule(currentUser:any, navigation:any){
     Alert.alert(
         "Confirmation",
@@ -577,49 +589,66 @@ const styles = StyleSheet.create({
         height: 40,
         width: 40,
     },
-    personalDetails:{
+    section:{
         flexDirection: 'column',
         justifyContent: 'space-around',
-        marginTop: '20%',
+        marginTop: 20,
     },
     row:{
         flexDirection: 'row',
         alignSelf: 'center',
         justifyContent: 'space-between',
-        borderWidth: 1.5,
         width: '90%',
-        borderColor: 'grey',
+        //borderWidth: 1.5,
+        //borderColor: 'grey',
+        padding: 5,
         margin: 5,
+        borderRadius: 0,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
     },
     rowHeight: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: "space-around",
+        justifyContent: "space-evenly",
+        margin: 5,
+        width: '90%',
+        alignSelf: 'center',
+        marginLeft: '5%',
     },
     editBox:{
         borderWidth: 1,
+        borderColor: '#D3D3D3',
         width: '80%',
         marginRight: '5%',
         alignSelf: 'flex-end',
-        margin: 5,
+        margin: 3,
+        borderRadius: 10,
     },
     confirmButton:{
         borderWidth:1,
         borderColor:'orange',
         width:200,
         height:50,
+        marginTop: 5,
         backgroundColor:'#ADD8E6',
         borderRadius:50,
         justifyContent: "center",
         alignItems: "center",
     },
     dropdown:{
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 8,
+        borderColor: '#D3D3D3',
+        borderWidth: 1,
+        margin: 3,
+        padding: 5,
+        borderRadius: 10,
         width: '80%',
-        marginRight: '5%',
         alignSelf: 'flex-end',
+        flex: 1,
     },
 
 });
