@@ -36,7 +36,7 @@ export default function ProgressLogging() {
                 </Text>
                 <View style = {styles.row}>
                 <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
-                                  onPress={() => setNewWeight((newWeight -1)) }>
+                                  onPress={() => setNewWeight((Math.floor(newWeight)-1)) }>
                     <Image
                         source={require('./../../assets/images/progresslogging/minus.png')}
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
@@ -46,7 +46,7 @@ export default function ProgressLogging() {
                         {newWeight}
                     </Text>
                 <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
-                                  onPress={() => setNewWeight((newWeight +1)) }>
+                                  onPress={() => setNewWeight((Math.floor(newWeight)+1)) }>
                     <Image
                         source={require('./../../assets/images/progresslogging/plus.png')}
                         style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
