@@ -41,7 +41,6 @@ export default function LogInScreen() {
     );
 }
 
-//TODO
 async function ConfirmData(email: any, password: any, navigation: any){
 
     //Connect to DB and ensure that the provided username and password are correct and exist

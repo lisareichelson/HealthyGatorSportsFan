@@ -12,6 +12,9 @@ export default function ProgressLogging() {
     const [newWeight, setNewWeight] = useState(currentUser.currentWeight);
     const [rating, setRating] = useState(0);
 
+    const [isGoalToLoseWeight, setIsGoalToLoseWeight] = useState(currentUser.loseWeight);
+    const [isGoalToFeelBetter, setIsGoalToFeelBetter] = useState(currentUser.feelBetter);
+
     return (
         <View style={styles.container}>
             <View style={styles.topMenu}>
@@ -30,30 +33,34 @@ export default function ProgressLogging() {
                     />
                 </TouchableOpacity>
             </View>
-            <View style = {styles.shadowContainerWeight}>
-                <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center',  marginTop: '5%'}}>
-                    Enter New Weight:
-                </Text>
-                <View style = {styles.row}>
-                <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
-                                  onPress={() => setNewWeight((Math.floor(newWeight)-1)) }>
-                    <Image
-                        source={require('./../../assets/images/progresslogging/minus.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                    <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center'}}>
-                        {newWeight}
+            {isGoalToLoseWeight && (
+                <View style = {styles.shadowContainerWeight}>
+                    <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center',  marginTop: '5%'}}>
+                        Enter New Weight:
                     </Text>
-                <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
-                                  onPress={() => setNewWeight((Math.floor(newWeight)+1)) }>
-                    <Image
-                        source={require('./../../assets/images/progresslogging/plus.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
+                    <View style = {styles.row}>
+                    <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
+                                    onPress={() => setNewWeight((Math.floor(newWeight)-1)) }>
+                        <Image
+                            source={require('./../../assets/images/progresslogging/minus.png')}
+                            style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
+                        />
+                    </TouchableOpacity>
+                        <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center'}}>
+                            {newWeight}
+                        </Text>
+                    <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
+                                    onPress={() => setNewWeight((Math.floor(newWeight)+1)) }>
+                        <Image
+                            source={require('./../../assets/images/progresslogging/plus.png')}
+                            style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
+                        />
+                    </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            )}
+
+            {isGoalToFeelBetter && (
             <View style = {styles.shadowContainerRating}>
                 <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center', marginTop: '5%'}}>
                     How are you feeling?
@@ -64,6 +71,8 @@ export default function ProgressLogging() {
                     onChange={(newRating) => setRating(newRating)}
                 />
             </View>
+            )}
+
             <TouchableOpacity style = {[styles.confirmButton, {alignSelf: 'center'} ]} activeOpacity={0.5}
                               onPress={() => ConfirmChanges(navigation, rating, newWeight, currentUser) }>
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
