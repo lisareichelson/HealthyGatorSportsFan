@@ -399,24 +399,26 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
             ]
         );
     }
-    console.log("currentUser before API call: ", currentUser);
-    Alert.alert(
-        "Confirmation",
-        "Are you sure you want to make these changes?",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {
-                text: "Confirm Changes",
-                style: "destructive",
-                onPress: async () => {
-                    await updateUser(currentUser, newFirstName, newLastName, newGender, newFt, newInch, newFeelBetter, newLoseWeight, newGoalWeight, navigation);
+    else {
+        console.log("currentUser before API call: ", currentUser);
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to make these changes?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Confirm Changes",
+                    style: "destructive",
+                    onPress: async () => {
+                        await updateUser(currentUser, newFirstName, newLastName, newGender, newFt, newInch, newFeelBetter, newLoseWeight, newGoalWeight, navigation);
+                    }
                 }
-            }
-        ]
-    );
+            ]
+        );
+    }
 
 }
 function GetGoalWeightStr(currentUser: User): String{
