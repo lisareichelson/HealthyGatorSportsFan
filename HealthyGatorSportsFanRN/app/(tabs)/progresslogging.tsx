@@ -133,7 +133,25 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
     } else if (currentUser.feelBetter) {
         currentUser.goalType = 'feelBetter';
     }
-
+    Alert.alert(
+        "Confirmation",
+        "Are you sure you want to log this data?",
+        [
+            {
+                text: "Cancel",
+                style: "cancel"
+            },
+            {
+                text: "Confirm Changes",
+                style: "destructive",
+                onPress: () => {
+                    currentUser.currentWeight = newWeight;
+                    // API call via addUserProgress 
+                    navigation.navigate('HomePage', {currentUser} as never);
+                }
+            }
+        ]
+    );
     if (currentUser.goalWeight && newWeight < currentUser.goalWeight){
         Alert.alert(
             "Confirmation",
@@ -158,24 +176,6 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
             ]
         );
     }
-    Alert.alert(
-        "Confirmation",
-        "Are you sure you want to log this data?",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {
-                text: "Confirm Changes",
-                style: "destructive",
-                onPress: () => {
-                    currentUser.currentWeight = newWeight;
-                    navigation.navigate('HomePage', {currentUser} as never);
-                }
-            }
-        ]
-    );
 }
 function LogoutPopup(navigation: any){
     Alert.alert(
