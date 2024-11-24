@@ -12,7 +12,7 @@ export default function ProfileManagement() {
     const userData = route.params;
     const user: any = route.params;
     const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
-    // console.log("User Data profile management:" + JSON.stringify(currentUser));
+    // console.log("currentUser in profile management screen: ", currentUser);
 
     const [showEditName, setShowEditName] = useState(false);
     const [newFirstName, setNewFirstName] = useState('');

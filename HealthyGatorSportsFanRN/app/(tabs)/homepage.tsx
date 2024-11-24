@@ -9,6 +9,7 @@ export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
+    // console.log("currentUser in home screen: ", currentUser);
 
     //const user: any = route.params;
     //const currentUser: User = user.currentUser.cloneUser(); //This fixes the nesting issue
