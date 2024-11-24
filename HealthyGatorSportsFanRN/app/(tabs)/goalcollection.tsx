@@ -82,16 +82,24 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     // NOTE: 'feelBetter' and 'loseWeight' are frontend 'User' object member variables not used at all in the backend
     let goalType = '';
     if (feelBetter && loseWeight) {
-        goalType = 'both';
+        currentUser.goalType = 'both';
+        currentUser.goal_to_feel_better = true;
+        currentUser.feelBetter = true;
+        currentUser.goal_to_lose_weight = true;
+        currentUser.loseWeight = true;
     } else if (loseWeight) {
-        goalType = 'loseWeight';
+        currentUser.goalType = 'loseWeight';
+        currentUser.goal_to_feel_better = false;
+        currentUser.feelBetter = false;
+        currentUser.goal_to_lose_weight = true;
+        currentUser.loseWeight = true;
     } else if (feelBetter) {
-        goalType = 'feelBetter';
+        currentUser.goalType = 'feelBetter';
+        currentUser.goal_to_feel_better = true;
+        currentUser.feelBetter = true;
+        currentUser.goal_to_lose_weight = false;
+        currentUser.loseWeight = false;
     }
-
-    // Update goal_to_lose_weight and goal_to_feel_better accordingly (This will be used for User table entry)
-    currentUser.goal_to_feel_better = goalType === 'feelBetter' || goalType === 'both';
-    currentUser.goal_to_lose_weight = goalType === 'loseWeight' || goalType === 'both';
 
     if (loseWeight) {
         if (parseFloat(goalWeight) > parseFloat(currentWeight)) {
@@ -103,13 +111,8 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
     console.log("goalWeight = ", goalWeight);
 
     // Convert goalWeight to a float
-    let goalWeightNum = parseFloat(goalWeight);
-
-    //Save the variables in the user object type
-    currentUser.goalWeight = goalWeightNum
-    currentUser.goalType = goalType 
-    // NOTE: 'goal_type' and 'currentWeight' are frontend 'User' object member variables, but belong to UserData table
-
+    currentUser.goalWeight = parseFloat(goalWeight);
+ 
     addNewUser(navigation, currentUser);
     
 }
