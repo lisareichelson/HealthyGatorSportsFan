@@ -1,10 +1,14 @@
 /*This is the login or create account screen that will launch at the application's start*/
 
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, usePreventRemove} from "@react-navigation/native";
 
 export default function CreateOrSignIn() {
     const navigation = useNavigation();
+    //The following function prevents the user from going backwards a screen ONLY IF data has been entered.
+    usePreventRemove(true, ({ data }) => {
+        //console.log("Back button prevented.");
+    });
     return(
         <View style={styles.container}>
             <Image source={require('./../../assets/images/coolgator.png')}/>
