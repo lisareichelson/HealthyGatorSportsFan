@@ -12,8 +12,6 @@ from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.hashers import check_password
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -61,6 +59,7 @@ def index(request):
 # API view to handle POST requests for user creation
 class CreateUserView(APIView):
     def post(self, request):
+        print("request.data for CreateUserView: ", request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -69,6 +68,21 @@ class CreateUserView(APIView):
             response_data.update(serializer.data)
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserUpdateView(APIView):
+    def put(self, request, user_id):
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        print("request.data for UserUpdateView: ", request.data)
+        serializer = UserSerializer(user, data=request.data, partial=True)  # Allow partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            print(serializer.errors)  # Debugging line
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 # API view to handle POST requests for user data creation
 class CreateUserDataView(APIView):
@@ -91,7 +105,6 @@ class CreateUserDataView(APIView):
 
 class LatestUserDataView(APIView):
     def get(self, request, user_id):
-        print("Ok you made it here")
         try:
             recent_data = UserData.objects.filter(user_id=user_id).order_by('-timestamp').first()
             if recent_data:
