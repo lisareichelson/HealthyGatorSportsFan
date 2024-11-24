@@ -9,7 +9,7 @@ export default function ProgressLogging() {
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
 
-    const [newWeight, setNewWeight] = useState(currentUser.currentWeight);
+    const [newWeight, setNewWeight] = useState(Math.floor(currentUser.currentWeight));
     const [rating, setRating] = useState(0);
 
     const [isGoalToLoseWeight, setIsGoalToLoseWeight] = useState(currentUser.loseWeight);
