@@ -27,7 +27,7 @@ export default function ProgressLogging() {
                     Enter Progress
                 </Text>
                 <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => navigation.navigate('NotificationsPage' as never) }>
+                                  onPress={() => NavigateToNotifications(currentUser, navigation) }>
                     <Image
                         source={require('./../../assets/images/bell.png')}
                         style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
@@ -135,7 +135,6 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
     }
 
     if (currentUser.goalWeight && newWeight < currentUser.goalWeight){
-        //TODO: The user has met their weight goal!! Send a happy notification or alert and prompt them to the goal setting screen
         Alert.alert(
             "Confirmation",
             "Congratulations!! You have reached your weight goal. We'll reset your goal to feel-better only for now. Please continue to the profile management screen to update your goals.",
@@ -150,7 +149,7 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
                     onPress: async () => {
                         currentUser.currentWeight = newWeight;
                         // Reset the goal types & give the user the option to reset it in the profile management screen.
-                        // As a safety measure, since the user has to have a goal, we'll flag feelBetter as true
+                        // As a safety measure, since the user has to have a goal, we'll flag currentUser's feelBetter as true and loseWeight as false
                         let newFeelBetter = true;
                         let newLoseWeight = false;
                         await updateUserGoals(currentUser, newFeelBetter, newLoseWeight, navigation);                        
@@ -280,7 +279,6 @@ function addUserProgress(navigation: any, currentUser: any){
     // UserData POST API call
     console.log("UserID = ", currentUser.userId) // TO DELETE
     const createUserDataUrl = `${AppUrls.url}/api/users/${currentUser.userId}/recordData/`;
-    console.log("JSON:") // TO DELETE
     console.log(JSON.stringify({
         goal_type: currentUser.goalType,
         weight_value: currentUser.currentWeight,
