@@ -97,8 +97,8 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
             currentUser.heightInches = data.height_inches;
             currentUser.heightFeet = data.height_feet;
             currentUser.goalWeight = data.goal_weight;
-            currentUser.feelBetter = data.goal_to_lose_weight;
-            currentUser.loseWeight = data.goal_to_feel_better;
+            currentUser.feelBetter = data.goal_to_feel_better;
+            currentUser.loseWeight = data.goal_to_lose_weight;
             currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
             currentUser.goal_to_feel_better = data.goal_to_feel_better; 
             await getLatestUserData(currentUser, navigation); 
