@@ -72,6 +72,11 @@ export default function ProgressLogging() {
                     </View>
                 </View>
             )}
+            <View>
+                <Text style={{fontSize: 20, fontFamily: 'System', color: 'grey', alignSelf: 'center', marginTop: '5%'}}>
+                    Your goal: {Math.floor(currentUser.goalWeight)}
+                </Text>
+            </View>
 
             {isGoalToFeelBetter && (
             <View style = {styles.shadowContainerRating}>
@@ -416,18 +421,17 @@ const styles = StyleSheet.create({
         width: 40,
     },
     shadowContainerWeight: {
-            width: '70%', // Adjust as needed
-            height: '15%', // Adjust as needed
-            borderRadius: 10,
-            backgroundColor: 'white',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 5, // For Android shadow
-            marginTop: '15%',
-           alignSelf: 'center'
-
+        width: '70%', // Adjust as needed
+        height: '15%', // Adjust as needed
+        borderRadius: 10,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+        marginTop: '15%',
+        alignSelf: 'center',
     },
     shadowContainerRating: {
         width: '70%', // Adjust as needed
@@ -439,7 +443,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5, // For Android shadow
-        marginTop: '15%',
+        marginTop: '10%',
         alignSelf: 'center'
 
     },
