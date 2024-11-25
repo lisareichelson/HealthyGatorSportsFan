@@ -22,6 +22,18 @@ from django.urls import path
 #from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView (before merge)
 from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDetail, BulkDeleteNotifications, UserLoginView, LatestUserDataView, UserUpdateView
 
+# Import drf-yasg components
+from drf_yasg.views import get_schema_view 
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info( title="Healthy Gator Sports Fan API Viewer", default_version="v1",),
+    public=True,
+    # This can be adjusted later if needed ...
+    permission_classes=(permissions.AllowAny,), 
+)
+
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
 # Best practice is one route per page, but multipe routes can be implemented as the app gets more complex
@@ -46,4 +58,6 @@ urlpatterns = [
     path('notifications/deleteAll/<int:user_id>/', BulkDeleteNotifications.as_view(), name='notifications-delete'),
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
 
+    # API endpoint for Swagger
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
