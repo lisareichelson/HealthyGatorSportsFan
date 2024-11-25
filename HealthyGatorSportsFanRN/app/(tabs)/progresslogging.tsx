@@ -3,14 +3,19 @@ import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/nativ
 import {useState} from "react";
 import StarRating from 'react-native-star-rating-widget';
 import User from "@/components/user";
+import { AppUrls } from '@/constants/AppUrls';
+import { getUseOfValueInStyleWarning } from 'react-native-reanimated';
 
 export default function ProgressLogging() {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
 
-    const [newWeight, setNewWeight] = useState(currentUser.currentWeight);
+    const [newWeight, setNewWeight] = useState(Math.floor(currentUser.currentWeight));
     const [rating, setRating] = useState(0);
+
+    const [isGoalToLoseWeight, setIsGoalToLoseWeight] = useState(currentUser.loseWeight);
+    const [isGoalToFeelBetter, setIsGoalToFeelBetter] = useState(currentUser.feelBetter);
 
     function dataEntered():boolean{
         if (rating != 0)
@@ -41,30 +46,42 @@ export default function ProgressLogging() {
                     />
                 </TouchableOpacity>
             </View>
-            <View style = {styles.shadowContainerWeight}>
-                <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center',  marginTop: '5%'}}>
-                    Enter New Weight:
-                </Text>
-                <View style = {styles.row}>
-                <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
-                                  onPress={() => setNewWeight((newWeight -1)) }>
-                    <Image
-                        source={require('./../../assets/images/progresslogging/minus.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                    <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center'}}>
-                        {newWeight}
+            {isGoalToLoseWeight && (
+                <View style = {styles.shadowContainerWeight}>
+                    <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center',  marginTop: '5%'}}>
+                        Enter New Weight:
                     </Text>
-                <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
-                                  onPress={() => setNewWeight((newWeight +1)) }>
-                    <Image
-                        source={require('./../../assets/images/progresslogging/plus.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
+                    <View style = {styles.row}>
+                    <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
+                                    onPress={() => setNewWeight((Math.floor(newWeight)-1)) }>
+                        <Image
+                            source={require('./../../assets/images/progresslogging/minus.png')}
+                            style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
+                        />
+                    </TouchableOpacity>
+                        <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center'}}>
+                            {newWeight}
+                        </Text>
+                    <TouchableOpacity style = {styles.weightIcons} activeOpacity={0.5}
+                                    onPress={() => setNewWeight((Math.floor(newWeight)+1)) }>
+                        <Image
+                            source={require('./../../assets/images/progresslogging/plus.png')}
+                            style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
+                        />
+                    </TouchableOpacity>
+                    </View>
                 </View>
+            )}
+
+            {isGoalToLoseWeight && (
+            <View>
+                <Text style={{fontSize: 20, fontFamily: 'System', color: 'grey', alignSelf: 'center', marginTop: '5%'}}>
+                    Your goal: {Math.floor(currentUser.goalWeight)}
+                </Text>
             </View>
+            )}
+
+            {isGoalToFeelBetter && (
             <View style = {styles.shadowContainerRating}>
                 <Text style={{fontSize: 25, fontFamily: 'System', alignSelf: 'center', marginTop: '5%'}}>
                     How are you feeling?
@@ -75,6 +92,8 @@ export default function ProgressLogging() {
                     onChange={(newRating) => setRating(newRating)}
                 />
             </View>
+            )}
+
             <TouchableOpacity style = {[styles.confirmButton, {alignSelf: 'center'} ]} activeOpacity={0.5}
                               onPress={() => ConfirmChanges(navigation, rating, newWeight, currentUser) }>
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
@@ -125,52 +144,74 @@ export default function ProgressLogging() {
 
 
 function ConfirmChanges(navigation: any, rating: number, newWeight: any, currentUser: User){
-    if (currentUser.goalWeight && newWeight < currentUser.goalWeight){
-        //TODO: The user has met their weight goal!! Send a happy notification or alert and prompt them to the goal setting screen
+
+    // The user's goals may have been updated after login. Set goal type for this log entry accordingly.
+    if (currentUser.feelBetter && currentUser.loseWeight) {
+        currentUser.goalType = 'both';
+    } else if (currentUser.loseWeight) {
+        currentUser.goalType = 'loseWeight';
+    } else if (currentUser.feelBetter) {
+        currentUser.goalType = 'feelBetter';
+    }
+
+    if (currentUser.feelBetter && (rating === 0|| rating === null)){
         Alert.alert(
-            "Confirmation",
-            "Congratulations!! You have reached your weight goal. Please continue to the goal editing screen to select a new goal.",
+            "Missing Information",
+            "Uh oh! Make sure you rate how you're feeling before you submit.",
             [
                 {
-                    text: "Nevermind!!",
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ]
+        );
+    }
+    else {
+        // If weight control is not updated, the current weight value will be sent as the progress
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to log this data?",
+            [
+                {
+                    text: "Cancel",
                     style: "cancel"
                 },
                 {
-                    text: "Continue",
+                    text: "Confirm Changes",
                     style: "destructive",
-                    onPress: () => {
-                        currentUser.currentWeight = newWeight;
-                        //Reset the goal types & give the user the option to reset it in the profile management screen.
-                        currentUser.loseWeight = false;
-                        currentUser.goal_to_lose_weight = false;
-                        currentUser.goalType = "feel better";
-                        navigation.navigate('ProfileManagement', {currentUser} as never);
+                    onPress: async () => {
+                        let goHome = true;
+                        if (currentUser.goalWeight && newWeight <= currentUser.goalWeight) {goHome = false}
+                        await addUserProgress(currentUser, rating, newWeight, navigation, goHome);
+                        if (currentUser.goalWeight && newWeight <= currentUser.goalWeight){
+                            Alert.alert(
+                                "Confirmation",
+                                "Congratulations!! You have reached your weight goal. We'll reset your goal to feel-better only for now. Please continue to the profile management screen to update your goals.",
+                                [
+                                    {
+                                        //text: "Nevermind!!",
+                                        //style: "cancel"
+                                    },
+                                    {
+                                        text: "Continue",
+                                        style: "destructive",
+                                        onPress: async () => {
+                                            // Reset the goal types & give the user the option to reset it in the profile management screen.
+                                            // As a safety measure, since the user has to have a goal, we'll flag currentUser's feelBetter as true and loseWeight as false
+                                            let newFeelBetter = true;
+                                            let newLoseWeight = false;
+                                            await updateUserGoals(currentUser, newFeelBetter, newLoseWeight, navigation);                        
+                                        }
+                                    }
+                                ]
+                            );
+                        }                        
                     }
                 }
             ]
         );
     }
-    Alert.alert(
-        "Confirmation",
-        "Are you sure you want to log this data?",
-        [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {
-                text: "Confirm Changes",
-                style: "destructive",
-                onPress: () => {
-                    //TODO: SAVE THE RATING DATA IN THE DB
-                    currentUser.currentWeight = newWeight;
-                    navigation.navigate('HomePage', {currentUser} as never);
-                }
-            }
-        ]
-    );
 }
-
 function LogoutPopup(navigation: any){
     Alert.alert(
         "Confirmation",
@@ -192,7 +233,6 @@ function LogoutPopup(navigation: any){
         ]
     );
 }
-
 function NavigateToGameSchedule(currentUser:any, navigation:any){
     Alert.alert(
         "Confirmation",
@@ -231,7 +271,6 @@ function NavigateToProfileManagement(currentUser:any, navigation:any){
         ]
     );
 }
-
 function NavigateToHomePage(currentUser:any, navigation:any){
     Alert.alert(
         "Confirmation",
@@ -270,7 +309,68 @@ function NavigateToNotifications(currentUser:any, navigation:any){
         ]
     );
 }
+async function addUserProgress(currentUser: any, rating: number, newWeight: number, navigation: any, goHome: boolean){
+    // UserData POST API call
+    fetch(`${AppUrls.url}/api/users/${currentUser.userId}/recordData/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            goal_type: currentUser.goalType,
+            weight_value: newWeight,
+            feel_better_value: rating
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to save your goal progress.');
+        return response.json();
+    })
+    .then(data => {
+        console.log('Progress successfully logged:', data);
+        currentUser.currentWeight = newWeight;
+        if(goHome){navigation.navigate('HomePage', {currentUser} as never);}
+    })
+    .catch(error => {
+        console.error('Error saving progress:', error);
+        Alert.alert("Failed to save your progress. Please try again!");
+    });
+}
 
+const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLoseWeight: boolean, navigation: any) => {
+    const updatedData = {
+        goal_to_feel_better: newFeelBetter,
+        goal_to_lose_weight: newLoseWeight,
+    };
+    console.log("API Request Body: ", JSON.stringify(updatedData));
+
+    try {
+        const response = await fetch(`${AppUrls.url}/api/users/${currentUser.userId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData),
+        });
+
+        if (response.ok) {
+            //If API call is successful, update the currentUser in the frontend & navigate to the profile management page so the user can further define their goals
+            currentUser.loseWeight = false;
+            currentUser.goal_to_lose_weight = false;
+            currentUser.loseWeight = false;
+            currentUser.goal_to_lose_weight = false; 
+            console.log("Current user after API call & updates: ", currentUser);
+            // Navigate back to the welcome page.
+            navigation.navigate('ProfileManagement', {currentUser} as never);
+        } else {
+            const errorData = await response.json();
+            Alert.alert('Error updating goals', JSON.stringify(errorData));
+        }
+    } catch (error) {
+        console.error('Network error: ', error);
+        Alert.alert("Network error");
+    }
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -331,18 +431,17 @@ const styles = StyleSheet.create({
         width: 40,
     },
     shadowContainerWeight: {
-            width: '70%', // Adjust as needed
-            height: '15%', // Adjust as needed
-            borderRadius: 10,
-            backgroundColor: 'white',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 5, // For Android shadow
-            marginTop: '15%',
-           alignSelf: 'center'
-
+        width: '70%', // Adjust as needed
+        height: '15%', // Adjust as needed
+        borderRadius: 10,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+        marginTop: '15%',
+        alignSelf: 'center',
     },
     shadowContainerRating: {
         width: '70%', // Adjust as needed
@@ -354,7 +453,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5, // For Android shadow
-        marginTop: '15%',
+        marginTop: '10%',
         alignSelf: 'center'
 
     },

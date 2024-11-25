@@ -67,19 +67,6 @@ export default function ProfileManagement() {
     const [showEditGoalWeight, setShowEditGoalWeight] = useState(false);
     const [newGoalWeight, setNewGoalWeight] = useState('');
 
-    // useEffect(() => {
-    //     console.log("Current user on page load: ", currentUser);
-    //     // Upon load, initialize "new" values to current values so these are the default values which get passed to the API until they are changed
-    //     setNewFirstName(currentUser.firstName);
-    //     setNewLastName(currentUser.lastName);
-    //     setNewHeightFeet(currentUser.heightFeet.toString());
-    //     setNewHeightInches(currentUser.heightInches.toString());
-    //     setNewGender(currentUser.gender);
-    //     setNewFeelBetter(currentUser.goal_to_feel_better);
-    //     setNewLoseWeight(currentUser.goal_to_lose_weight);
-    //     setNewGoalWeight(currentUser.goalWeight.toString());
-    // }, []);
-
     function dataEntered():boolean{
         if (newFirstName != ''|| newLastName != '')
             return true;
@@ -360,46 +347,100 @@ export default function ProfileManagement() {
 
 
 function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, newFt: any, newInch: any, newWeight: any, newGender:any, newFeelBetter:any, newLoseWeight: any, newGoalWeight: any, navigation: any){
-    if(newFirstName === '')
-        newFirstName = currentUser.firstName;
-    if(newLastName === '')
-        newLastName = currentUser.lastName;
-    if(newFt === '')
-        newFt = currentUser.heightFeet;
-    if(newInch === '')
-        newInch = currentUser.heightInches;
-    if(newGender === '')
-        newGender = currentUser.gender;
-    console.log("checkbox lw: " + newLoseWeight);
-    console.log("checkbox fb: " + newFeelBetter);
-    if(newGoalWeight === ''){
-        newGoalWeight = currentUser.goalWeight;
-    }
-    if(newGoalWeight >= currentUser.currentWeight){
-        Alert.alert("Goal weight must be less than current weight.");
-        return;
-    }
-    if(newGoalWeight != '' && !currentUser.goal_to_lose_weight && newLoseWeight == false){
+    
+    console.log("currentUser when 'Confirm Changes' is pressed: ", currentUser);
+
+    // Do some goal validation
+
+    // Condition: No goals selected
+    if(newFeelBetter === false && newLoseWeight === false){
         Alert.alert(
-            "Confirmation",
-            "You can't have a goal weight if your goal is not to lose weight!",
+            "Goals missing",
+            "Make sure to select a goal!",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+            ]
+        );
+    }
+
+    // Condition: Goal to lose weight selected, but no goal weight provided
+    else if(newLoseWeight === true && (newGoalWeight === 0 || newGoalWeight === "0" || newGoalWeight === '') && currentUser.goalWeight === 0){
+        Alert.alert(
+            "Goal weight missing",
+            "Please set your goal weight, or remove the lose-weight goal from your goal selection",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+            ]
+        );
+    }
+
+    // Condition: Goal weight provided, but goal is not to lose weight
+    else if(newGoalWeight != 0 && newGoalWeight != '' && !currentUser.loseWeight && newLoseWeight == false){
+        Alert.alert(
+            "Goal weight is set, but the lose-weight goal is not selected",
+            "You can't have a goal weight if your goal is not to lose weight! Did you mean to select the lose-weight goal or clear out goal weight?",
             [
                 {
                     text: "Cancel",
                     style: "cancel"
                 },
-                {
-                    text: "Okay",
-                    style: "destructive",
-                    onPress: () => {
-                        // Manually select lose weight as a goal for the user.
-                        newLoseWeight = true;
-                    }
-                }
+                // {
+                //     text: "Okay",
+                //     style: "destructive",
+                //     onPress: () => {
+                //         // Do nothing
+                //     }
+                // }
             ]
         );
     }
+
+    // Condition: Goal weight > current weight
+    else if (newGoalWeight >= Math.floor(currentUser.currentWeight)){
+        Alert.alert(
+            "Goal weight invalid",
+            "Goal weight must be less than your current weight: " + Math.floor(currentUser.currentWeight) + "lbs",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+            ]
+        );
+        return;
+    }
+
     else {
+
+        console.log("newGoalWeight = ", newGoalWeight);
+        console.log("typeof newGoalWeight = ", typeof newGoalWeight);
+
+        // Input data validation to make sure data will work for API call.
+        if(newFirstName === '')
+            newFirstName = currentUser.firstName;
+        if(newLastName === '')
+            newLastName = currentUser.lastName;
+        if(newFt === '')
+            newFt = currentUser.heightFeet;
+        if(newInch === '')
+            newInch = currentUser.heightInches;
+        if(newGender === '')
+            newGender = currentUser.gender;
+        console.log("checkbox lw: " + newLoseWeight);
+        console.log("checkbox fb: " + newFeelBetter);
+        if(newGoalWeight === '' && newLoseWeight === false){
+            newGoalWeight = 0;
+        }
+        if(newGoalWeight === '' && newLoseWeight === true){
+            newGoalWeight = currentUser.goalWeight;
+        }
+
         console.log("currentUser before API call: ", currentUser);
         Alert.alert(
             "Confirmation",
@@ -576,12 +617,12 @@ const updateUser = async (currentUser: any, newFirstName: string, newLastName: s
             currentUser.goal_to_lose_weight = newLoseWeight;
             currentUser.feelBetter = newFeelBetter;
             currentUser.goal_to_feel_better = newFeelBetter;
-            // if(newFeelBetter && newLoseWeight)
-            //     currentUser.goalType = "both";
-            // if(newFeelBetter && !newLoseWeight)
-            //     currentUser.goalType = "feelBetter";
-            // if(!newFeelBetter && newLoseWeight)
-            //     currentUser.goalType = "loseWeight";
+            if(newFeelBetter && newLoseWeight)
+                currentUser.goalType = "both";
+            if(newFeelBetter && !newLoseWeight)
+                currentUser.goalType = "feelBetter";
+            if(!newFeelBetter && newLoseWeight)
+                currentUser.goalType = "loseWeight";
             currentUser.goalWeight = newGoalWeight;
             console.log("Current user after API call & updates: ", currentUser);
             // Navigate back to the welcome page.
