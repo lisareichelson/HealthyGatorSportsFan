@@ -93,7 +93,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         # Update fields when new data comes from the basicinfo.tsx screen
         instance.goal_type = validated_data.get('goal_type', instance.goal_type)
         instance.weight_value = validated_data.get('weight_value', instance.weight_value)
-        instance.feel_better_value = validated_data.get('weight_value', instance.feel_better_value)
+        instance.feel_better_value = validated_data.get('feel_better_value', instance.feel_better_value)
         instance.save()
         return instance
     
