@@ -16,14 +16,14 @@ def check_game_status(apiInstance):
     curr_game = next((game for game in scoreboard if game.home_team.name == curr_team or game.away_team.name == curr_team), None)
     if not curr_game:
         return "No game found"
-    if curr_game.status == 'in_progress' or curr_game.status == 'completed':
-        if curr_game.home_team == curr_team:
-            florida_score = curr_game.home_team.points
-            opponent_score = curr_game.away_team.points
-        else:
-            florida_score = curr_game.away_team.points
-            opponent_score = curr_game.home_team.points
-        score_diff = florida_score - opponent_score
+    if curr_game.home_team == curr_team:
+        florida_score = curr_game.home_team.points
+        opponent_score = curr_game.away_team.points
+    else:
+        florida_score = curr_game.away_team.points
+        opponent_score = curr_game.home_team.points
+    score_diff = florida_score - opponent_score
+    if curr_game.status == 'in_progress':
         if score_diff > 14:
             return 'winning_decisive'
         elif 1 <= score_diff <= 14:
@@ -34,8 +34,17 @@ def check_game_status(apiInstance):
             return 'losing_close'
         else:
             return 'losing_decisive'
+    elif curr_game.status == 'completed':
+        if score_diff > 14:
+            return 'won_decisive'
+        elif 1 <= score_diff <= 14:
+            return 'won_close'
+        elif -14 < score_diff <= -1:
+            return 'lost_close'
+        else:
+            return 'lost_decisive'
     elif curr_game.status == 'scheduled':
-        return "Game not started"
+        return 'Game not started'
 
 def send_notification(game_status: str):
     push_token = os.getenv('EXPO_PUSH_TOKEN')

@@ -213,7 +213,7 @@ def poll_cfbd_view(request):
         response = {"message": "No upcoming games found."}
         message = response["message"]
     push_token = os.getenv('EXPO_PUSH_TOKEN')
-    game_status = check_game_status(apiInstance)
+    game_status= check_game_status(apiInstance)
     poll_cfbd.send_notification(game_status)
     print(game_status)
     if push_token:
