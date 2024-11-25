@@ -17,7 +17,7 @@ export default function CreateOrSignIn() {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalText}>
-                            By using this app, you acknowledge that this application is a prototype designed for testing and demo purposes only. It is not intended for public use.
+                        By using this app, you acknowledge that this application is a prototype developed for testing and demonstration purposes only. It is not intended for public use or to provide medical advice. Any data entered into the app is used solely for testing purposes as part of a university research project and will not be shared outside of the research team. The app is provided "as is" without any warranties, and the developers disclaim all liability for harm or damages arising from its use.
                         </Text>
                         <Button title="I Understand" onPress={() => setDisclaimerVisible(false)}/>
                     </View>
