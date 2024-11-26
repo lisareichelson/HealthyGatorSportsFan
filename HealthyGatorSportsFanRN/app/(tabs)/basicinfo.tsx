@@ -1,7 +1,7 @@
 import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
-import {SetStateAction, useState} from "react";
+import {SetStateAction, useState, useEffect} from "react";
 import User from "@/components/user";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
@@ -87,16 +87,19 @@ const BasicInformationCollection = () => {
                 onChangeText={last => setLastName(last)}
             />
             </View>
+
             <TouchableOpacity style = {[styles.input, {marginTop:10} ]} activeOpacity={0.5}
                               onPress={() => setIsVisible(true) }>
-                <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>{birthDayStr}</Text>
-            <DateTimePickerModal style = {[styles.input, {marginTop:10} ]}
+                <Text style={{fontSize: 15, fontFamily: 'System'}}>{birthDayStr}</Text>
+            <DateTimePickerModal style = {[styles.input]}
                 isVisible={isVisible}
                 mode="date"
                 date={birthdate}
                 onConfirm={handleDate}
                 onChange={item => {setBirthdate(item)}}
                 onCancel={() => setIsVisible(false)}
+                minimumDate={new Date(1900, 0, 1)}
+                maximumDate={new Date()}
             />
             </TouchableOpacity>
           <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 10}}>Select your gender:</Text>
@@ -133,8 +136,8 @@ const BasicInformationCollection = () => {
 
           <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
           <TextInput
-              style={styles.inputWeight}
-              placeholder="enter a weight..."
+              style={styles.input}
+              placeholder="Enter a weight..."
               keyboardType={"numeric"}
               editable={true}
               value={weight}
@@ -192,41 +195,37 @@ function SetStyles() : any{
       alignItems: 'center',
       justifyContent: 'space-evenly',
     },
-    inputWeight: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-      padding: 10,
-    },
     InputBoxes: {
       flex: 1,
       justifyContent: "center",
     },
     dropdown:{
-      height: 50,
-      borderColor: 'gray',
-      borderWidth: 0.5,
-      borderRadius: 8,
-      paddingHorizontal: 8,
+      borderWidth: 1,
+      borderRadius: 10,
+      padding: 10,
+      borderColor: '#D3D3D3',
+      margin: 3,
+      flex: 1,
     },
-      input: {
-          height: 40,
-          borderWidth: 1,
-          borderColor: 'grey',
-          borderRadius: 5,
-          paddingHorizontal: 10,
-      },
-      row: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: "space-around",
-      },
-      button: {
-        borderWidth: 1,
-          marginTop: 10,
-          borderRadius: 5,
-          borderColor:'grey',
-      }
+    input: {
+      height: 40,
+      borderWidth: 1,
+      borderRadius: 10,
+      padding: 10,
+      borderColor: '#D3D3D3',
+      margin: 3,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: "space-around",
+    },
+    button: {
+      borderWidth: 1,
+      marginTop: 10,
+      borderRadius: 5,
+      borderColor:'grey',
+    }
   });
   return styles;
 }
