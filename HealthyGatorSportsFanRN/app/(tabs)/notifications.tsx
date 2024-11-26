@@ -14,12 +14,14 @@ const NotificationsPage = () => {
     const [newTitle, setNewTitle] = useState('');
     const [newMessage, setNewMessage] = useState('');
 
+    const [numNotifications, setNumNotifications] = useState(0);
     const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const loadNotifications = async () => {
         setLoading(true);
         try {
             const data = await fetchNotifications(currentUser.userId);
+            setNumNotifications(data.length);
             setNotificationDatas(data);
         } catch (error) {
             Alert.alert('Error');
@@ -36,6 +38,10 @@ const NotificationsPage = () => {
 
     // Function to handle creating a notification
   const handleCreateNotificationPress = async () => {
+    if (newTitle === '' || newMessage === '') {
+        Alert.alert('Missing information', 'You need to provide a title and message to create a notification.');
+        return
+    }
     try {
       await createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
       await sendPushNotification(expoPushToken, newTitle, newMessage);
@@ -57,6 +63,10 @@ const NotificationsPage = () => {
 
     // Function to handle deleting a notification
     const handleDeleteAllNotificationPress = async (userId: number) => {
+        if (numNotifications <= 0) {
+            Alert.alert('No notifications', 'You have no notifications to delete.');
+            return
+        }
         Alert.alert(
             "Confirmation",
             "Are you sure you want to delete all your notifications?",
@@ -164,6 +174,8 @@ const NotificationsPage = () => {
                 </View>
             </View>
 
+            <Text style={{ fontSize: 15 }}>Create a notification for testing:</Text>
+
             <View style={styles.buttonContainer}>
                 <TextInput
                     style={styles.editBox}
@@ -184,27 +196,8 @@ const NotificationsPage = () => {
             </View>
             
             <TouchableOpacity style={styles.button} onPress={handleCreateNotificationPress}>
-                <Text style={styles.buttonText}>Create notification</Text>
+                <Text style={styles.buttonText}>Generate notification</Text>
             </TouchableOpacity>
-
-            <Text style={{ fontSize: 15 }}>The buttons below are for notification testing purposes only.</Text>
-            
-            <View style={styles.buttonContainer}>
-
-                <TouchableOpacity style={styles.buttonForContainer} onPress={handlePollCFBD}>
-                    <Text style={styles.buttonForContainerText}>Get next game info</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity style={styles.buttonForContainer} onPress={async () => {{ await sendPushNotification(expoPushToken, "Test Notification", "Hello, you got a notification!"); }}}>
-                    <Text style={styles.buttonForContainerText}>Press to Send Notification</Text>
-                </TouchableOpacity>
-                
-            </View>           
-
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 15, fontFamily: 'System' }}>Title: {notification && notification.request.content.title} </Text>
-                <Text style={{ fontSize: 15, fontFamily: 'System' }}>Body: {notification && notification.request.content.body}</Text>
-            </View>
 
         </View>  
     );
