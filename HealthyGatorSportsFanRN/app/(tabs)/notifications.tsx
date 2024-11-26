@@ -57,13 +57,29 @@ const NotificationsPage = () => {
 
     // Function to handle deleting a notification
     const handleDeleteAllNotificationPress = async (userId: number) => {
-        try {
-            console.log("userID for deleteAll notifications: ", userId);
-            await deleteAllNotifications(userId);
-            await loadNotifications(); // Refresh the notifications after deletion
-        } catch (error) {
-          Alert.alert('Error', 'Failed to delete notifications');
-        }
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to delete all your notifications?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    style: "destructive",
+                    onPress: async () => {    
+                        try {
+                            console.log("userID for deleteAll notifications: ", userId);
+                            await deleteAllNotifications(userId);
+                            await loadNotifications(); // Refresh the notifications after deletion
+                        } catch (error) {
+                          Alert.alert('Error', 'Failed to delete notifications');
+                        }     
+                    }
+                }
+            ]
+        );
     };
 
     // The below code is for sending a notification from frontend
@@ -463,7 +479,7 @@ export const deleteAllNotifications = async (userId: number) => {
         } else {
             console.error('Failed to delete:', response.status);
             const errorData = await response.json();
-            Alert.alert('Error deleting notifications', JSON.stringify(errorData));
+            // Alert.alert('Error deleting notifications', JSON.stringify(errorData));
         }
     } catch (error) {
         console.error('Error:', error);
