@@ -12,10 +12,16 @@ def send_push_notification_next_game(header, push_token, message):
     )
 def check_game_status(apiInstance):
     scoreboard = apiInstance.get_scoreboard()
-    curr_team = 'UCLA Bruins'
-    curr_game = next((game for game in scoreboard if game.home_team.name == curr_team or game.away_team.name == curr_team), None)
+    curr_team = 'Florida Gators'
+    curr_game = None
+    for game in scoreboard:
+        if game.home_team.name == curr_team or game.away_team.name == curr_team:
+            curr_game = game
+            break
     if not curr_game:
         return "No game found"
+    if curr_game.status == 'scheduled':
+        return 'Game not started'
     if curr_game.home_team == curr_team:
         florida_score = curr_game.home_team.points
         opponent_score = curr_game.away_team.points
