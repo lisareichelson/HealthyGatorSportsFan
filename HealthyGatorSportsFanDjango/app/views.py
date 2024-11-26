@@ -281,7 +281,7 @@ class BulkDeleteNotificationsView(APIView):
             notifications = NotificationData.objects.filter(user_id=user_id)
             deleted_count, _ = notifications.delete()
             if deleted_count > 0:
-                return Response({'message': f'Deleted {deleted_count} notifications.'}, status=status.HTTP_204_NO_CONTENT)
+                return Response({'message': f'Deleted {deleted_count} notifications.'}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'No notifications found for this user.'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:

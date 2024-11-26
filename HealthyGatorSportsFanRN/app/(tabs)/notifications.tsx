@@ -14,12 +14,14 @@ const NotificationsPage = () => {
     const [newTitle, setNewTitle] = useState('');
     const [newMessage, setNewMessage] = useState('');
 
+    const [numNotifications, setNumNotifications] = useState(0);
     const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const loadNotifications = async () => {
         setLoading(true);
         try {
             const data = await fetchNotifications(currentUser.userId);
+            setNumNotifications(data.length);
             setNotificationDatas(data);
         } catch (error) {
             Alert.alert('Error');
@@ -36,6 +38,10 @@ const NotificationsPage = () => {
 
     // Function to handle creating a notification
   const handleCreateNotificationPress = async () => {
+    if (newTitle === '' || newMessage === '') {
+        Alert.alert('Missing information', 'You need to provide a title and message to create a notification.');
+        return
+    }
     try {
       await createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
       await sendPushNotification(expoPushToken, newTitle, newMessage);
@@ -57,26 +63,34 @@ const NotificationsPage = () => {
 
     // Function to handle deleting a notification
     const handleDeleteAllNotificationPress = async (userId: number) => {
-        try {
-            console.log("userID for deleteAll notifications: ", userId);
-            await deleteAllNotifications(userId);
-            await loadNotifications(); // Refresh the notifications after deletion
-        } catch (error) {
-          Alert.alert('Error', 'Failed to delete notifications');
+        if (numNotifications <= 0) {
+            Alert.alert('No notifications', 'You have no notifications to delete.');
+            return
         }
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to delete all your notifications?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    style: "destructive",
+                    onPress: async () => {    
+                        try {
+                            console.log("userID for deleteAll notifications: ", userId);
+                            await deleteAllNotifications(userId);
+                            await loadNotifications(); // Refresh the notifications after deletion
+                        } catch (error) {
+                          Alert.alert('Error', 'Failed to delete notifications');
+                        }     
+                    }
+                }
+            ]
+        );
     };
-
-    // const handleCreateNotificationPress = () => {
-    //     createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
-    //     loadNotifications();
-    //     handleRefresh();
-    // };
-
-    // const handleDeleteNotificationPress = (notification_id: number) => {
-    //     deleteNotification(notification_id);
-    //     loadNotifications();
-    //     handleRefresh();
-    // };
 
     // The below code is for sending a notification from frontend
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -160,6 +174,8 @@ const NotificationsPage = () => {
                 </View>
             </View>
 
+            <Text style={{ fontSize: 15 }}>Create a notification for testing:</Text>
+
             <View style={styles.buttonContainer}>
                 <TextInput
                     style={styles.editBox}
@@ -180,148 +196,14 @@ const NotificationsPage = () => {
             </View>
             
             <TouchableOpacity style={styles.button} onPress={handleCreateNotificationPress}>
-                <Text style={styles.buttonText}>Create notification</Text>
+                <Text style={styles.buttonText}>Generate notification</Text>
             </TouchableOpacity>
-
-            <Text style={{ fontSize: 15 }}>The buttons below are for notification testing purposes only.</Text>
-            
-            <View style={styles.buttonContainer}>
-
-                <TouchableOpacity style={styles.buttonForContainer} onPress={handlePollCFBD}>
-                    <Text style={styles.buttonForContainerText}>Get next game info</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity style={styles.buttonForContainer} onPress={async () => {{ await sendPushNotification(expoPushToken, "Test Notification", "Hello, you got a notification!"); }}}>
-                    <Text style={styles.buttonForContainerText}>Press to Send Notification</Text>
-                </TouchableOpacity>
-                
-            </View>           
-
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 15, fontFamily: 'System' }}>Title: {notification && notification.request.content.title} </Text>
-                <Text style={{ fontSize: 15, fontFamily: 'System' }}>Body: {notification && notification.request.content.body}</Text>
-            </View>
 
         </View>  
     );
 }
 
 export default NotificationsPage;
-
-const styles = StyleSheet.create({
-    container: {
-        gap: 10,
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-    },
-    shadowContainer: {
-        width: '90%', // Adjust as needed
-        height: '50%', // Adjust as needed        
-        borderRadius: 10,
-        backgroundColor: 'white',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5, // For Android shadow
-        marginBottom: 20,
-      },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between', // Adjusts spacing between buttons
-        width: '90%', // Adjust as needed
-    },
-    buttonForContainer: {
-        flex: 1, // Makes buttons take equal space
-        marginHorizontal: 5, // Adds space between buttons
-        backgroundColor: '#2196F3', // Default button color
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 4,
-        elevation: 2, // For Android shadow
-        shadowColor: '#000', // For iOS shadow
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        justifyContent: 'center', // Centers content vertically
-      },
-      buttonForContainerText: {
-        color: 'white',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    button: {
-        backgroundColor: '#2196F3', // Default button color
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 4,
-        elevation: 2, // For Android shadow
-        shadowColor: '#000', // For iOS shadow
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-      },
-      buttonText: {
-        color: 'white',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    editBox:{
-        flex: 1,
-        borderWidth: 1,
-        marginRight: '5%',
-        margin: 5,
-    },
-    card: {
-        marginBottom: 5,
-        padding: 10,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5, // For Android shadow
-    },
-    cardTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        flex: 1, // Allows the title to take available space
-    },
-    cardText: {
-        fontSize: 14,
-        //marginTop: 5,
-    },
-    closeButton: {
-        alignItems: 'flex-end'
-    },
-    cardHeader: {
-        flexDirection: 'row',
-        alignItems: 'center', // Aligns items vertically centered
-        justifyContent: 'space-between',
-    },
-    separator: {
-        height: 1, // Height of the line
-        backgroundColor: '#CCCCCC', // Color of the line
-        marginVertical: 10, // Space around the line
-      },
-      content: {
-        marginTop: 70, // Adjust to avoid overlap with the title
-        padding: 20,
-      },
-});
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -470,13 +352,130 @@ export const deleteAllNotifications = async (userId: number) => {
                 'Content-Type': 'application/json',
             },
         });
-        if (response.status === 204) {
+        if (response.ok || response.status === 204) {
             console.log('Deleted successfully');
         } else {
             console.error('Failed to delete:', response.status);
+            const errorData = await response.json();
+            // Alert.alert('Error deleting notifications', JSON.stringify(errorData));
         }
     } catch (error) {
         console.error('Error:', error);
     }
     
 };
+
+const styles = StyleSheet.create({
+    container: {
+        gap: 10,
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+    },
+    shadowContainer: {
+        width: '90%', // Adjust as needed
+        height: '50%', // Adjust as needed        
+        borderRadius: 10,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+        marginBottom: 20,
+      },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Adjusts spacing between buttons
+        width: '90%', // Adjust as needed
+    },
+    buttonForContainer: {
+        flex: 1, // Makes buttons take equal space
+        marginHorizontal: 5, // Adds space between buttons
+        backgroundColor: '#2196F3', // Default button color
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 4,
+        elevation: 2, // For Android shadow
+        shadowColor: '#000', // For iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        justifyContent: 'center', // Centers content vertically
+      },
+      buttonForContainerText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    button: {
+        backgroundColor: '#2196F3', // Default button color
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 4,
+        elevation: 2, // For Android shadow
+        shadowColor: '#000', // For iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    editBox:{
+        flex: 1,
+        borderWidth: 1,
+        marginRight: '5%',
+        margin: 5,
+    },
+    card: {
+        marginBottom: 5,
+        padding: 10,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+    },
+    cardTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        flex: 1, // Allows the title to take available space
+    },
+    cardText: {
+        fontSize: 14,
+        //marginTop: 5,
+    },
+    closeButton: {
+        alignItems: 'flex-end'
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        alignItems: 'center', // Aligns items vertically centered
+        justifyContent: 'space-between',
+    },
+    separator: {
+        height: 1, // Height of the line
+        backgroundColor: '#CCCCCC', // Color of the line
+        marginVertical: 10, // Space around the line
+      },
+      content: {
+        marginTop: 70, // Adjust to avoid overlap with the title
+        padding: 20,
+      },
+});
