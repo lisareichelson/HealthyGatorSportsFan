@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState, useEffect} from "react";
@@ -63,11 +63,12 @@ const BasicInformationCollection = () => {
   return (
 
     <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
 
     <ScrollView>
 
       <View style={styles.container}>
-        <Text style={{ fontSize: 24, fontFamily: 'System', textAlign: "center", justifyContent: "center", marginTop: 25, marginRight: 30, marginLeft: 30 }}>Before we begin, we need some basic information.</Text>
+        <Text style={{ fontSize: 24, fontFamily: 'System', textAlign: "center", justifyContent: "center", marginTop: '15%', marginRight: 30, marginLeft: 30 }}>Before we begin, we need some basic information.</Text>
         <Image style=
           {{
             width: 150,
@@ -77,7 +78,7 @@ const BasicInformationCollection = () => {
 
         <View style={styles.InputBoxes}>
 
-          <Text style={{ fontSize: 15, fontFamily: 'System' }}>Enter your name:</Text>
+          <Text style={{ fontSize: 15, fontWeight: '600'}}>Enter your name:</Text>
           <View style={styles.row}>
             <TextInput
               style={[styles.input, { width: '45%' }]}
@@ -93,7 +94,7 @@ const BasicInformationCollection = () => {
             />
           </View>
 
-          <Text style={{ fontSize: 15, fontFamily: 'System', marginTop: 10 }}>Select your birthdate:</Text>
+          <Text style={styles.label}>Select your birthdate:</Text>
           <TouchableOpacity style={[styles.input]} activeOpacity={0.5}
             onPress={() => setIsVisible(true)}>
             <Text style={{ fontSize: 15, fontFamily: 'System' }}>{birthDayStr}</Text>
@@ -109,7 +110,7 @@ const BasicInformationCollection = () => {
             />
           </TouchableOpacity>
 
-          <Text style={{ fontSize: 15, fontFamily: 'System', marginTop: 10 }}>Select your gender:</Text>
+          <Text style={styles.label}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
             data={genders}
             labelField={"label"}
@@ -120,7 +121,7 @@ const BasicInformationCollection = () => {
             onChange={item => { setGender(item.value); }}
           ></Dropdown>
 
-          <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Enter your height:</Text>
+          <Text style={styles.label}>Enter your height:</Text>
           <View style={styles.row}>
             <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Feet:</Text>
             <Dropdown style={[styles.dropdownNumbers, { width: '30%' }]}
@@ -149,7 +150,7 @@ const BasicInformationCollection = () => {
             ></Dropdown>
           </View>
 
-          <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Enter your weight in pounds:</Text>
+          <Text style={styles.label}>Enter your weight in pounds:</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter a weight..."
@@ -162,7 +163,7 @@ const BasicInformationCollection = () => {
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate)}>
+          onPress={() => SaveAndContinue(navigation, currentUser, weight, gender, heightInch, heightFt, firstName, lastName, birthdate)}>
           <Image
             source={require('./../../assets/images/forwardarrow.png')}
             style={{ width: 50, height: 50, margin: 15}}
@@ -172,6 +173,7 @@ const BasicInformationCollection = () => {
 
     </ScrollView>
 
+    </KeyboardAvoidingView>
     </SafeAreaView>
 
   );
@@ -179,30 +181,48 @@ const BasicInformationCollection = () => {
 
 export default BasicInformationCollection
 
-function SaveAndContinue(navigation: any, currentUser: any, weight: number, gender: string, heightInches: number, heightFeet: number, firstName: string, lastName: string, birthdate: Date){
-    
-    //Save the variables in the user object type
-    // const currentUser: User = { ...userData };
-    currentUser.gender = gender;
-    currentUser.heightFeet = heightFeet;
-    currentUser.heightInches = heightInches;
-    currentUser.firstName = firstName;
-    currentUser.lastName = lastName;
-    currentUser.birthDate = birthdate.toISOString().split('T')[0]; //JSON.stringify(birthdate.toISOString().split('T')[0]);
-    currentUser.currentWeight = weight;
+function SaveAndContinue(navigation: any, currentUser: any, weight: any, gender: any, heightInches: any, heightFeet: any, firstName: any, lastName: any, birthdate: Date){
+  
+  if(weight === '' ||  gender === '' || heightInches === '' || heightFeet === '' || firstName === '' || lastName === '' || isToday(birthdate)) {
+    Alert.alert('Missing Information', 'Please provide values for all fields on this page to continue.');
+    return;
+  }
 
-    console.log("First name: ", currentUser.firstName);
-    console.log("Last name: ", currentUser.lastName);
-    console.log("Birth date: ", currentUser.birthDate);
-    console.log("Gender: ", currentUser.gender);
-    console.log("Height in feet: ", currentUser.heightFeet);
-    console.log("Height in inches: ", currentUser.heightInches);
-    console.log("Weight: ", currentUser.currentWeight);
+  weight = Number(weight);
+  heightInches = Number(heightInches);
+  heightFeet = Number(heightFeet);
 
-    // Continue to the next screen upon successful data submission
-    navigation.navigate('GoalCollection', { currentUser } as never);
+  //Save the variables in the user object type
+  // const currentUser: User = { ...userData };
+  currentUser.gender = gender;
+  currentUser.heightFeet = heightFeet;
+  currentUser.heightInches = heightInches;
+  currentUser.firstName = firstName;
+  currentUser.lastName = lastName;
+  currentUser.birthDate = birthdate.toISOString().split('T')[0]; //JSON.stringify(birthdate.toISOString().split('T')[0]);
+  currentUser.currentWeight = weight;
+
+  console.log("First name: ", currentUser.firstName);
+  console.log("Last name: ", currentUser.lastName);
+  console.log("Birth date: ", currentUser.birthDate);
+  console.log("Gender: ", currentUser.gender);
+  console.log("Height in feet: ", currentUser.heightFeet);
+  console.log("Height in inches: ", currentUser.heightInches);
+  console.log("Weight: ", currentUser.currentWeight);
+
+  // Continue to the next screen upon successful data submission
+  navigation.navigate('GoalCollection', { currentUser } as never);
 
 }
+
+const isToday = (date: any) => {
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
 
 function SetStyles() : any{
   const styles = StyleSheet.create({
@@ -211,6 +231,11 @@ function SetStyles() : any{
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'space-evenly',
+    },
+    label: {
+      fontSize: 15,
+      marginTop: 10 ,
+      fontWeight: '600'
     },
     InputBoxes: {
       flex: 1,
@@ -225,6 +250,7 @@ function SetStyles() : any{
       flex: 1,
     },
     dropdownNumbers:{
+      flex: 1,
       borderWidth: 1,
       borderRadius: 10,
       padding: 5,
