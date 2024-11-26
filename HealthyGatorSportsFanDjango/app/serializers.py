@@ -98,7 +98,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         return instance
     
 # Serializer for NotificationData
-class NotificationSerializer(serializers.ModelSerializer):
+class NotificationDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotificationData
         fields = '__all__'  # Or specify the fields you want to include

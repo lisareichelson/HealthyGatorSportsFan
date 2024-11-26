@@ -597,7 +597,7 @@ const updateUser = async (currentUser: any, newFirstName: string, newLastName: s
     console.log("API Request Body: ", JSON.stringify(updatedData));
 
     try {
-        const response = await fetch(`${AppUrls.url}/api/users/${currentUser.userId}/`, {
+        const response = await fetch(`${AppUrls.url}/user/${currentUser.userId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
