@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import User from "@/components/user";
@@ -12,6 +12,10 @@ export default function CreateCredentials() {
     const [passwordConfirmed, setPasswordConfirmed] = useState('');
 
     return(
+
+
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.container}>
             <Text style={{fontSize: 15, fontFamily: 'System'}}>
                 Please provide an email and password.
@@ -46,6 +50,10 @@ export default function CreateCredentials() {
                     </Text>
                 </TouchableOpacity>
         </View>
+
+        </KeyboardAvoidingView>
+
+        </SafeAreaView>
     );
 }
 
