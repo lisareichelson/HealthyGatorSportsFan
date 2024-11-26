@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, TextInput, ScrollView, Alert, SafeAreaView} from 'react-native';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { Dropdown } from 'react-native-element-dropdown';
 import {SetStateAction, useState, useEffect} from "react";
@@ -59,103 +59,120 @@ const BasicInformationCollection = () => {
          //Parse the string to display in MM/DD/YY format
          setBirthDayStr(selectedDate.toLocaleString().split(',')[0]);
      };
-
+  
   return (
+
+    <SafeAreaView style={{ flex: 1 }}>
 
     <ScrollView>
 
       <View style={styles.container}>
-        <Text style={{fontSize: 25, fontFamily: 'System', textAlign: "center", justifyContent: "center", paddingTop: 100}}>Before we begin, we need some basic information.</Text>
+        <Text style={{ fontSize: 24, fontFamily: 'System', textAlign: "center", justifyContent: "center", marginTop: 25, marginRight: 30, marginLeft: 30 }}>Before we begin, we need some basic information.</Text>
         <Image style=
-                   {{width: 150,
-                    height: 150,}}
-               source={require('./../../assets/images/clipboardgator.jpg')}/>
+          {{
+            width: 150,
+            height: 150,
+          }}
+          source={require('./../../assets/images/clipboardgator.jpg')} />
 
         <View style={styles.InputBoxes}>
-            <Text style={{fontSize: 15, fontFamily: 'System'}}>Enter your name:</Text>
-            <View style = {styles.row}>
-            <TextInput
-                style = {[styles.input, {marginTop:15}, {width: '45%'}]}
-                placeholder="First Name"
-                value={firstName}
-                onChangeText={first => setFirstName(first)}
-            />
-            <TextInput
-                style = {[styles.input, {marginTop:15}, {width: '45%'} ]}
-                placeholder="Last Name"
-                value={lastName}
-                onChangeText={last => setLastName(last)}
-            />
-            </View>
 
-            <TouchableOpacity style = {[styles.input, {marginTop:10} ]} activeOpacity={0.5}
-                              onPress={() => setIsVisible(true) }>
-                <Text style={{fontSize: 15, fontFamily: 'System'}}>{birthDayStr}</Text>
-            <DateTimePickerModal style = {[styles.input]}
-                isVisible={isVisible}
-                mode="date"
-                date={birthdate}
-                onConfirm={handleDate}
-                onChange={item => {setBirthdate(item)}}
-                onCancel={() => setIsVisible(false)}
-                minimumDate={new Date(1900, 0, 1)}
-                maximumDate={new Date()}
+          <Text style={{ fontSize: 15, fontFamily: 'System' }}>Enter your name:</Text>
+          <View style={styles.row}>
+            <TextInput
+              style={[styles.input, { width: '45%' }]}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={first => setFirstName(first)}
             />
-            </TouchableOpacity>
-          <Text style={{fontSize: 15, fontFamily: 'System', marginTop: 10}}>Select your gender:</Text>
+            <TextInput
+              style={[styles.input, { width: '45%' }]}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={last => setLastName(last)}
+            />
+          </View>
+
+          <Text style={{ fontSize: 15, fontFamily: 'System', marginTop: 10 }}>Select your birthdate:</Text>
+          <TouchableOpacity style={[styles.input]} activeOpacity={0.5}
+            onPress={() => setIsVisible(true)}>
+            <Text style={{ fontSize: 15, fontFamily: 'System' }}>{birthDayStr}</Text>
+            <DateTimePickerModal style={[styles.input]}
+              isVisible={isVisible}
+              mode="date"
+              date={birthdate}
+              onConfirm={handleDate}
+              onChange={item => { setBirthdate(item) }}
+              onCancel={() => setIsVisible(false)}
+              minimumDate={new Date(1900, 0, 1)}
+              maximumDate={new Date()}
+            />
+          </TouchableOpacity>
+
+          <Text style={{ fontSize: 15, fontFamily: 'System', marginTop: 10 }}>Select your gender:</Text>
           <Dropdown style={[styles.dropdown]}
-                    data={genders} 
-                    labelField={"label"} 
-                    valueField={"value"} 
-                    accessibilityLabel="Dropdown menu for selecting gender"
-                    onChange={item => {setGender(item.value);}}
+            data={genders}
+            labelField={"label"}
+            valueField={"value"}
+            accessibilityLabel="Dropdown menu for selecting gender"
+            placeholderStyle={{ fontSize: 15, color: 'grey'}}
+            selectedTextStyle={{ fontSize: 15 }}
+            onChange={item => { setGender(item.value); }}
           ></Dropdown>
 
-          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your height:</Text>
-            <View style = {styles.row}>
-                <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Feet:</Text>
-                <Dropdown style={[styles.dropdown, {width: '30%'}]}
-                          data={heightFeet}
-                          labelField={"value"}
-                          valueField={"value"}
-                          accessibilityLabel="Dropdown menu for selecting height in feet"
-                          onChange={item => { setHeightFeet(item.value);}}
-                          renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
-                ></Dropdown>
+          <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Enter your height:</Text>
+          <View style={styles.row}>
+            <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Feet:</Text>
+            <Dropdown style={[styles.dropdownNumbers, { width: '30%' }]}
+              data={heightFeet}
+              labelField={"value"}
+              valueField={"value"}
+              accessibilityLabel="Dropdown menu for selecting height in feet"
+              placeholderStyle={{ fontSize: 15, textAlign: 'center', color: 'grey'}}
+              selectedTextStyle={{ fontSize: 15, textAlign: 'center' }}
+              onChange={item => { setHeightFeet(item.value); }}
+              renderItem={(item) => (<Text>{item.value.toString()}</Text>)}
+              maxHeight={100}
+            ></Dropdown>
 
-                <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Inches:</Text>
-                <Dropdown style={[styles.dropdown, {width: '30%'}]}
-                          data={heightInches}
-                          labelField={"value"}
-                          valueField={"value"}
-                          accessibilityLabel="Dropdown menu for selecting additional height in inches"
-                          onChange={item => {setHeightInches(item.value);}}
-                          renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
-                ></Dropdown>
-            </View>
+            <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Inches:</Text>
+            <Dropdown style={[styles.dropdownNumbers, { width: '30%' }]}
+              data={heightInches}
+              labelField={"value"}
+              valueField={"value"}
+              accessibilityLabel="Dropdown menu for selecting additional height in inches"
+              placeholderStyle={{ fontSize: 15, textAlign: 'center', color: 'grey'}}
+              selectedTextStyle={{ fontSize: 15, textAlign: 'center' }}
+              onChange={item => { setHeightInches(item.value); }}
+              renderItem={(item) => (<Text>{item.value.toString()}</Text>)}
+              maxHeight={100}
+            ></Dropdown>
+          </View>
 
-          <Text style={{fontSize: 15, fontFamily: 'System', paddingTop: 10}}>Enter your weight in pounds:</Text>
+          <Text style={{ fontSize: 15, fontFamily: 'System', paddingTop: 10 }}>Enter your weight in pounds:</Text>
           <TextInput
-              style={styles.input}
-              placeholder="Enter a weight..."
-              keyboardType={"numeric"}
-              editable={true}
-              value={weight}
-              defaultValue={weight}
-              onChangeText={newWeight => setWeight(newWeight)}
-              returnKeyType="done"/>
+            style={styles.input}
+            placeholder="Enter a weight..."
+            keyboardType={"numeric"}
+            editable={true}
+            value={weight}
+            defaultValue={weight}
+            onChangeText={newWeight => setWeight(newWeight)}
+            returnKeyType="done" />
         </View>
 
         <TouchableOpacity activeOpacity={0.5}
-          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate) }>
+          onPress={() => SaveAndContinue(navigation, currentUser, Number(weight), gender, Number(heightInch), Number(heightFt), firstName, lastName, birthdate)}>
           <Image
-              source={require('./../../assets/images/forwardarrow.png')}
-              style={{width:50, height:50}}
+            source={require('./../../assets/images/forwardarrow.png')}
+            style={{ width: 50, height: 50, margin: 15}}
           />
         </TouchableOpacity>
       </View>
 
-      </ScrollView>
+    </ScrollView>
+
+    </SafeAreaView>
 
   );
 }
@@ -206,6 +223,13 @@ function SetStyles() : any{
       borderColor: '#D3D3D3',
       margin: 3,
       flex: 1,
+    },
+    dropdownNumbers:{
+      borderWidth: 1,
+      borderRadius: 10,
+      padding: 5,
+      borderColor: '#D3D3D3',
+      margin: 3,
     },
     input: {
       height: 40,
