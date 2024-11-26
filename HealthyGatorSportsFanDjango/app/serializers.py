@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import UserData, User, NotificationData
+
 import logging
 
 # Serializes models to JSON for the front end
@@ -17,7 +18,7 @@ import logging
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
+        fields = '__all__' #['user_id', 'email', 'password', 'first_name', 'last_name', 'birthdate', 'gender', 'height_feet', 'height_inches', 'goal_weight', 'goal_to_lose_weight', 'goal_to_feel_better']
         # required fields in models.py, but these are overidden temporarily
         extra_kwargs = {
             'birthdate': {'required': False, 'default': "2000-01-01"},
@@ -28,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             'height_inches': {'required': False, 'default': 0},
             'goal_weight': {'required': False, 'default': 0.0},
             'goal_to_lose_weight': {'required': False, 'default': 0.0},
-            'goal_to_feel_better': {'required': False, 'default': 0.0}
+            'goal_to_feel_better': {'required': False, 'default': 0.0},
         }
 
     def create(self, validated_data):
@@ -61,14 +62,17 @@ class UserSerializer(serializers.ModelSerializer):
         instance.height_feet = validated_data.get('height_feet', instance.height_feet)
         instance.height_inches = validated_data.get('height_inches', instance.height_inches)
         instance.goal_weight = validated_data.get('goal_weight', instance.goal_weight)
+        instance.goal_to_feel_better = validated_data.get('goal_to_feel_better', instance.goal_to_feel_better)
+        instance.goal_to_lose_weight = validated_data.get('goal_to_lose_weight', instance.goal_to_lose_weight)
         instance.save()
         return instance
+
     
 # Serializer for UserData
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['goal_type', 'weight_value', 'feel_better_value']
+        fields = ['data_id', 'user', 'timestamp', 'goal_type', 'weight_value', 'feel_better_value']        
         extra_kwargs = {
             'goal_type': {'required': False},
             'weight_value': {'required': False, 'default': 0.0},
@@ -89,12 +93,12 @@ class UserDataSerializer(serializers.ModelSerializer):
         # Update fields when new data comes from the basicinfo.tsx screen
         instance.goal_type = validated_data.get('goal_type', instance.goal_type)
         instance.weight_value = validated_data.get('weight_value', instance.weight_value)
-        instance.feel_better_value = validated_data.get('weight_value', instance.feel_better_value)
+        instance.feel_better_value = validated_data.get('feel_better_value', instance.feel_better_value)
         instance.save()
         return instance
     
 # Serializer for NotificationData
-class NotificationSerializer(serializers.ModelSerializer):
+class NotificationDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotificationData
         fields = '__all__'  # Or specify the fields you want to include

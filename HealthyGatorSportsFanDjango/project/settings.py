@@ -40,7 +40,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com','127.0.0.1', 'localhost', '192.168.68.124', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app']
+ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com','127.0.0.1', 'localhost', '192.168.68.124', '192.168.4.168', 'b862-184-185-222-16.ngrok-free.app', 'sawfish-premium-unlikely.ngrok-free.app', 'strongly-inviting-stinkbug.ngrok-free.app', 'normal-elegant-corgi.ngrok-free.app']
 
 
 # Application definition
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'HealthyGatorSportsFanDjango.app',
     'rest_framework',
+    'drf_yasg',
     'corsheaders',
 ]
 
@@ -148,7 +149,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -183,5 +183,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://b862-184-185-222-16.ngrok-free.app',
     'https://normal-elegant-corgi.ngrok-free.app',
     'https://sawfish-premium-unlikely.ngrok-free.app',
+    'https://strongly-inviting-stinkbug.ngrok-free.app',
     'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com'
 ]

@@ -1,7 +1,8 @@
-import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import User from "@/components/user";
+import { AppUrls } from '@/constants/AppUrls';
 
 //PLACEHOLDER CODE: Insert this between the welcome screen and the next screens once the google sign in is working.
 export default function CreateCredentials() {
@@ -11,6 +12,10 @@ export default function CreateCredentials() {
     const [passwordConfirmed, setPasswordConfirmed] = useState('');
 
     return(
+
+
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.container}>
             <Text style={{fontSize: 15, fontFamily: 'System'}}>
                 Please provide an email and password.
@@ -45,11 +50,15 @@ export default function CreateCredentials() {
                     </Text>
                 </TouchableOpacity>
         </View>
+
+        </KeyboardAvoidingView>
+
+        </SafeAreaView>
     );
 }
 
 
-function ConfirmData(email: any, password: any, passwordConfirmed: any, navigation : any){
+async function ConfirmData(email: any, password: any, passwordConfirmed: any, navigation : any){
     //Check that the inputted username does not yet exist through connection with database
     //TODO
 
@@ -84,14 +93,41 @@ function ConfirmData(email: any, password: any, passwordConfirmed: any, navigati
     console.log("Email: ", email);
     console.log("Password: ",password);
 
-    //Store user info into frontend variable to send to backend at end of account creation
-    const currentUser = new User(0,'','','','','','',0,0,0,false,true,0);
-    currentUser.email = email;
-    currentUser.password = password;
+    if (await emailTaken(email) === false) {
 
-    // move to the next screen
-    navigation.navigate('BasicInfo', {currentUser} as never);
+        //Store user info into frontend variable to send to backend at end of account creation
+        const currentUser = new User(0,'','','','','','',0,0,0,false,true,0,''); //TODO: INSPECT ERROR
+        currentUser.email = email;
+        currentUser.password = password;
+
+        // move to the next screen
+        navigation.navigate('BasicInfo', {currentUser} as never);
+    }
+
 }
+
+const emailTaken = async (email: string) => {
+    try {
+        const response = await fetch(`${AppUrls.url}/user/checkemail/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+        console.log("Email is.....", data);
+        if (data.exists) {
+            console.log("Email exists.....");
+            Alert.alert('Email already exists', 'Please use a different email address.');
+        } 
+        return data.exists; // Return the boolean value directly
+    } catch (error) {
+        console.error('Error checking email:', error);
+        return false; // Return false in case of an error
+    }
+};
 
 const styles = StyleSheet.create({
     container: {
