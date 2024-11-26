@@ -311,7 +311,7 @@ function NavigateToNotifications(currentUser:any, navigation:any){
 }
 async function addUserProgress(currentUser: any, rating: number, newWeight: number, navigation: any, goHome: boolean){
     // UserData POST API call
-    fetch(`${AppUrls.url}/api/users/${currentUser.userId}/recordData/`, {
+    fetch(`${AppUrls.url}/userdata/${currentUser.userId}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -345,7 +345,7 @@ const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLose
     console.log("API Request Body: ", JSON.stringify(updatedData));
 
     try {
-        const response = await fetch(`${AppUrls.url}/api/users/${currentUser.userId}/`, {
+        const response = await fetch(`${AppUrls.url}/user/${currentUser.userId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

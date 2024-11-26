@@ -3,7 +3,7 @@ from .models import User, UserData, NotificationData
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from .serializers import UserSerializer, UserDataSerializer, NotificationSerializer
+from .serializers import UserSerializer, UserDataSerializer, NotificationDataSerializer
 import os
 import cfbd
 import pytz
@@ -12,6 +12,8 @@ from datetime import date, datetime
 from .utils import send_push_notification_next_game
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -58,6 +60,11 @@ def index(request):
 
 # API view to handle POST requests for user creation
 class CreateUserView(APIView):
+    @swagger_auto_schema(
+            operation_summary="Add user", 
+            operation_description="Create a new user to add to the database.", 
+            request_body=UserSerializer
+        )
     def post(self, request):
         print("request.data for CreateUserView: ", request.data)
         serializer = UserSerializer(data=request.data)
@@ -70,6 +77,7 @@ class CreateUserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UserUpdateView(APIView):
+    @swagger_auto_schema(operation_summary="Update user", operation_description="Update an existing user in the database", request_body=UserSerializer)
     def put(self, request, user_id):
         try:
             user = User.objects.get(user_id=user_id)
@@ -83,9 +91,21 @@ class UserUpdateView(APIView):
         else:
             print(serializer.errors)  # Debugging line
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class CheckEmailView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Check if email is already used", operation_description="Checks all users in the database to determine whether an email is already in user.", 
+        responses={200: UserSerializer(many=False)}  # Define response schema
+    )
+    def post(self, request):
+        email = request.data.get('email')
+        if User.objects.filter(email=email).exists():
+            return Response({'exists': True}, status=status.HTTP_200_OK)
+        return Response({'exists': False}, status=status.HTTP_200_OK)
     
 # API view to handle POST requests for user data creation
 class CreateUserDataView(APIView):
+    @swagger_auto_schema(operation_summary="Log user progress", operation_description="Create a new userData entry to add to the database. This is used to log a snapshot in time of progress toward the user's goal(s).", request_body=UserDataSerializer)
     def post(self, request, user_id):
         # Retrieve the user by ID
         user = User.objects.get(pk=user_id) # pk is primary key
@@ -104,6 +124,19 @@ class CreateUserDataView(APIView):
         return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LatestUserDataView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Get latest user progress", operation_description="Get the latest entry of user's progress from the userData table.", 
+        manual_parameters=[
+            openapi.Parameter(
+                'user_id',  # Name of the parameter
+                openapi.IN_PATH,  # Location of the parameter
+                description="User ID for which we are getting the latest user data entry for",
+                type=openapi.TYPE_STRING,  # Type of the parameter
+                required=True  # Whether the parameter is required
+            )
+        ],
+        responses={200: UserDataSerializer(many=True)}  # Define response schema
+    )
     def get(self, request, user_id):
         try:
             recent_data = UserData.objects.filter(user_id=user_id).order_by('-timestamp').first()
@@ -115,51 +148,71 @@ class LatestUserDataView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-# API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
-class BasicInfoView(APIView):
-    def post(self, request, user_id):
-        # Retrieve the user by ID
-        user = User.objects.get(pk=user_id) # pk is primary key
-        # Separate weight_value for UserData
-        weight_value = request.data.pop('weight_value', None) # return 'None' if no weight available
-        # Update user data with new information
-        user_serializer = UserSerializer(user, data=request.data, partial=True)
-        if user_serializer.is_valid():
-            user_serializer.save()
-            # Handle UserData creation if weight is provided
-            if weight_value is not None:
-                user_data = UserData.objects.create(user=user)
-                user_data_serializer = UserDataSerializer(user_data, data={'weight_value': weight_value}, partial=True)
-                if user_data_serializer.is_valid():
-                    user_data_serializer.save()
-                else:
-                    print("UserData errors:", user_data_serializer.errors)
-                    return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            # Return the user data with success status
-            return Response(user_serializer.data, status=status.HTTP_200_OK)
-        # Log and return errors if the user data is invalid
-        print("User errors:", user_serializer.errors)
-        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# # API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
+# class BasicInfoView(APIView):
+#     def post(self, request, user_id):
+#         # Retrieve the user by ID
+#         user = User.objects.get(pk=user_id) # pk is primary key
+#         # Separate weight_value for UserData
+#         weight_value = request.data.pop('weight_value', None) # return 'None' if no weight available
+#         # Update user data with new information
+#         user_serializer = UserSerializer(user, data=request.data, partial=True)
+#         if user_serializer.is_valid():
+#             user_serializer.save()
+#             # Handle UserData creation if weight is provided
+#             if weight_value is not None:
+#                 user_data = UserData.objects.create(user=user)
+#                 user_data_serializer = UserDataSerializer(user_data, data={'weight_value': weight_value}, partial=True)
+#                 if user_data_serializer.is_valid():
+#                     user_data_serializer.save()
+#                 else:
+#                     print("UserData errors:", user_data_serializer.errors)
+#                     return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#             # Return the user data with success status
+#             return Response(user_serializer.data, status=status.HTTP_200_OK)
+#         # Log and return errors if the user data is invalid
+#         print("User errors:", user_serializer.errors)
+#         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# API view to handle POST requests for data sent from the front-end (goalcollection.tsx)  
-class GoalCollectionView(APIView):
-    def post(self, request, user_id):
-        user = User.objects.get(pk=user_id)
-        user_serializer = UserSerializer(user, data=request.data, partial=True)
-        if user_serializer.is_valid():
-            user_serializer.save()
-            user_data = UserData.objects.create(user=user)
-            user_data_serializer = UserDataSerializer(user_data, data=request.data, partial=True)
-            if user_data_serializer.is_valid():
-                user_data_serializer.save()
-                return Response({
-                    'user': user_serializer.data,
-                    'user_data': user_data_serializer.data
-                }, status=status.HTTP_200_OK)
-            return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# # API view to handle POST requests for data sent from the front-end (goalcollection.tsx)  
+# class GoalCollectionView(APIView):
+#     def post(self, request, user_id):
+#         user = User.objects.get(pk=user_id)
+#         user_serializer = UserSerializer(user, data=request.data, partial=True)
+#         if user_serializer.is_valid():
+#             user_serializer.save()
+#             user_data = UserData.objects.create(user=user)
+#             user_data_serializer = UserDataSerializer(user_data, data=request.data, partial=True)
+#             if user_data_serializer.is_valid():
+#                 user_data_serializer.save()
+#                 return Response({
+#                     'user': user_serializer.data,
+#                     'user_data': user_data_serializer.data
+#                 }, status=status.HTTP_200_OK)
+#             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class UserLoginView(APIView):
+    @swagger_auto_schema(
+        operation_summary="User login", operation_description="Authenticate and get user's information given email and password.", 
+        manual_parameters=[
+                openapi.Parameter(
+                    'email',  # Name of the parameter
+                    openapi.IN_QUERY,  # Location of the parameter
+                    description="Login email entered by user",
+                    type=openapi.TYPE_STRING,  # Type of the parameter
+                    required=True  # Whether the parameter is required
+                ),
+                openapi.Parameter(
+                    'password',  # Name of the parameter
+                    openapi.IN_QUERY,  # Location of the parameter
+                    description="Login password entered by user",
+                    type=openapi.TYPE_STRING,  # Type of the parameter
+                    required=True  # Whether the parameter is required
+                )
+        ],
+        responses={200: UserSerializer(many=False)}  # Define response schema
+    )
     def get(self, request):
         email = request.query_params.get('email')
         password = request.query_params.get('password')
@@ -203,20 +256,36 @@ class UserLoginView(APIView):
 #         logout(request)
     
 # API view to handle GET requests for all notifications for a userID  
-class NotificationList(generics.ListAPIView):
-    serializer_class = NotificationSerializer
+class NotificationListView(generics.ListAPIView):
+    serializer_class = NotificationDataSerializer
+    @swagger_auto_schema(
+        operation_summary="List notifications", operation_description="Get all notifications for a user by user ID.", 
+        manual_parameters=[
+            openapi.Parameter(
+                'user_id',  # Name of the parameter
+                openapi.IN_PATH,  # Location of the parameter
+                description="User ID for which we are getting all notifications for",
+                type=openapi.TYPE_STRING,  # Type of the parameter
+                required=True  # Whether the parameter is required
+            )
+        ],
+        responses={200: NotificationDataSerializer(many=True)}  # Define response schema
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         return NotificationData.objects.filter(user_id=user_id)  # Adjust based on your model's field
     
-class BulkDeleteNotifications(APIView):
+class BulkDeleteNotificationsView(APIView):
+    @swagger_auto_schema(operation_summary="Delete all notifications for a user", operation_description="Delete all notifications for a user by user ID", request_body=NotificationDataSerializer)
     def delete(self, request, user_id):
         print("Entered BulkDeleteNotifications View")  
         try:
             notifications = NotificationData.objects.filter(user_id=user_id)
             deleted_count, _ = notifications.delete()
             if deleted_count > 0:
-                return Response({'message': f'Deleted {deleted_count} notifications.'}, status=status.HTTP_204_NO_CONTENT)
+                return Response({'message': f'Deleted {deleted_count} notifications.'}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'No notifications found for this user.'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
@@ -224,13 +293,17 @@ class BulkDeleteNotifications(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
                 
 # API view to handle CRUD requests for a single notification
-class NotificationDetail(APIView):
+class CreateNotificationView(APIView):
+    @swagger_auto_schema(operation_summary="Add notification", operation_description="Create a new notification to add to the database.", request_body=NotificationDataSerializer)
     def post(self, request):
-        serializer = NotificationSerializer(data=request.data)
+        serializer = NotificationDataSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+class DeleteNotificationView(APIView):
+    @swagger_auto_schema(operation_summary="Delete notification", operation_description="Delete a notification by ID", request_body=NotificationDataSerializer)
     def delete(self, request, notification_id):
         try:
             notification = NotificationData.objects.get(notification_id=notification_id)
