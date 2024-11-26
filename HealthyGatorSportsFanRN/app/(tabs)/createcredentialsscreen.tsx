@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Alert, TouchableOpacity, TextInput, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
 import User from "@/components/user";
@@ -11,6 +11,10 @@ export default function CreateCredentials() {
     const [passwordConfirmed, setPasswordConfirmed] = useState('');
 
     return(
+
+
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.container}>
             <Text style={{fontSize: 15, fontFamily: 'System'}}>
                 Please provide an email and password.
@@ -45,6 +49,10 @@ export default function CreateCredentials() {
                     </Text>
                 </TouchableOpacity>
         </View>
+
+        </KeyboardAvoidingView>
+
+        </SafeAreaView>
     );
 }
 
@@ -85,7 +93,7 @@ function ConfirmData(email: any, password: any, passwordConfirmed: any, navigati
     console.log("Password: ",password);
 
     //Store user info into frontend variable to send to backend at end of account creation
-    const currentUser = new User(0,'','','','','','',0,0,0,false,true,0); //TODO: INSPECT ERROR
+    const currentUser = new User(0,'','','','','','',0,0,0,false,true,0, ''); //TODO: INSPECT ERROR
     currentUser.email = email;
     currentUser.password = password;
 
