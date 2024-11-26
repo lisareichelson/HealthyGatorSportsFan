@@ -212,121 +212,6 @@ const NotificationsPage = () => {
 
 export default NotificationsPage;
 
-const styles = StyleSheet.create({
-    container: {
-        gap: 10,
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-    },
-    shadowContainer: {
-        width: '90%', // Adjust as needed
-        height: '50%', // Adjust as needed        
-        borderRadius: 10,
-        backgroundColor: 'white',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5, // For Android shadow
-        marginBottom: 20,
-      },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between', // Adjusts spacing between buttons
-        width: '90%', // Adjust as needed
-    },
-    buttonForContainer: {
-        flex: 1, // Makes buttons take equal space
-        marginHorizontal: 5, // Adds space between buttons
-        backgroundColor: '#2196F3', // Default button color
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 4,
-        elevation: 2, // For Android shadow
-        shadowColor: '#000', // For iOS shadow
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        justifyContent: 'center', // Centers content vertically
-      },
-      buttonForContainerText: {
-        color: 'white',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    button: {
-        backgroundColor: '#2196F3', // Default button color
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 4,
-        elevation: 2, // For Android shadow
-        shadowColor: '#000', // For iOS shadow
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-      },
-      buttonText: {
-        color: 'white',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    editBox:{
-        flex: 1,
-        borderWidth: 1,
-        marginRight: '5%',
-        margin: 5,
-    },
-    card: {
-        marginBottom: 5,
-        padding: 10,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5, // For Android shadow
-    },
-    cardTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        flex: 1, // Allows the title to take available space
-    },
-    cardText: {
-        fontSize: 14,
-        //marginTop: 5,
-    },
-    closeButton: {
-        alignItems: 'flex-end'
-    },
-    cardHeader: {
-        flexDirection: 'row',
-        alignItems: 'center', // Aligns items vertically centered
-        justifyContent: 'space-between',
-    },
-    separator: {
-        height: 1, // Height of the line
-        backgroundColor: '#CCCCCC', // Color of the line
-        marginVertical: 10, // Space around the line
-      },
-      content: {
-        marginTop: 70, // Adjust to avoid overlap with the title
-        padding: 20,
-      },
-});
-
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -486,3 +371,118 @@ export const deleteAllNotifications = async (userId: number) => {
     }
     
 };
+
+const styles = StyleSheet.create({
+    container: {
+        gap: 10,
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+    },
+    shadowContainer: {
+        width: '90%', // Adjust as needed
+        height: '50%', // Adjust as needed        
+        borderRadius: 10,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+        marginBottom: 20,
+      },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Adjusts spacing between buttons
+        width: '90%', // Adjust as needed
+    },
+    buttonForContainer: {
+        flex: 1, // Makes buttons take equal space
+        marginHorizontal: 5, // Adds space between buttons
+        backgroundColor: '#2196F3', // Default button color
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 4,
+        elevation: 2, // For Android shadow
+        shadowColor: '#000', // For iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        justifyContent: 'center', // Centers content vertically
+      },
+      buttonForContainerText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    button: {
+        backgroundColor: '#2196F3', // Default button color
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 4,
+        elevation: 2, // For Android shadow
+        shadowColor: '#000', // For iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    editBox:{
+        flex: 1,
+        borderWidth: 1,
+        marginRight: '5%',
+        margin: 5,
+    },
+    card: {
+        marginBottom: 5,
+        padding: 10,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+    },
+    cardTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        flex: 1, // Allows the title to take available space
+    },
+    cardText: {
+        fontSize: 14,
+        //marginTop: 5,
+    },
+    closeButton: {
+        alignItems: 'flex-end'
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        alignItems: 'center', // Aligns items vertically centered
+        justifyContent: 'space-between',
+    },
+    separator: {
+        height: 1, // Height of the line
+        backgroundColor: '#CCCCCC', // Color of the line
+        marginVertical: 10, // Space around the line
+      },
+      content: {
+        marginTop: 70, // Adjust to avoid overlap with the title
+        padding: 20,
+      },
+});
