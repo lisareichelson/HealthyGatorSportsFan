@@ -45,11 +45,11 @@ const GoalCollection = () => {
                 />
             </View>
             {loseWeight && <View>
-                <View style={{flexDirection:"row", justifyContent:"flex-start", paddingTop: 10}}>
-                    <Text style={{fontSize: 15, fontFamily: 'System'}}>Goal Weight:        </Text>
+                <View style={styles.goalWeightRow}>
+                    <Text style={{fontSize: 15, fontFamily: 'System'}}>Goal Weight:</Text>
                     <TextInput
                         style={styles.weightBox}
-                        placeholder="enter a weight..."
+                        placeholder="Enter a weight..."
                         keyboardType={"numeric"}
                         editable={true}
                         value={goalWeight}
@@ -101,20 +101,73 @@ function confirmGoals(navigation: any, feelBetter: any, loseWeight: any, startWe
         currentUser.loseWeight = false;
     }
 
-    if (loseWeight) {
-        if (parseFloat(goalWeight) > parseFloat(currentWeight)) {
-            Alert.alert("Current Weight cannot be less than goal weight.");
-            return;
-        }
-    }
-    if (goalWeight === '') {goalWeight = 0;}
-    console.log("goalWeight = ", goalWeight);
+    // Do some goal validation
 
-    // Convert goalWeight to a float
-    currentUser.goalWeight = parseFloat(goalWeight);
- 
-    addNewUser(navigation, currentUser);
+    // Condition: No goals selected
+    if(!feelBetter && !loseWeight){
+        Alert.alert(
+            "Goals missing",
+            "Make sure to select a goal!",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+            ]
+        );
+    }
+
+    // Condition: Goal to lose weight selected, but no goal weight provided
+    else if(loseWeight && (goalWeight === 0 || goalWeight === "0" || goalWeight === '')){
+        Alert.alert(
+            "Goal weight missing",
+            "Please set your goal weight, or remove the lose-weight goal from your goal selection",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+            ]
+        );
+    }
+
+    // Condition: Goal weight provided, but goal is not to lose weight
+    else if(goalWeight != 0 && goalWeight != '' && !loseWeight){
+        Alert.alert(
+            "Goal weight is set, but the lose-weight goal is not selected",
+            "You can't have a goal weight if your goal is not to lose weight! Did you mean to select the lose-weight goal or clear out goal weight?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+            ]
+        );
+    }
+
+    // Condition: Goal weight > current weight
+    else if (goalWeight >= Math.floor(currentWeight)){
+        Alert.alert(
+            "Goal weight invalid",
+            "Goal weight must be less than your current weight: " + Math.floor(currentWeight) + "lbs",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+            ]
+        );
+        return;
+    }
+    else{
+        if (goalWeight === '') {goalWeight = 0;}
+        console.log("goalWeight = ", goalWeight);
+
+        // Convert goalWeight to a float
+        currentUser.goalWeight = parseFloat(goalWeight);
     
+        addNewUser(navigation, currentUser);
+    }
 }
 
 function addNewUser(navigation: any, currentUser: any){
@@ -216,9 +269,18 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderRadius: 10,
     },
+    goalWeightRow:{
+        flexDirection:"row", 
+        alignItems: 'center',
+        justifyContent:"flex-start", 
+        paddingTop: 10
+    },
     weightBox:{
         borderWidth: 1,
-        height: 30,
+        borderColor: '#D3D3D3',
+        marginRight: '5%',
+        margin: 3,
+        borderRadius: 10,
     },
     bottomObject: {
         alignItems: 'center',
