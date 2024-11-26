@@ -3,13 +3,12 @@ import {useNavigation, usePreventRemove, useRoute, useFocusEffect} from "@react-
 import React, {useState, useEffect} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
 import User from "@/components/user";
-
+import { AppUrls } from '@/constants/AppUrls';
 
 export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
-    //console.log("currentUser in home screen:" + JSON.stringify(currentUser));
 
     let currentOpponent = GetCurrentOpponentName();
     let CurrentOpponentFullName = GetCurrentOpponentFullName();
@@ -183,10 +182,29 @@ function LogoutPopup(navigation: any){
     );
 }
 
+// TODO - this is currently setup to send a notification; we just need to call the API to get next game, and parse the opponent
+export const handlePollCFBD = async () => {
+    try {
+        const response = await fetch(`${AppUrls.url}/poll-cfbd/`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: 'Poll request sent' }),
+        });
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error sending poll request:', error);
+    }
+};
 
 //TODO: call backend API to get who we are playing next
 function GetCurrentOpponentName():string{
     //Call the API to find out what game is next. Use this to choose the image.
+    handlePollCFBD();
 
     //TEMP: ASSUME we are playing FSU.
     return 'fsu';
