@@ -19,9 +19,10 @@ export default function HomePage() {
     let CurrentGameData = GetCurrentScoreAndTime();
 
     //The following function prevents the user from going backwards a screen.
-    usePreventRemove(true, ({ data }) => {
-        //console.log("Back button prevented.");
-    });
+    // TEMPORARILY COMMENTING OUT FOR TROUBLESHOOTING
+    // usePreventRemove(true, ({ data }) => {
+    //     //console.log("Back button prevented.");
+    // });
 
     //Gets text to display in goals box depending on goal progress
     function GetGoalsText(): string{
