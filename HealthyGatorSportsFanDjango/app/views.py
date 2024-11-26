@@ -91,6 +91,13 @@ class UserUpdateView(APIView):
         else:
             print(serializer.errors)  # Debugging line
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class CheckEmailView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        if User.objects.filter(email=email).exists():
+            return Response({'exists': True}, status=status.HTTP_200_OK)
+        return Response({'exists': False}, status=status.HTTP_200_OK)
     
 # API view to handle POST requests for user data creation
 class CreateUserDataView(APIView):

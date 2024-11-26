@@ -20,7 +20,7 @@ from django.urls import path
 #from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 # for running locally
 #from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView (before merge)
-from app.views import index, CreateUserView, poll_cfbd_view, CreateUserDataView, NotificationListView, CreateNotificationView, DeleteNotificationView, BulkDeleteNotificationsView, UserLoginView, LatestUserDataView, UserUpdateView
+from app.views import index, CreateUserView, poll_cfbd_view, CreateUserDataView, NotificationListView, CreateNotificationView, DeleteNotificationView, BulkDeleteNotificationsView, UserLoginView, LatestUserDataView, UserUpdateView, CheckEmailView
 
 # Import drf-yasg components
 from drf_yasg.views import get_schema_view 
@@ -48,6 +48,7 @@ urlpatterns = [
     path('user/', CreateUserView.as_view(), name='user-create'), # endpoint for user creation screen
     path('user/<int:user_id>/', UserUpdateView.as_view(), name='update-user'),
     path('user/login/', UserLoginView.as_view(), name='user-login'),
+    path('user/checkemail/', CheckEmailView.as_view(), name='check-user-email'),
     path('userdata/<int:user_id>/', CreateUserDataView.as_view(), name='user-data-create'),
     path('userdata/latest/<int:user_id>/', LatestUserDataView.as_view(), name='get-latest-user-data'),
     path('notificationdata/<int:user_id>/', NotificationListView.as_view(), name='notification-list'),
