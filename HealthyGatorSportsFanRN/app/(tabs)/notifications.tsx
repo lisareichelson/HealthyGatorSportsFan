@@ -401,7 +401,7 @@ async function registerForPushNotificationsAsync() {
 // Notification Data POST API call
 const createNotification = async (expoPushToken: string, userID: number, title: string, message: string) => {
     try {
-        const response = await fetch(`${AppUrls.url}/notificationdata/add/`, {
+        const response = await fetch(`${AppUrls.url}/notificationdata/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -429,7 +429,7 @@ const createNotification = async (expoPushToken: string, userID: number, title: 
 
 export const fetchNotifications = async (userId: number) => {
     try {
-      const response = await fetch(`${AppUrls.url}/notifications/${userId}/`);
+      const response = await fetch(`${AppUrls.url}/notificationdata/${userId}/`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -443,7 +443,7 @@ export const fetchNotifications = async (userId: number) => {
 
 export const deleteNotification = async (notification_id: number) => {
     try {
-        const response = await fetch(`${AppUrls.url}/notifications/${notification_id}/delete/`, {
+        const response = await fetch(`${AppUrls.url}/notificationdata/delete/${notification_id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -463,27 +463,8 @@ export const deleteNotification = async (notification_id: number) => {
 };
 
 export const deleteAllNotifications = async (userId: number) => {
-    // try {
-    //     const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //     });
-    //     if (!response.ok) {
-    //         const errorData = await response.json();
-    //         throw new Error(errorData.error || 'An error occurred');
-    //     }
-    //     const data = await response.json();
-    //     Alert.alert('Success', data.message);
-    // } catch (error) {
-    //     Alert.alert('Error');
-    //     console.error('Error deleting notifications:', error);
-    // }
-
-
     try {
-        const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
+        const response = await fetch(`${AppUrls.url}/notificationdata/deleteall/${userId}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
