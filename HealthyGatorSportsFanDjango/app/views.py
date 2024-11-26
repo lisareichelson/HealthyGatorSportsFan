@@ -93,6 +93,10 @@ class UserUpdateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class CheckEmailView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Check if email is already used", operation_description="Checks all users in the database to determine whether an email is already in user.", 
+        responses={200: UserSerializer(many=False)}  # Define response schema
+    )
     def post(self, request):
         email = request.data.get('email')
         if User.objects.filter(email=email).exists():
