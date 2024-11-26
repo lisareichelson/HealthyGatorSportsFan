@@ -66,18 +66,6 @@ const NotificationsPage = () => {
         }
     };
 
-    // const handleCreateNotificationPress = () => {
-    //     createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
-    //     loadNotifications();
-    //     handleRefresh();
-    // };
-
-    // const handleDeleteNotificationPress = (notification_id: number) => {
-    //     deleteNotification(notification_id);
-    //     loadNotifications();
-    //     handleRefresh();
-    // };
-
     // The below code is for sending a notification from frontend
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState<Notifications.Notification | undefined>(undefined);
@@ -463,25 +451,6 @@ export const deleteNotification = async (notification_id: number) => {
 };
 
 export const deleteAllNotifications = async (userId: number) => {
-    // try {
-    //     const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //     });
-    //     if (!response.ok) {
-    //         const errorData = await response.json();
-    //         throw new Error(errorData.error || 'An error occurred');
-    //     }
-    //     const data = await response.json();
-    //     Alert.alert('Success', data.message);
-    // } catch (error) {
-    //     Alert.alert('Error');
-    //     console.error('Error deleting notifications:', error);
-    // }
-
-
     try {
         const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
             method: 'DELETE',
@@ -489,10 +458,12 @@ export const deleteAllNotifications = async (userId: number) => {
                 'Content-Type': 'application/json',
             },
         });
-        if (response.status === 204) {
+        if (response.ok || response.status === 204) {
             console.log('Deleted successfully');
         } else {
             console.error('Failed to delete:', response.status);
+            const errorData = await response.json();
+            Alert.alert('Error deleting notifications', JSON.stringify(errorData));
         }
     } catch (error) {
         console.error('Error:', error);
