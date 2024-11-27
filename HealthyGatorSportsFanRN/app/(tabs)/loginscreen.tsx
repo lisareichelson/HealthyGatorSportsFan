@@ -75,7 +75,7 @@ async function ConfirmData(email: any, password: any, navigation: any){
 
 const handleLogin = async (currentUser: any, email: any, password: any, navigation: any) => {
     try {
-        const response = await fetch(`${AppUrls.url}/api/login/?email=${email}&password=${password}`, {
+        const response = await fetch(`${AppUrls.url}/user/login/?email=${email}&password=${password}`, {
                 method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
 const getLatestUserData = async (currentUser: any, navigation: any) => {
     console.log("Before 2nd API call the currentUser = ", currentUser)  
     try {
-        const response = await fetch(`${AppUrls.url}/api/userdata/latest/${currentUser.userId}/`, {
+        const response = await fetch(`${AppUrls.url}/userdata/latest/${currentUser.userId}/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

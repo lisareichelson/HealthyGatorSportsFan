@@ -14,12 +14,14 @@ const NotificationsPage = () => {
     const [newTitle, setNewTitle] = useState('');
     const [newMessage, setNewMessage] = useState('');
 
+    const [numNotifications, setNumNotifications] = useState(0);
     const [notificationDatas, setNotificationDatas] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const loadNotifications = async () => {
         setLoading(true);
         try {
             const data = await fetchNotifications(currentUser.userId);
+            setNumNotifications(data.length);
             setNotificationDatas(data);
         } catch (error) {
             Alert.alert('Error');
@@ -36,6 +38,10 @@ const NotificationsPage = () => {
 
     // Function to handle creating a notification
   const handleCreateNotificationPress = async () => {
+    if (newTitle === '' || newMessage === '') {
+        Alert.alert('Missing information', 'You need to provide a title and message to create a notification.');
+        return
+    }
     try {
       await createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
       await sendPushNotification(expoPushToken, newTitle, newMessage);
@@ -57,26 +63,34 @@ const NotificationsPage = () => {
 
     // Function to handle deleting a notification
     const handleDeleteAllNotificationPress = async (userId: number) => {
-        try {
-            console.log("userID for deleteAll notifications: ", userId);
-            await deleteAllNotifications(userId);
-            await loadNotifications(); // Refresh the notifications after deletion
-        } catch (error) {
-          Alert.alert('Error', 'Failed to delete notifications');
+        if (numNotifications <= 0) {
+            Alert.alert('No notifications', 'You have no notifications to delete.');
+            return
         }
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to delete all your notifications?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    style: "destructive",
+                    onPress: async () => {    
+                        try {
+                            console.log("userID for deleteAll notifications: ", userId);
+                            await deleteAllNotifications(userId);
+                            await loadNotifications(); // Refresh the notifications after deletion
+                        } catch (error) {
+                          Alert.alert('Error', 'Failed to delete notifications');
+                        }     
+                    }
+                }
+            ]
+        );
     };
-
-    // const handleCreateNotificationPress = () => {
-    //     createNotification(expoPushToken, currentUser.userId, newTitle, newMessage);
-    //     loadNotifications();
-    //     handleRefresh();
-    // };
-
-    // const handleDeleteNotificationPress = (notification_id: number) => {
-    //     deleteNotification(notification_id);
-    //     loadNotifications();
-    //     handleRefresh();
-    // };
 
     // The below code is for sending a notification from frontend
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -160,6 +174,8 @@ const NotificationsPage = () => {
                 </View>
             </View>
 
+            <Text style={{ fontSize: 15 }}>Create a notification for testing:</Text>
+
             <View style={styles.buttonContainer}>
                 <TextInput
                     style={styles.editBox}
@@ -180,33 +196,174 @@ const NotificationsPage = () => {
             </View>
             
             <TouchableOpacity style={styles.button} onPress={handleCreateNotificationPress}>
-                <Text style={styles.buttonText}>Create notification</Text>
+                <Text style={styles.buttonText}>Generate notification</Text>
             </TouchableOpacity>
-
-            <Text style={{ fontSize: 15 }}>The buttons below are for notification testing purposes only.</Text>
-            
-            <View style={styles.buttonContainer}>
-
-                <TouchableOpacity style={styles.buttonForContainer} onPress={handlePollCFBD}>
-                    <Text style={styles.buttonForContainerText}>Get next game info</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity style={styles.buttonForContainer} onPress={async () => {{ await sendPushNotification(expoPushToken, "Test Notification", "Hello, you got a notification!"); }}}>
-                    <Text style={styles.buttonForContainerText}>Press to Send Notification</Text>
-                </TouchableOpacity>
-                
-            </View>           
-
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 15, fontFamily: 'System' }}>Title: {notification && notification.request.content.title} </Text>
-                <Text style={{ fontSize: 15, fontFamily: 'System' }}>Body: {notification && notification.request.content.body}</Text>
-            </View>
 
         </View>  
     );
 }
 
 export default NotificationsPage;
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
+
+async function sendPushNotification(expoPushToken: string, title: string, body: string) {
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: title,
+        body: body,
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+    });
+}
+
+function handleRegistrationError(errorMessage: string) {
+    alert(errorMessage);
+    throw new Error(errorMessage);
+}
+
+async function registerForPushNotificationsAsync() {
+
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            handleRegistrationError('Permission not granted to get push token for push notification!');
+            return;
+        }
+        const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+        // console.log("projectID: " + projectId);
+        if (!projectId) {
+            handleRegistrationError('Project ID not found');
+        }
+        try {
+            const pushTokenString = (
+                await Notifications.getExpoPushTokenAsync({
+                    projectId,
+                })
+            ).data;
+            //console.log(pushTokenString);
+            return pushTokenString;
+        } catch (e: unknown) {
+            handleRegistrationError(`${e}`);
+        }
+    } else {
+        handleRegistrationError('Must use physical device for push notifications');
+    }
+}
+
+// Notification Data POST API call
+const createNotification = async (expoPushToken: string, userID: number, title: string, message: string) => {
+    try {
+        const response = await fetch(`${AppUrls.url}/notificationdata/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                user: userID,
+                notification_title: title,
+                notification_message: message,
+                read_status: false
+             }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Alert.alert('Success', 'Notification created!', [{ text: 'OK' }]);
+            console.log('Notification data saved successfully:', data);
+        } else {
+            Alert.alert('Error', data.detail || 'Something went wrong', [{ text: 'OK' }]);
+        }
+    } catch (error) {
+        Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
+    }
+};
+
+export const fetchNotifications = async (userId: number) => {
+    try {
+      const response = await fetch(`${AppUrls.url}/notificationdata/${userId}/`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      throw error; // Rethrow the error for handling in the component
+    }
+  };
+
+export const deleteNotification = async (notification_id: number) => {
+    try {
+        const response = await fetch(`${AppUrls.url}/notificationdata/delete/${notification_id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            Alert.alert('Success', 'Notification deleted!', [{ text: 'OK' }]);
+            console.log('Notification deleted successfully');
+        } else {
+            throw new Error('Failed to delete notification');
+        }
+    } catch (error) {
+        Alert.alert('Error');
+        console.error('Error deleting notification:', error);
+    }
+};
+
+export const deleteAllNotifications = async (userId: number) => {
+    try {
+        const response = await fetch(`${AppUrls.url}/notificationdata/deleteall/${userId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok || response.status === 204) {
+            console.log('Deleted successfully');
+        } else {
+            console.error('Failed to delete:', response.status);
+            const errorData = await response.json();
+            // Alert.alert('Error deleting notifications', JSON.stringify(errorData));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -322,180 +479,3 @@ const styles = StyleSheet.create({
         padding: 20,
       },
 });
-
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-    }),
-});
-
-async function sendPushNotification(expoPushToken: string, title: string, body: string) {
-    const message = {
-        to: expoPushToken,
-        sound: 'default',
-        title: title,
-        body: body,
-    };
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-    });
-}
-
-function handleRegistrationError(errorMessage: string) {
-    alert(errorMessage);
-    throw new Error(errorMessage);
-}
-
-async function registerForPushNotificationsAsync() {
-
-    if (Platform.OS === 'android') {
-        Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-        });
-    }
-
-    if (Device.isDevice) {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-        }
-        if (finalStatus !== 'granted') {
-            handleRegistrationError('Permission not granted to get push token for push notification!');
-            return;
-        }
-        const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-        // console.log("projectID: " + projectId);
-        if (!projectId) {
-            handleRegistrationError('Project ID not found');
-        }
-        try {
-            const pushTokenString = (
-                await Notifications.getExpoPushTokenAsync({
-                    projectId,
-                })
-            ).data;
-            //console.log(pushTokenString);
-            return pushTokenString;
-        } catch (e: unknown) {
-            handleRegistrationError(`${e}`);
-        }
-    } else {
-        handleRegistrationError('Must use physical device for push notifications');
-    }
-}
-
-// Notification Data POST API call
-const createNotification = async (expoPushToken: string, userID: number, title: string, message: string) => {
-    try {
-        const response = await fetch(`${AppUrls.url}/notificationdata/add/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-                user: userID,
-                notification_title: title,
-                notification_message: message,
-                read_status: false
-             }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            Alert.alert('Success', 'Notification created!', [{ text: 'OK' }]);
-            console.log('Notification data saved successfully:', data);
-        } else {
-            Alert.alert('Error', data.detail || 'Something went wrong', [{ text: 'OK' }]);
-        }
-    } catch (error) {
-        Alert.alert('Error', 'Network error', [{ text: 'OK' }]);
-    }
-};
-
-export const fetchNotifications = async (userId: number) => {
-    try {
-      const response = await fetch(`${AppUrls.url}/notifications/${userId}/`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-      throw error; // Rethrow the error for handling in the component
-    }
-  };
-
-export const deleteNotification = async (notification_id: number) => {
-    try {
-        const response = await fetch(`${AppUrls.url}/notifications/${notification_id}/delete/`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            Alert.alert('Success', 'Notification deleted!', [{ text: 'OK' }]);
-            console.log('Notification deleted successfully');
-        } else {
-            throw new Error('Failed to delete notification');
-        }
-    } catch (error) {
-        Alert.alert('Error');
-        console.error('Error deleting notification:', error);
-    }
-};
-
-export const deleteAllNotifications = async (userId: number) => {
-    // try {
-    //     const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //     });
-    //     if (!response.ok) {
-    //         const errorData = await response.json();
-    //         throw new Error(errorData.error || 'An error occurred');
-    //     }
-    //     const data = await response.json();
-    //     Alert.alert('Success', data.message);
-    // } catch (error) {
-    //     Alert.alert('Error');
-    //     console.error('Error deleting notifications:', error);
-    // }
-
-
-    try {
-        const response = await fetch(`${AppUrls.url}/notifications/deleteAll/${userId}/`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (response.status === 204) {
-            console.log('Deleted successfully');
-        } else {
-            console.error('Failed to delete:', response.status);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-    
-};

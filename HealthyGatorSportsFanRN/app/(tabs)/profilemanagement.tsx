@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert, ScrollView, KeyboardAvoidingView, SafeAreaView} from 'react-native';
 import {useNavigation, usePreventRemove, useRoute} from "@react-navigation/native";
 import User from "@/components/user";
 import {useState, useEffect} from "react";
@@ -91,257 +91,273 @@ export default function ProfileManagement() {
 
 
     return (
+
+
         <View style={styles.container}>
 
             <View style={styles.topMenu}>
                 <Image
                     source={require('./../../assets/images/clipboardgator.jpg')}
-                    style={{width:55, height:55}}
+                    style={{ width: 55, height: 55 }}
                 />
-                <Text style={{fontSize: 25, fontFamily: 'System'}}>
+                <Text style={{ fontSize: 25, fontFamily: 'System' }}>
                     Hey, {currentUser.firstName}!
                 </Text>
-                <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToNotifications(currentUser, navigation) }>
+                <TouchableOpacity style={styles.topIcons} activeOpacity={0.5}
+                    onPress={() => NavigateToNotifications(currentUser, navigation)}>
                     <Image
                         source={require('./../../assets/images/bell.png')}
-                        style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 40, height: 40, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                
-            </View>
-
-            <View style = {styles.section}>
-                <Text style={{fontSize: 20, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
-                    Personal Details
-                </Text>
-
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                onPress={() => setShowEditName(!showEditName)}>
-                    <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                        Name
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
-                        {currentUser.firstName} {currentUser.lastName}
-                    </Text>
-                    <Image
-                        source={require('../../assets/images/editPencil.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                {showEditName && (
-                    <TextInput
-                        style={styles.editBox}
-                        placeholder="First Name"
-                        editable={true}
-                        value={newFirstName}
-                        defaultValue={currentUser.firstName}
-                        onChangeText={newFirst => setNewFirstName(newFirst)}
-                    />
-                )}
-                {showEditName && (
-                    <TextInput
-                        style={styles.editBox}
-                        placeholder="Last Name"
-                        editable={true}
-                        value={newLastName}
-                        defaultValue={currentUser.lastName}
-                        onChangeText={newLast => setNewLastName(newLast)}
-                    />
-                )}
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                                  onPress={() => setShowEditHeight(!showEditHeight)}>
-                    <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                        Height
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
-                        {currentUser.heightFeet}'{currentUser.heightInches}"
-                    </Text>
-                    <Image
-                        source={require('../../assets/images/editPencil.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                {showEditHeight && (<View style = {styles.rowHeight}>
-                    <Text style={{marginLeft: '10%', fontSize: 16, fontFamily: 'System'}}>Feet:</Text>
-                    <Dropdown style={[styles.dropdown, {marginRight: '5%'}]}
-                            data={newHeightFeet}
-                            labelField={"value"}
-                            valueField={"value"}
-                            accessibilityLabel="Dropdown menu for selecting height in feet"
-                            placeholderStyle={{ fontSize: 14, textAlign: 'center', color: 'grey'}}
-                            selectedTextStyle={{ fontSize: 16, textAlign: 'center' }}
-                            onChange={item => { setNewHeightFeet(item.value);}}
-                            renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
-                    ></Dropdown>
-
-                    <Text style={{fontSize: 16, fontFamily: 'System'}}>Inches:</Text>
-                    <Dropdown style={[styles.dropdown, {marginRight: '5%'}]}
-                            data={newHeightInches}
-                            labelField={"value"}
-                            valueField={"value"}
-                            accessibilityLabel="Dropdown menu for selecting additional height in inches"
-                            placeholderStyle={{ fontSize: 14, textAlign: 'center',color: 'grey' }}
-                            selectedTextStyle={{ fontSize: 14, textAlign: 'center' }}
-                            onChange={item => {setNewHeightInches(item.value);}}
-                            renderItem={(item) => ( <Text>{item.value.toString()}</Text> )}
-                    ></Dropdown>
-                </View>)}
-
-                {/* <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                                  onPress={() => setShowEditWeight(!showEditWeight)}>
-                    <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                        Current Weight
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
-                        {currentUser.currentWeight}
-                    </Text>
-                    <Image
-                        source={require('../../assets/images/editPencil.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                {showEditWeight &&(
-                    <TextInput
-                        style={styles.editBox}
-                        placeholder="enter a weight..."
-                        keyboardType={"numeric"}
-                        editable={true}
-                        value={newWeight}
-                        defaultValue={newWeight}
-                        onChangeText={newWeight => setNewWeight(newWeight)}
-                        returnKeyType="done"/>
-                )} */}
-
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                                  onPress={() => setShowEditGender(!showEditGender)}>
-                    <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                        Gender
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
-                        {currentUser.gender}
-                    </Text>
-                    <Image
-                        source={require('../../assets/images/editPencil.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                {showEditGender && (<View style = {styles.rowHeight}>
-                    <Dropdown style={[styles.dropdown, {marginLeft: '10%', padding: 5}]}
-                            data={genders}
-                            labelField={"label"}
-                            valueField={"value"}
-                            accessibilityLabel="Dropdown menu for selecting gender"
-                            placeholderStyle={{ fontSize: 14, color: 'grey' }}
-                            selectedTextStyle={{ fontSize: 14}}
-                            onChange={item => {setNewGender(item.value);}}
-                    ></Dropdown>
-                    </View>
-                )}
 
             </View>
 
-            <View style = {styles.section}>
+            <KeyboardAvoidingView style={{ flex: 1 }}>
+                <View style={styles.subContainer}>
+                    <ScrollView style={{ flex: 1 }}>
 
-                <Text style={{fontSize: 20, fontFamily: 'System', color:'grey', alignSelf:'center'}}>
-                    Goals
-                </Text>
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                    onPress={() => setShowEditGoals(!showEditGoals)}>
-                    <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                        Goal(s)
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
-                        {GetGoalsText(currentUser)}
-                    </Text>
-                    <Image
-                        source={require('../../assets/images/editPencil.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                {showEditGoals && (
-                    <View style = {[styles.row, {justifyContent: 'space-evenly', borderRadius: 10}]}>
-                        <Text style={{fontSize: 14, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
-                            Feel Better:
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>
+                                Personal Details
+                            </Text>
+
+                            <TouchableOpacity style={styles.row} activeOpacity={0.5}
+                                onPress={() => setShowEditName(!showEditName)}>
+                                <Text style={styles.rowTextLabel}>
+                                    Name
+                                </Text>
+                                <Text style={styles.rowTextValue}>
+                                    {currentUser.firstName} {currentUser.lastName}
+                                </Text>
+                                <Image
+                                    source={require('../../assets/images/editPencil.png')}
+                                    style={{ width: 20, height: 20, alignSelf: 'center', objectFit: 'contain' }}
+                                />
+                            </TouchableOpacity>
+                            {showEditName && (
+                                <TextInput
+                                    style={styles.editBox}
+                                    placeholder="First Name"
+                                    editable={true}
+                                    value={newFirstName}
+                                    defaultValue={currentUser.firstName}
+                                    onChangeText={newFirst => setNewFirstName(newFirst)}
+                                />
+                            )}
+                            {showEditName && (
+                                <TextInput
+                                    style={styles.editBox}
+                                    placeholder="Last Name"
+                                    editable={true}
+                                    value={newLastName}
+                                    defaultValue={currentUser.lastName}
+                                    onChangeText={newLast => setNewLastName(newLast)}
+                                />
+                            )}
+                            <TouchableOpacity style={styles.row} activeOpacity={0.5}
+                                onPress={() => setShowEditHeight(!showEditHeight)}>
+                                <Text style={styles.rowTextLabel}>
+                                    Height
+                                </Text>
+                                <Text style={styles.rowTextValue}>
+                                    {currentUser.heightFeet}'{currentUser.heightInches}"
+                                </Text>
+                                <Image
+                                    source={require('../../assets/images/editPencil.png')}
+                                    style={{ width: 20, height: 20, alignSelf: 'center', objectFit: 'contain' }}
+                                />
+                            </TouchableOpacity>
+                            {showEditHeight && (<View style={styles.rowHeight}>
+                                <Text style={{ marginLeft: '10%', fontSize: 16, fontFamily: 'System' }}>Feet:</Text>
+                                <Dropdown style={[styles.dropdown, { marginRight: '5%' }]}
+                                    data={newHeightFeet}
+                                    labelField={"value"}
+                                    valueField={"value"}
+                                    accessibilityLabel="Dropdown menu for selecting height in feet"
+                                    placeholderStyle={{ fontSize: 14, textAlign: 'center', color: 'grey' }}
+                                    selectedTextStyle={{ fontSize: 16, textAlign: 'center' }}
+                                    onChange={item => { setNewHeightFeet(item.value); }}
+                                    renderItem={(item) => (<Text>{item.value.toString()}</Text>)}
+                                    maxHeight={200}
+                                ></Dropdown>
+
+                                <Text style={{ fontSize: 16, fontFamily: 'System' }}>Inches:</Text>
+                                <Dropdown style={[styles.dropdown, { marginRight: '5%' }]}
+                                    data={newHeightInches}
+                                    labelField={"value"}
+                                    valueField={"value"}
+                                    accessibilityLabel="Dropdown menu for selecting additional height in inches"
+                                    placeholderStyle={{ fontSize: 14, textAlign: 'center', color: 'grey' }}
+                                    selectedTextStyle={{ fontSize: 14, textAlign: 'center' }}
+                                    onChange={item => { setNewHeightInches(item.value); }}
+                                    renderItem={(item) => (<Text>{item.value.toString()}</Text>)}
+                                    maxHeight={200}
+                                ></Dropdown>
+                            </View>)}
+
+                            {/* <TouchableOpacity style = {styles.row} activeOpacity={0.5}
+                                    onPress={() => setShowEditWeight(!showEditWeight)}>
+                        <Text style={{fontSize: 20, fontFamily: 'System'}}>
+                            Current Weight
                         </Text>
-                        <Checkbox value={newFeelBetter} onValueChange={setNewFeelBetter} style={styles.checkbox}/>
-                        <Text style={{fontSize: 14, fontFamily: 'System', color: 'grey', alignSelf: 'center'}}>
-                            Lose Weight:
+                        <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
+                            {currentUser.currentWeight}
                         </Text>
-                        <Checkbox value={newLoseWeight} onValueChange={setNewLoseWeight} style={styles.checkbox}/>
-                    </View>
-                )}
-                <TouchableOpacity style = {styles.row} activeOpacity={0.5}
-                                onPress={() => setShowEditGoalWeight(!showEditGoalWeight)}>
-                    <Text style={{fontSize: 20, fontFamily: 'System'}}>
-                        Goal Weight
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center'}}>
-                        {GetGoalWeightStr(currentUser)}
-                    </Text>
-                    <Image
-                        source={require('../../assets/images/editPencil.png')}
-                        style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
-                    />
-                </TouchableOpacity>
-                {showEditGoalWeight && (
-                <TextInput
+                        <Image
+                            source={require('../../assets/images/editPencil.png')}
+                            style={{width:20, height:20, alignSelf: 'center', objectFit: 'contain'}}
+                        />
+                    </TouchableOpacity>
+                    {showEditWeight &&(
+                        <TextInput
                             style={styles.editBox}
-                            placeholder="Enter a weight..."
+                            placeholder="enter a weight..."
                             keyboardType={"numeric"}
                             editable={true}
-                            value={newGoalWeight}
-                            defaultValue={newGoalWeight}
-                            onChangeText={newWeight => setNewGoalWeight(newWeight)}
+                            value={newWeight}
+                            defaultValue={newWeight}
+                            onChangeText={newWeight => setNewWeight(newWeight)}
                             returnKeyType="done"/>
-                )}
-            </View>
+                    )} */}
 
-            <TouchableOpacity style = {[styles.confirmButton, {alignSelf: 'center'} ]} activeOpacity={0.5}
-                              onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, newWeight, newGender, newFeelBetter, newLoseWeight, newGoalWeight, navigation) }>
-                <Text style={{fontSize: 15, fontFamily: 'System'}}>
-                    Confirm Changes
-                </Text>
-            </TouchableOpacity>
+                            <TouchableOpacity style={styles.row} activeOpacity={0.5}
+                                onPress={() => setShowEditGender(!showEditGender)}>
+                                <Text style={styles.rowTextLabel}>
+                                    Gender
+                                </Text>
+                                <Text style={styles.rowTextValue}>
+                                    {currentUser.gender}
+                                </Text>
+                                <Image
+                                    source={require('../../assets/images/editPencil.png')}
+                                    style={{ width: 20, height: 20, alignSelf: 'center', objectFit: 'contain' }}
+                                />
+                            </TouchableOpacity>
+                            {showEditGender && (<View style={styles.rowHeight}>
+                                <Dropdown style={[styles.dropdown, { marginLeft: '10%', padding: 5 }]}
+                                    data={genders}
+                                    labelField={"label"}
+                                    valueField={"value"}
+                                    accessibilityLabel="Dropdown menu for selecting gender"
+                                    placeholderStyle={{ fontSize: 14, color: 'grey' }}
+                                    selectedTextStyle={{ fontSize: 14 }}
+                                    onChange={item => { setNewGender(item.value); }}
+                                ></Dropdown>
+                            </View>
+                            )}
+
+                        </View>
+
+                        <View style={styles.section}>
+
+                            <Text style={styles.sectionTitle}>
+                                Goals
+                            </Text>
+                            <TouchableOpacity style={styles.row} activeOpacity={0.5}
+                                onPress={() => setShowEditGoals(!showEditGoals)}>
+                                <Text style={styles.rowTextLabel}>
+                                    Goal(s)
+                                </Text>
+                                <Text style={styles.rowTextValue}>
+                                    {GetGoalsText(currentUser)}
+                                </Text>
+                                <Image
+                                    source={require('../../assets/images/editPencil.png')}
+                                    style={{ width: 20, height: 20, alignSelf: 'center', objectFit: 'contain' }}
+                                />
+                            </TouchableOpacity>
+                            {showEditGoals && (
+                                <View style={[styles.row, { justifyContent: 'space-evenly', borderRadius: 10 }]}>
+                                    <Text style={{ fontSize: 14, fontFamily: 'System', color: 'grey', alignSelf: 'center' }}>
+                                        Feel Better:
+                                    </Text>
+                                    <Checkbox value={newFeelBetter} onValueChange={setNewFeelBetter} style={styles.checkbox} />
+                                    <Text style={{ fontSize: 14, fontFamily: 'System', color: 'grey', alignSelf: 'center' }}>
+                                        Lose Weight:
+                                    </Text>
+                                    <Checkbox value={newLoseWeight} onValueChange={setNewLoseWeight} style={styles.checkbox} />
+                                </View>
+                            )}
+                            <TouchableOpacity style={styles.row} activeOpacity={0.5}
+                                onPress={() => setShowEditGoalWeight(!showEditGoalWeight)}>
+                                <Text style={styles.rowTextLabel}>
+                                    Goal Weight
+                                </Text>
+                                <Text style={styles.rowTextValue}>
+                                    {GetGoalWeightStr(currentUser)}
+                                </Text>
+                                <Image
+                                    source={require('../../assets/images/editPencil.png')}
+                                    style={{ width: 20, height: 20, alignSelf: 'center', objectFit: 'contain' }}
+                                />
+                            </TouchableOpacity>
+                            {showEditGoalWeight && (
+                                <TextInput
+                                    style={styles.editBox}
+                                    placeholder="Enter a weight..."
+                                    keyboardType={"numeric"}
+                                    editable={true}
+                                    value={newGoalWeight}
+                                    defaultValue={newGoalWeight}
+                                    onChangeText={newWeight => setNewGoalWeight(newWeight)}
+                                    returnKeyType="done" />
+                            )}
+                        </View>
+
+                        <TouchableOpacity style={[styles.confirmButton, { alignSelf: 'center' }]} activeOpacity={0.5}
+                            onPress={() => ConfirmChanges(currentUser, newFirstName, newLastName, heightFt, heightInch, newWeight, newGender, newFeelBetter, newLoseWeight, newGoalWeight, navigation)}>
+                            <Text style={{ fontSize: 15, fontFamily: 'System' }}>
+                                Confirm Changes
+                            </Text>
+                        </TouchableOpacity>
+
+                    </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
 
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToHomePage(currentUser, navigation)}>
+                <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}
+                    onPress={() => NavigateToHomePage(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
+                <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}
+                    onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToProgressLogging(currentUser, navigation) }>
+                <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}
+                    onPress={() => NavigateToProgressLogging(currentUser, navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/plus.png')}
-                        style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 45, height: 45, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
+                <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => LogoutPopup(navigation)}>
+                <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}
+                    onPress={() => LogoutPopup(navigation)}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
 
             </View>
+
+
         </View>
+
+
     );
 }
 
@@ -597,7 +613,7 @@ const updateUser = async (currentUser: any, newFirstName: string, newLastName: s
     console.log("API Request Body: ", JSON.stringify(updatedData));
 
     try {
-        const response = await fetch(`${AppUrls.url}/api/users/${currentUser.userId}/`, {
+        const response = await fetch(`${AppUrls.url}/user/${currentUser.userId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -642,6 +658,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    subContainer: {
+        height: '75%', // Adjust as needed        
+        borderRadius: 10,
+        alignContent: 'center',
+        marginTop: 20,
+      },
     topMenu:{
         flexDirection: 'row',
         alignItems: 'flex-end',
@@ -680,6 +702,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: 20,
     },
+    sectionTitle:{
+        fontSize: 20, 
+        fontFamily: 'System',
+        color: 'grey',
+        alignSelf: 'center' 
+    },
     row:{
         flexDirection: 'row',
         alignSelf: 'center',
@@ -696,6 +724,16 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5, // For Android shadow
+    },
+    rowTextLabel:{
+        fontSize: 18, 
+        fontFamily: 'System',
+        alignSelf: 'center'
+    },
+    rowTextValue:{
+        fontSize: 18, 
+        fontFamily: 'System',
+        alignSelf: 'center'
     },
     rowHeight: {
         flexDirection: 'row',
@@ -736,5 +774,4 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         flex: 1,
     },
-
 });
