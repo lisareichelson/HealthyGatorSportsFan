@@ -293,3 +293,33 @@ def poll_cfbd_view(request):
     return JsonResponse(response)
 #class GetGameNotificationView(APIView):
 
+@csrf_exempt
+def home_tile_view(request):
+    configuration = cfbd.Configuration(
+        host="https://apinext.collegefootballdata.com",
+        access_token=os.getenv('COLLEGE_FOOTBALL_API_KEY')
+    )
+    print("Value of 'COLLEGE_FOOTBALL_API_KEY' environment variable :", os.getenv('COLLEGE_FOOTBALL_API_KEY'))                         
+    apiInstance = cfbd.GamesApi(cfbd.ApiClient(configuration))
+
+    def get_next_game():
+        current_year = date.today().year
+        games = apiInstance.get_games(year=current_year, team='Florida', conference='SEC')
+        today = datetime.combine(date.today(), datetime.min.time())
+        future_games = [game for game in games if game.start_date.replace(tzinfo=None) > today]
+        return min(future_games, key=lambda x: x.start_date) if future_games else None
+
+    next_game = get_next_game()
+    if next_game:
+        user_tz = pytz.timezone('America/New_York')  # TODO: Get user's timezone from database
+        game_time = next_game.start_date.astimezone(user_tz)
+        response = {
+            "teams": f"{next_game.home_team} vs {next_game.away_team}",
+            "date": game_time.strftime('%m-%d-%Y %I:%M %p')
+        }
+        message = f"Teams: {next_game.home_team} vs {next_game.away_team}, Date: {game_time.strftime('%m-%d-%Y %I:%M %p')}"
+    else:
+        response = {"message": "No upcoming games found."}
+        message = response["message"]
+    
+    return JsonResponse(response)

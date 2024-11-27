@@ -183,9 +183,9 @@ function LogoutPopup(navigation: any){
 }
 
 // TODO - this is currently setup to send a notification; we just need to call the API to get next game, and parse the opponent
-export const handlePollCFBD = async () => {
+export const getHomeTileData = async () => {
     try {
-        const response = await fetch(`${AppUrls.url}/poll-cfbd/`, {
+        const response = await fetch(`${AppUrls.url}/home-tile/`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -204,7 +204,7 @@ export const handlePollCFBD = async () => {
 //TODO: call backend API to get who we are playing next
 function GetCurrentOpponentName():string{
     //Call the API to find out what game is next. Use this to choose the image.
-    handlePollCFBD();
+    getHomeTileData();
 
     //TEMP: ASSUME we are playing FSU.
     return 'fsu';

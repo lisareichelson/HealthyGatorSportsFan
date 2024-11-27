@@ -20,7 +20,7 @@ from django.urls import path
 #from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView
 # for running locally
 #from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView (before merge)
-from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDetail, BulkDeleteNotifications, UserLoginView, LatestUserDataView, UserUpdateView
+from app.views import index, CreateUserView, poll_cfbd_view, home_tile_view, BasicInfoView, GoalCollectionView, CreateUserDataView, NotificationList, NotificationDetail, BulkDeleteNotifications, UserLoginView, LatestUserDataView, UserUpdateView
 
 # Used to define API endpoints that our mobile app will interact with, rather than returning HTML pages for a web app
 
@@ -45,5 +45,5 @@ urlpatterns = [
     path('notifications/<int:notification_id>/delete/', NotificationDetail.as_view(), name='notification-delete'),
     path('notifications/deleteAll/<int:user_id>/', BulkDeleteNotifications.as_view(), name='notifications-delete'),
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
-
+    path('home-tile/', home_tile_view, name='home_tile_view'),
 ]
