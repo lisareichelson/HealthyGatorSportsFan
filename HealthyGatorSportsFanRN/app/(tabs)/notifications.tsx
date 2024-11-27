@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Button, Platform, FlatList, ScrollView, Alert} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Button, Platform, FlatList, ScrollView, Alert, KeyboardAvoidingView, SafeAreaView} from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
@@ -140,7 +140,9 @@ const NotificationsPage = () => {
 
         <View style={styles.container}>
 
-            <Text style={styles.title}>Notifications</Text>
+        <Text style={styles.title}>Notifications</Text>
+
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={Platform.select({ ios: 90, android: 120 })}>
 
             <View style={styles.shadowContainer}>
                 <ScrollView>
@@ -174,7 +176,7 @@ const NotificationsPage = () => {
                 </View>
             </View>
 
-            <Text style={{ fontSize: 15 }}>Create a notification for testing:</Text>
+            <Text style={{ fontSize: 15, marginTop: 10, marginBottom: 10, alignSelf: 'center'}}>Create a notification for testing:</Text>
 
             <View style={styles.buttonContainer}>
                 <TextInput
@@ -199,7 +201,9 @@ const NotificationsPage = () => {
                 <Text style={styles.buttonText}>Generate notification</Text>
             </TouchableOpacity>
 
+            </KeyboardAvoidingView>
         </View>  
+
     );
 }
 
@@ -374,8 +378,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     shadowContainer: {
-        width: '90%', // Adjust as needed
-        height: '50%', // Adjust as needed        
+        height: '60%', // Adjust as needed        
         borderRadius: 10,
         backgroundColor: 'white',
         shadowColor: '#000',
@@ -394,8 +397,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between', // Adjusts spacing between buttons
-        width: '90%', // Adjust as needed
+        justifyContent: 'space-between',
+        marginBottom: 10,
     },
     buttonForContainer: {
         flex: 1, // Makes buttons take equal space
@@ -418,14 +421,14 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#2196F3', // Default button color
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        padding: 10,
         borderRadius: 4,
         elevation: 2, // For Android shadow
         shadowColor: '#000', // For iOS shadow
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
+        alignSelf: 'center'
       },
       buttonText: {
         color: 'white',
