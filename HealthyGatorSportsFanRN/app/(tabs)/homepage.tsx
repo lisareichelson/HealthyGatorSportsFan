@@ -6,10 +6,14 @@ import User from "@/components/user";
 import { AppUrls } from '@/constants/AppUrls';
 import { Abbreviations } from '@/constants/Abbreviations';
 
+// TODO: Update game tile on home page to show live score & quarter based on a new CFBD API call
+
 export default function HomePage() {
     const navigation = useNavigation();
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
+
+    const [loading, setLoading] = useState(false);
 
     // State to store the fetched game data
     const [gameData, setGameData] = useState({
@@ -21,6 +25,7 @@ export default function HomePage() {
     // Fetch game data when the component is mounted
     useEffect(() => {
         const fetchGameData = async () => {
+            setLoading(true);
             try {
                 const data = await getNextGame();
                 if (data) {
@@ -32,6 +37,8 @@ export default function HomePage() {
                 }
             } catch (error) {
                 console.error('Error fetching game data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -45,14 +52,7 @@ export default function HomePage() {
 
      // Fetch team logos based on the fetched game data
      const HomeLogo = TeamLogo.GetImage(getAbbreviation(gameData.home_team)?.toLowerCase() || "");
-     const OpponentLogo = TeamLogo.GetImage(getAbbreviation(gameData.away_team)?.toLowerCase() || "");
-
-    //let currentOpponent = GetCurrentOpponentName();
-    //let CurrentOpponentFullName = GetCurrentOpponentFullName();
-    //let OpponentLogo = TeamLogo.GetImage(
-    //    `${currentOpponent}`,
-    //);
-    //let CurrentGameData = GetCurrentScoreAndTime();
+     const AwayLogo = TeamLogo.GetImage(getAbbreviation(gameData.away_team)?.toLowerCase() || "");
 
     //The following function prevents the user from going backwards a screen.
     usePreventRemove(true, ({ data }) => {
@@ -82,7 +82,6 @@ export default function HomePage() {
         }
     }
 
-    // **CHANGED RETURN STATEMENT**: Updated to include fallback text for missing logos
     return (
         <View style={styles.container}>
             <View style={styles.topMenu}>
@@ -104,34 +103,37 @@ export default function HomePage() {
                     />
                 </TouchableOpacity>
             </View>
-            {/* **UPDATED MIDDLE CONTENT**: Dynamically render team logos and fallback text */}
             <View style={styles.middleContent}>
+
                 <View style={styles.scoreBox}>
                     {/* Home Team */}
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
-                        {HomeLogo ? (
-                            <Image source={HomeLogo} style={{ width: 100, height: 100 }} />
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly', flexBasis: '30%' }}>
+                        {loading ? (
+                            <Text style={{textAlign:'center', alignSelf: 'center'}}>Loading...</Text>
+                        ) : HomeLogo ? (
+                            <Image source={HomeLogo} style={{ width: 100, height: 100 }} resizeMode="contain" />
                         ) : (
                             <Text>No Logo Found</Text>
                         )}
-                        <Text style={{ fontSize: 15 }}>{gameData.home_team}</Text>
                     </View>
                     {/* Game Info */}
-                    <View style={styles.scoreBoxText}>
-                        <Text style={{ fontSize: 20 }}>{gameData.home_team} vs {gameData.away_team}</Text>
-                        <Text style={{ fontSize: 20 }}>{gameData.date}</Text>
+                    <View style={{flexBasis: '40%', alignSelf: 'center'}}>
+                        <Text style={{ fontSize: 18, textAlign:'center', marginBottom: 5 }}>{gameData.home_team} vs {gameData.away_team}</Text>
+                        <Text style={{ fontSize: 15, textAlign:'center' }}>{gameData.date}</Text>
                     </View>
                     {/* Away Team */}
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
-                        {OpponentLogo ? (
-                            <Image source={OpponentLogo} style={{ width: 100, height: 100 }} />
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly', flexBasis: '30%' }}>
+                        {loading ? (
+                            <Text>Loading...</Text>
+                        ) : AwayLogo ? (
+                            <Image source={AwayLogo} style={{ width: 100, height: 100 }} resizeMode="contain" />
                         ) : (
                             <Text>No Logo Found</Text>
                         )}
-                        <Text style={{ fontSize: 15 }}>{gameData.away_team}</Text>
                     </View>
                 </View>
             </View>
+
             <View style={styles.weightBox}>
                 <Text style={{ fontSize: 20, textAlign: 'center' }}>Current Goals: {GetGoals()}</Text>
                 <Text style={{ fontSize: 20 }}>Current Weight: {currentUser.currentWeight}</Text>
@@ -188,105 +190,6 @@ export default function HomePage() {
         </View>
     );
 }
-
-   //return (
-   //    <View style={styles.container}>
-   //        <View style={styles.topMenu}>
-   //            <Image
-   //                source={require('./../../assets/images/clipboardgator.jpg')}
-   //                style={{width:55, height:55}}
-   //            />
-   //            <Text style={{fontSize: 25, fontFamily: 'System'}}>
-   //                Hey, {currentUser.firstName}!
-   //            </Text>
-   //            <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-   //                              onPress={() => NavigateToNotifications(currentUser, navigation) }>
-   //                <Image
-   //                    source={require('./../../assets/images/bell.png')}
-   //                    style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
-   //                />
-   //            </TouchableOpacity>
-   //        </View>
-   //        <View style={styles.middleContent}>
-   //            <View style={styles.scoreBox}>
-   //                <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-   //                <Image
-   //                    source={HomeLogo}  // Dynamically use home team logo
-   //                    style={{width:100, height:100, objectFit: 'contain'}}
-   //                />
-   //                    <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
-   //                        {gameData.home_team}  {/* Dynamically display home team */}
-   //                    </Text>
-   //                </View>
-   //                <View style={styles.scoreBoxText}>
-   //                <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-   //                   {gameData.home_team} vs {gameData.away_team}
-   //                </Text>
-   //                <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-   //                    {gameData.date}  {/* Dynamically display the date */}
-   //                </Text>
-   //                </View>
-   //                <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-   //                <Image
-   //                    source={OpponentLogo}  // Dynamically use away team logo
-   //                    style={{width:100, height:100, objectFit: 'contain'}}
-   //                />
-   //                    <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
-   //                        {gameData.away_team}  {/* Dynamically display away team */}
-   //                    </Text>
-   //                </View>
-   //            </View>
-   //        </View>
-   //        <View style={styles.weightBox}>
-   //            <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center', textAlign:'center'}}>
-   //                Current Goals: {GetGoals()}
-   //            </Text>
-   //            <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
-   //                Current Weight: {currentUser.currentWeight}
-   //            </Text>
-   //            <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
-   //                {GetGoalsText()}
-   //            </Text>
-   //        </View>
-   //        <View style={styles.bottomMenu}>
-   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
-   //                <Image
-   //                    source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
-   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
-   //                />
-   //            </TouchableOpacity>
-   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-   //                              onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
-   //                <Image
-   //                    source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
-   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
-   //                />
-   //            </TouchableOpacity>
-   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-   //                              onPress={() => NavigateToProcessLogging(currentUser, navigation) }>
-   //                <Image
-   //                    source={require('../../assets/images/bottomHomeMenu/plus.png')}
-   //                    style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
-   //                />
-   //            </TouchableOpacity>
-   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-   //                              onPress={() => NavigateToProfileManagement(currentUser, navigation) }>
-   //                <Image
-   //                    source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
-   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
-   //                />
-   //            </TouchableOpacity>
-   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-   //                              onPress={() => LogoutPopup(navigation)}>
-   //                <Image
-   //                    source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
-   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
-   //                />
-   //            </TouchableOpacity>
-   //        </View>
-   //    </View>
-   //);
-//}
 
 function NavigateToGameSchedule(currentUser:any, navigation:any){
     navigation.navigate('GameSchedule', {currentUser} as never)
@@ -346,38 +249,6 @@ export const getNextGame = async () => {
     }
 };
 
-//TODO: call backend API to get who we are playing next
-function GetCurrentOpponentName():string{
-    
-    // First see if there's a live game.
-
-    // If there's not a live game, get the next game.
-    let home = '';
-    let away = '';
-    let date = new Date();
-    getNextGame();
-
-    return 'away';   
-}
-
-function getTeamAcronym(teamName: string){
-    const abbreviation = Abbreviations[teamName] || 'Unknown';
-}
-
-//TODO: call backend API to get who we are playing next
-function GetCurrentOpponentFullName():string{
-    //TEMP: ASSUME we are playing FSU.
-    return 'Florida State University';
-}
-/*
-Returns [gators' current score, opponent's current score, current quarter,
-        minutes remaining in the quarter, seconds remaining in the quarter]
- */
-function GetCurrentScoreAndTime():[number, number, number, number, number]{
-//TODO: Connect to backend API
-    return [0,0,0,15,0];
-}
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -431,6 +302,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5, // For Android shadow
+        overflow: 'hidden',
     },
     scoreBoxText:{
         flexDirection: 'column',
