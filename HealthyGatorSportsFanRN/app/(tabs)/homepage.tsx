@@ -4,6 +4,7 @@ import React, {useState, useEffect} from "react";
 import {TeamLogo} from "@/components/getTeamImages";
 import User from "@/components/user";
 import { AppUrls } from '@/constants/AppUrls';
+import { Abbreviations } from '@/constants/Abbreviations';
 
 export default function HomePage() {
     const navigation = useNavigation();
@@ -182,8 +183,7 @@ function LogoutPopup(navigation: any){
     );
 }
 
-// TODO - this is currently setup to send a notification; we just need to call the API to get next game, and parse the opponent
-export const getHomeTileData = async () => {
+export const getNextGame = async () => {
     try {
         const response = await fetch(`${AppUrls.url}/home-tile/`, {
             method: 'POST',
@@ -191,23 +191,36 @@ export const getHomeTileData = async () => {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ message: 'Poll request sent' }),
         });
         const data = await response.json();
-        console.log(data);
+        if (response.ok) {
+            let home = Abbreviations[data.home_team] || 'Unknown';
+            let away = Abbreviations[data.away_team] || 'Unknown';
+            // Sample data format: {"away_team": "Florida", "date": "11-30-2024 07:00 PM", "home_team": "Florida State"}    
+        } 
         return data;
-    } catch (error) {
-        console.error('Error sending poll request:', error);
+    } 
+    catch (error) {
+        console.error('Error getting next game:', error);
     }
 };
 
 //TODO: call backend API to get who we are playing next
 function GetCurrentOpponentName():string{
-    //Call the API to find out what game is next. Use this to choose the image.
-    getHomeTileData();
+    
+    // First see if there's a live game.
 
-    //TEMP: ASSUME we are playing FSU.
-    return 'fsu';
+    // If there's not a live game, get the next game.
+    let home = '';
+    let away = '';
+    let date = new Date();
+    getNextGame();
+
+    return 'away';   
+}
+
+function getTeamAcronym(teamName: string){
+    const abbreviation = Abbreviations[teamName] || 'Unknown';
 }
 
 //TODO: call backend API to get who we are playing next

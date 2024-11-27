@@ -384,10 +384,11 @@ def home_tile_view(request):
 
     next_game = get_next_game()
     if next_game:
-        user_tz = pytz.timezone('America/New_York')  # TODO: Get user's timezone from database
+        user_tz = pytz.timezone('America/New_York')
         game_time = next_game.start_date.astimezone(user_tz)
         response = {
-            "teams": f"{next_game.home_team} vs {next_game.away_team}",
+            "home_team": f"{next_game.home_team}",
+            "away_team": f"{next_game.away_team}",
             "date": game_time.strftime('%m-%d-%Y %I:%M %p')
         }
         message = f"Teams: {next_game.home_team} vs {next_game.away_team}, Date: {game_time.strftime('%m-%d-%Y %I:%M %p')}"
