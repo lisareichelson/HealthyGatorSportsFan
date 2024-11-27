@@ -9,8 +9,10 @@ import cfbd
 import pytz
 from django.http import JsonResponse
 from datetime import date, datetime
-from .utils import send_push_notification_next_game
+from .utils import send_push_notification_next_game, check_game_status
 from django.views.decorators.csrf import csrf_exempt
+from .management.commands import poll_cfbd
+from .management.commands.poll_cfbd import Command
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -61,8 +63,8 @@ def index(request):
 # API view to handle POST requests for user creation
 class CreateUserView(APIView):
     @swagger_auto_schema(
-            operation_summary="Add user", 
-            operation_description="Create a new user to add to the database.", 
+            operation_summary="Add user",
+            operation_description="Create a new user to add to the database.",
             request_body=UserSerializer
         )
     def post(self, request):
@@ -91,10 +93,10 @@ class UserUpdateView(APIView):
         else:
             print(serializer.errors)  # Debugging line
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
 class CheckEmailView(APIView):
     @swagger_auto_schema(
-        operation_summary="Check if email is already used", operation_description="Checks all users in the database to determine whether an email is already in user.", 
+        operation_summary="Check if email is already used", operation_description="Checks all users in the database to determine whether an email is already in user.",
         responses={200: UserSerializer(many=False)}  # Define response schema
     )
     def post(self, request):
@@ -102,7 +104,7 @@ class CheckEmailView(APIView):
         if User.objects.filter(email=email).exists():
             return Response({'exists': True}, status=status.HTTP_200_OK)
         return Response({'exists': False}, status=status.HTTP_200_OK)
-    
+
 # API view to handle POST requests for user data creation
 class CreateUserDataView(APIView):
     @swagger_auto_schema(operation_summary="Log user progress", operation_description="Create a new userData entry to add to the database. This is used to log a snapshot in time of progress toward the user's goal(s).", request_body=UserDataSerializer)
@@ -125,7 +127,7 @@ class CreateUserDataView(APIView):
 
 class LatestUserDataView(APIView):
     @swagger_auto_schema(
-        operation_summary="Get latest user progress", operation_description="Get the latest entry of user's progress from the userData table.", 
+        operation_summary="Get latest user progress", operation_description="Get the latest entry of user's progress from the userData table.",
         manual_parameters=[
             openapi.Parameter(
                 'user_id',  # Name of the parameter
@@ -147,7 +149,7 @@ class LatestUserDataView(APIView):
                 return Response({"message": "No data found for this user."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
 # # API view to handle POST requests for data sent from the front-end (basicinfo.tsx)
 # class BasicInfoView(APIView):
 #     def post(self, request, user_id):
@@ -174,7 +176,7 @@ class LatestUserDataView(APIView):
 #         print("User errors:", user_serializer.errors)
 #         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# # API view to handle POST requests for data sent from the front-end (goalcollection.tsx)  
+# # API view to handle POST requests for data sent from the front-end (goalcollection.tsx)
 # class GoalCollectionView(APIView):
 #     def post(self, request, user_id):
 #         user = User.objects.get(pk=user_id)
@@ -191,10 +193,10 @@ class LatestUserDataView(APIView):
 #                 }, status=status.HTTP_200_OK)
 #             return Response(user_data_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 #         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class UserLoginView(APIView):
     @swagger_auto_schema(
-        operation_summary="User login", operation_description="Authenticate and get user's information given email and password.", 
+        operation_summary="User login", operation_description="Authenticate and get user's information given email and password.",
         manual_parameters=[
                 openapi.Parameter(
                     'email',  # Name of the parameter
@@ -259,7 +261,7 @@ class UserLoginView(APIView):
 class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationDataSerializer
     @swagger_auto_schema(
-        operation_summary="List notifications", operation_description="Get all notifications for a user by user ID.", 
+        operation_summary="List notifications", operation_description="Get all notifications for a user by user ID.",
         manual_parameters=[
             openapi.Parameter(
                 'user_id',  # Name of the parameter
@@ -301,7 +303,7 @@ class CreateNotificationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class DeleteNotificationView(APIView):
     @swagger_auto_schema(operation_summary="Delete notification", operation_description="Delete a notification by ID", request_body=NotificationDataSerializer)
     def delete(self, request, notification_id):
@@ -358,6 +360,9 @@ def poll_cfbd_view(request):
         response = {"message": "No upcoming games found."}
         message = response["message"]
     push_token = os.getenv('EXPO_PUSH_TOKEN')
+    game_status= check_game_status(apiInstance)
+    poll_cfbd.send_notification(game_status)
+    print(game_status)
     if push_token:
         try:
             send_push_notification_next_game(push_token, message)
