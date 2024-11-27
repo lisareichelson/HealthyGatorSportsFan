@@ -13,7 +13,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HealthyGatorSportsFanDjango.pro
 # for running locally
 #app = Celery('project')
 # for pushing to Heroku
-app = Celery('HealthyGatorSportsFanDjango')
+app = Celery('HealthyGatorSportsFanDjango.project')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
@@ -22,10 +22,7 @@ app = Celery('HealthyGatorSportsFanDjango')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Load task modules from all registered Django app configs.
-# for running locally
-#app.autodiscover_tasks()
-# for pushing to Heroku
-app.autodiscover_tasks(['HealthyGatorSportsFanDjango.app'])
+app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
