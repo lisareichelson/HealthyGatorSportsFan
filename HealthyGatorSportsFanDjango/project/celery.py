@@ -5,9 +5,15 @@ import os
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
+# for running locally
+#os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
+# for pushing to Heroku
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HealthyGatorSportsFanDjango.project.settings')
 
-app = Celery('project')
+# for running locally
+#app = Celery('project')
+# for pushing to Heroku
+app = Celery('HealthyGatorSportsFanDjango')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
@@ -16,7 +22,10 @@ app = Celery('project')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Load task modules from all registered Django app configs.
-app.autodiscover_tasks()
+# for running locally
+#app.autodiscover_tasks()
+# for pushing to Heroku
+app.autodiscover_tasks(['HealthyGatorSportsFanDjango.app'])
 
 @app.task(bind=True)
 def debug_task(self):
