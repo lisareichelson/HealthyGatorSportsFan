@@ -1,2 +1,2 @@
 web: gunicorn HealthyGatorSportsFanDjango.project.wsgi:application
-worker: celery -A HealthyGatorSportsFanDjango worker --loglevel=info --detach; celery -A HealthyGatorSportsFanDjango beat --loglevel=info
+worker: sh -c "celery -A HealthyGatorSportsFanDjango worker --loglevel=info & celery -A HealthyGatorSportsFanDjango beat --loglevel=info"
