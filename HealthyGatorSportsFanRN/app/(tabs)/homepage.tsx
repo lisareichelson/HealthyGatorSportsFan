@@ -63,7 +63,7 @@ export default function HomePage() {
     function GetGoalsText(): string{
         if(currentUser.goal_to_lose_weight){
             // @ts-ignore
-            return "Weight left to lose: " + Math.floor(currentUser.currentWeight - currentUser.goalWeight) + " pounds";
+            return "Weight left to lose: " + Math.floor(currentUser.currentWeight - currentUser.goalWeight) + " lbs";
         }
         else
             return "Keep at it!";
@@ -135,9 +135,18 @@ export default function HomePage() {
             </View>
 
             <View style={styles.weightBox}>
-                <Text style={{ fontSize: 20, textAlign: 'center' }}>Current Goals: {GetGoals()}</Text>
-                <Text style={{ fontSize: 20 }}>Current Weight: {currentUser.currentWeight}</Text>
-                <Text style={{ fontSize: 20 }}>{GetGoalsText()}</Text>
+                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
+                    <Text style={{fontWeight:'600' }}>Current Goals:</Text> {GetGoals()}
+                </Text>
+                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
+                    <Text style={{fontWeight:'600' }}>Current Weight:</Text> {Math.floor(currentUser.currentWeight)} lbs
+                </Text>
+                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
+                    <Text style={{fontWeight:'600' }}>Weight left to lose: </Text> {Math.floor(currentUser.currentWeight - currentUser.goalWeight)} lbs
+                </Text>
+                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
+                    <Text style={{fontWeight:'600' }}>Rating: </Text> Last time you checked in, you were feeling 
+                </Text>
             </View>
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}>
@@ -310,7 +319,7 @@ const styles = StyleSheet.create({
     weightBox:{
         flexDirection:'column',
         width: '80%', // Adjust as needed
-        height: '20%', // Adjust as needed
+        padding: 10,
         borderRadius: 10,
         backgroundColor: 'white',
         shadowColor: '#000',
