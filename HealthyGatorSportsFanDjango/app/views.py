@@ -384,6 +384,10 @@ def home_tile_view(request):
 
     next_game = get_next_game()
     if next_game:
+
+        # Log the team names for debugging (this returns correctly)
+        print(f"Home Team: {next_game.home_team}, Away Team: {next_game.away_team}")
+
         user_tz = pytz.timezone('America/New_York')
         game_time = next_game.start_date.astimezone(user_tz)
         response = {

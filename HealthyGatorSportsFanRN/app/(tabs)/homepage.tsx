@@ -11,12 +11,48 @@ export default function HomePage() {
     const route = useRoute();
     const { currentUser } = route.params as { currentUser: any };
 
-    let currentOpponent = GetCurrentOpponentName();
-    let CurrentOpponentFullName = GetCurrentOpponentFullName();
-    let OpponentLogo = TeamLogo.GetImage(
-        `${currentOpponent}`,
-    );
-    let CurrentGameData = GetCurrentScoreAndTime();
+    // State to store the fetched game data
+    const [gameData, setGameData] = useState({
+        home_team: '',
+        away_team: '',
+        date: ''
+    });
+
+    // Fetch game data when the component is mounted
+    useEffect(() => {
+        const fetchGameData = async () => {
+            try {
+                const data = await getNextGame();
+                if (data) {
+                    setGameData({
+                        home_team: data.home_team,
+                        away_team: data.away_team,
+                        date: data.date
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching game data:', error);
+            }
+        };
+
+        fetchGameData();
+    }, []);  // Empty dependency array to fetch only on mount
+
+     // Convert team names to abbreviations
+     const getAbbreviation = (teamName: string): string | null => {
+        return Abbreviations[teamName] || null;
+    };
+
+     // Fetch team logos based on the fetched game data
+     const HomeLogo = TeamLogo.GetImage(getAbbreviation(gameData.home_team)?.toLowerCase() || "");
+     const OpponentLogo = TeamLogo.GetImage(getAbbreviation(gameData.away_team)?.toLowerCase() || "");
+
+    //let currentOpponent = GetCurrentOpponentName();
+    //let CurrentOpponentFullName = GetCurrentOpponentFullName();
+    //let OpponentLogo = TeamLogo.GetImage(
+    //    `${currentOpponent}`,
+    //);
+    //let CurrentGameData = GetCurrentScoreAndTime();
 
     //The following function prevents the user from going backwards a screen.
     usePreventRemove(true, ({ data }) => {
@@ -46,107 +82,211 @@ export default function HomePage() {
         }
     }
 
+    // **CHANGED RETURN STATEMENT**: Updated to include fallback text for missing logos
     return (
         <View style={styles.container}>
             <View style={styles.topMenu}>
                 <Image
                     source={require('./../../assets/images/clipboardgator.jpg')}
-                    style={{width:55, height:55}}
+                    style={{ width: 55, height: 55 }}
                 />
-                <Text style={{fontSize: 25, fontFamily: 'System'}}>
+                <Text style={{ fontSize: 25, fontFamily: 'System' }}>
                     Hey, {currentUser.firstName}!
                 </Text>
-                <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToNotifications(currentUser, navigation) }>
+                <TouchableOpacity
+                    style={styles.topIcons}
+                    activeOpacity={0.5}
+                    onPress={() => NavigateToNotifications(currentUser, navigation)}
+                >
                     <Image
                         source={require('./../../assets/images/bell.png')}
-                        style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 40, height: 40, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
             </View>
+            {/* **UPDATED MIDDLE CONTENT**: Dynamically render team logos and fallback text */}
             <View style={styles.middleContent}>
                 <View style={styles.scoreBox}>
-                    <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-                    <Image
-                        source={require('../../assets/images/teamLogos/gatorlogo.png')}
-                        style={{width:100, height:100, objectFit: 'contain'}}
-                    />
-                        <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
-                            University of Florida
-                        </Text>
+                    {/* Home Team */}
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
+                        {HomeLogo ? (
+                            <Image source={HomeLogo} style={{ width: 100, height: 100 }} />
+                        ) : (
+                            <Text>No Logo Found</Text>
+                        )}
+                        <Text style={{ fontSize: 15 }}>{gameData.home_team}</Text>
                     </View>
+                    {/* Game Info */}
                     <View style={styles.scoreBoxText}>
-                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-                       {CurrentGameData[0]} - {CurrentGameData[1]}
-                    </Text>
-                    <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
-                        Q{CurrentGameData[2]} - {CurrentGameData[3]}:{CurrentGameData[4]}
-                    </Text>
+                        <Text style={{ fontSize: 20 }}>{gameData.home_team} vs {gameData.away_team}</Text>
+                        <Text style={{ fontSize: 20 }}>{gameData.date}</Text>
                     </View>
-                    <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
-                    <Image
-                        source={OpponentLogo}
-                        style={{width:100, height:100, objectFit: 'contain'}}
-                    />
-                        <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
-                            {CurrentOpponentFullName}
-                        </Text>
+                    {/* Away Team */}
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
+                        {OpponentLogo ? (
+                            <Image source={OpponentLogo} style={{ width: 100, height: 100 }} />
+                        ) : (
+                            <Text>No Logo Found</Text>
+                        )}
+                        <Text style={{ fontSize: 15 }}>{gameData.away_team}</Text>
                     </View>
-
                 </View>
-
             </View>
             <View style={styles.weightBox}>
-                <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center', textAlign:'center'}}>
-                    Current Goals: {GetGoals()}
-                </Text>
-                <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
-                    Current Weight: {currentUser.currentWeight}
-                </Text>
-                <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
-                    {GetGoalsText()}
-                </Text>
+                <Text style={{ fontSize: 20, textAlign: 'center' }}>Current Goals: {GetGoals()}</Text>
+                <Text style={{ fontSize: 20 }}>Current Weight: {currentUser.currentWeight}</Text>
+                <Text style={{ fontSize: 20 }}>{GetGoalsText()}</Text>
             </View>
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
+                <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}>
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
+                <TouchableOpacity
+                    style={styles.bottomIcons}
+                    activeOpacity={0.5}
+                    onPress={() => NavigateToGameSchedule(currentUser, navigation)}
+                >
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToProcessLogging(currentUser, navigation) }>
+                <TouchableOpacity
+                    style={styles.bottomIcons}
+                    activeOpacity={0.5}
+                    onPress={() => NavigateToProcessLogging(currentUser, navigation)}
+                >
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/plus.png')}
-                        style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 45, height: 45, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => NavigateToProfileManagement(currentUser, navigation) }>
+                <TouchableOpacity
+                    style={styles.bottomIcons}
+                    activeOpacity={0.5}
+                    onPress={() => NavigateToProfileManagement(currentUser, navigation)}
+                >
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
-                                  onPress={() => LogoutPopup(navigation)}>
+                <TouchableOpacity
+                    style={styles.bottomIcons}
+                    activeOpacity={0.5}
+                    onPress={() => LogoutPopup(navigation)}
+                >
                     <Image
                         source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
-                        style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+                        style={{ width: 30, height: 30, alignSelf: 'center', objectFit: 'contain' }}
                     />
                 </TouchableOpacity>
-
             </View>
         </View>
     );
 }
+
+   //return (
+   //    <View style={styles.container}>
+   //        <View style={styles.topMenu}>
+   //            <Image
+   //                source={require('./../../assets/images/clipboardgator.jpg')}
+   //                style={{width:55, height:55}}
+   //            />
+   //            <Text style={{fontSize: 25, fontFamily: 'System'}}>
+   //                Hey, {currentUser.firstName}!
+   //            </Text>
+   //            <TouchableOpacity style = {styles.topIcons} activeOpacity={0.5}
+   //                              onPress={() => NavigateToNotifications(currentUser, navigation) }>
+   //                <Image
+   //                    source={require('./../../assets/images/bell.png')}
+   //                    style={{width:40, height:40, alignSelf: 'center', objectFit: 'contain'}}
+   //                />
+   //            </TouchableOpacity>
+   //        </View>
+   //        <View style={styles.middleContent}>
+   //            <View style={styles.scoreBox}>
+   //                <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
+   //                <Image
+   //                    source={HomeLogo}  // Dynamically use home team logo
+   //                    style={{width:100, height:100, objectFit: 'contain'}}
+   //                />
+   //                    <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
+   //                        {gameData.home_team}  {/* Dynamically display home team */}
+   //                    </Text>
+   //                </View>
+   //                <View style={styles.scoreBoxText}>
+   //                <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+   //                   {gameData.home_team} vs {gameData.away_team}
+   //                </Text>
+   //                <Text style={{fontSize: 20, fontFamily: 'System', marginTop: 40, alignSelf:'center'}}>
+   //                    {gameData.date}  {/* Dynamically display the date */}
+   //                </Text>
+   //                </View>
+   //                <View style={{flex:1,alignItems:'center',justifyContent:'space-evenly'}}>
+   //                <Image
+   //                    source={OpponentLogo}  // Dynamically use away team logo
+   //                    style={{width:100, height:100, objectFit: 'contain'}}
+   //                />
+   //                    <Text style={{fontSize: 15, fontFamily: 'System', alignSelf:'center'}}>
+   //                        {gameData.away_team}  {/* Dynamically display away team */}
+   //                    </Text>
+   //                </View>
+   //            </View>
+   //        </View>
+   //        <View style={styles.weightBox}>
+   //            <Text style={{fontSize: 20, fontFamily: 'System', alignSelf:'center', textAlign:'center'}}>
+   //                Current Goals: {GetGoals()}
+   //            </Text>
+   //            <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
+   //                Current Weight: {currentUser.currentWeight}
+   //            </Text>
+   //            <Text style={{fontSize: 20, fontFamily: 'System',alignSelf:'center'}}>
+   //                {GetGoalsText()}
+   //            </Text>
+   //        </View>
+   //        <View style={styles.bottomMenu}>
+   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}>
+   //                <Image
+   //                    source={require('../../assets/images/bottomHomeMenu/homeIcon.png')}
+   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+   //                />
+   //            </TouchableOpacity>
+   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+   //                              onPress={() => NavigateToGameSchedule(currentUser, navigation)}>
+   //                <Image
+   //                    source={require('../../assets/images/bottomHomeMenu/calendarIcon.png')}
+   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+   //                />
+   //            </TouchableOpacity>
+   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+   //                              onPress={() => NavigateToProcessLogging(currentUser, navigation) }>
+   //                <Image
+   //                    source={require('../../assets/images/bottomHomeMenu/plus.png')}
+   //                    style={{width:45, height:45, alignSelf: 'center', objectFit: 'contain'}}
+   //                />
+   //            </TouchableOpacity>
+   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+   //                              onPress={() => NavigateToProfileManagement(currentUser, navigation) }>
+   //                <Image
+   //                    source={require('../../assets/images/bottomHomeMenu/defaultprofile.png')}
+   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+   //                />
+   //            </TouchableOpacity>
+   //            <TouchableOpacity style = {styles.bottomIcons} activeOpacity={0.5}
+   //                              onPress={() => LogoutPopup(navigation)}>
+   //                <Image
+   //                    source={require('../../assets/images/bottomHomeMenu/logoutIcon.png')}
+   //                    style={{width:30, height:30, alignSelf: 'center', objectFit: 'contain'}}
+   //                />
+   //            </TouchableOpacity>
+   //        </View>
+   //    </View>
+   //);
+//}
 
 function NavigateToGameSchedule(currentUser:any, navigation:any){
     navigation.navigate('GameSchedule', {currentUser} as never)
@@ -194,11 +334,12 @@ export const getNextGame = async () => {
         });
         const data = await response.json();
         if (response.ok) {
-            let home = Abbreviations[data.home_team] || 'Unknown';
-            let away = Abbreviations[data.away_team] || 'Unknown';
-            // Sample data format: {"away_team": "Florida", "date": "11-30-2024 07:00 PM", "home_team": "Florida State"}    
+            //let home = Abbreviations[data.home_team] || 'Unknown';
+            //let away = Abbreviations[data.away_team] || 'Unknown';
+            // Sample data format: {"away_team": "Florida", "date": "11-30-2024 07:00 PM", "home_team": "Florida State"}
+            return data; // Expected format: {home_team, away_team, date}   
         } 
-        return data;
+        //return data;
     } 
     catch (error) {
         console.error('Error getting next game:', error);
