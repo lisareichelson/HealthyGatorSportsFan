@@ -196,7 +196,7 @@ CSRF_TRUSTED_ORIGINS = [
 # for pushing to Heroku
 # configures Celery to handle Redis connections using SSL.
 BROKER_USE_SSL = {
-    "ssl_cert_reqs": "CERT_NONE"
+    "ssl_cert_reqs": "CERT_OPTIONAL"
 }
 CELERY_BROKER_URL = os.environ.get("REDIS_URL")
 CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
