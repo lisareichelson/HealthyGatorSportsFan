@@ -4,7 +4,10 @@ import pytz
 from cfbd.models import ScoreboardGame
 from django.core.management.base import BaseCommand
 from datetime import date, datetime
-from app.utils import send_push_notification_next_game, check_game_status, send_notification
+# for running locally
+#from app.utils import send_push_notification_next_game, check_game_status, send_notification
+# for pushing to heroku
+from HealthyGatorSportsFanDjango.app.utils import send_push_notification_next_game, check_game_status, send_notification
 
 
 class Command(BaseCommand):
