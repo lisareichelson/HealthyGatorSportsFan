@@ -142,7 +142,7 @@ const NotificationsPage = () => {
 
         <Text style={styles.title}>Notifications</Text>
 
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={Platform.select({ ios: 90, android: 120 })}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={Platform.select({ ios: 60, android: 80 })}>
 
             <View style={styles.shadowContainer}>
                 <ScrollView>
@@ -176,9 +176,7 @@ const NotificationsPage = () => {
                 </View>
             </View>
 
-            <Text style={{ fontSize: 15, marginTop: 10, marginBottom: 10, alignSelf: 'center'}}>Create a notification for testing:</Text>
-
-            <View style={styles.buttonContainer}>
+            <View style={[styles.buttonContainer, {marginBottom: 5}]}>
                 <TextInput
                     style={styles.editBox}
                     placeholder="Title"
@@ -196,10 +194,31 @@ const NotificationsPage = () => {
                     onChangeText={newMessage => setNewMessage(newMessage)}
                 />
             </View>
+
+            <View style={styles.buttonContainer}>
+                <Text style={[{ fontSize: 15, width: '60%'}]}>Test creating & sending a notification from the frontend:</Text>
+
+                <TouchableOpacity style={[styles.buttonForContainer, {backgroundColor: '#FFD580', marginHorizontal: 0}]} onPress={handleCreateNotificationPress}>
+                    <Text style={[styles.buttonForContainerText, {color: 'black', fontSize: 15}]}>Generate notification</Text>
+                </TouchableOpacity>
+
+            </View>
             
-            <TouchableOpacity style={styles.button} onPress={handleCreateNotificationPress}>
-                <Text style={styles.buttonText}>Generate notification</Text>
-            </TouchableOpacity>
+            <View style={styles.separator}>
+                <View style={styles.content}>
+                    <Text>--------------------------------------------------------------------------------------</Text>
+                </View>
+            </View>
+
+            <View style={[styles.buttonContainer, {marginTop: 10}]}>
+
+                <Text style={[{ fontSize: 15, width: '60%'}]}>Test sending a notification from backend based on CFBD API:</Text>
+
+                <TouchableOpacity style={[styles.buttonForContainer, {backgroundColor: '#FFD580', marginHorizontal: 5}]} onPress={handlePollCFBD}>
+                    <Text style={[styles.buttonForContainerText, {color: 'black', fontSize: 15}]}>Get next game info</Text>
+                </TouchableOpacity>
+
+            </View>
 
             </KeyboardAvoidingView>
         </View>  
@@ -378,7 +397,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     shadowContainer: {
-        height: '60%', // Adjust as needed        
+        height: '50%', // Adjust as needed        
         borderRadius: 10,
         backgroundColor: 'white',
         shadowColor: '#000',
@@ -428,7 +447,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
-        alignSelf: 'center'
+        alignSelf: 'center',
       },
       buttonText: {
         color: 'white',
@@ -440,6 +459,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginRight: '5%',
         margin: 5,
+        borderRadius: 5,
+        padding: 10,
+        borderColor: '#D3D3D3',
     },
     card: {
         marginBottom: 5,
@@ -475,7 +497,7 @@ const styles = StyleSheet.create({
     separator: {
         height: 1, // Height of the line
         backgroundColor: '#CCCCCC', // Color of the line
-        marginVertical: 10, // Space around the line
+        marginVertical: 5, // Space around the line
       },
       content: {
         marginTop: 70, // Adjust to avoid overlap with the title
