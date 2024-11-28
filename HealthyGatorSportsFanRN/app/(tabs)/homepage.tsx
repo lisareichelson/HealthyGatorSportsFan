@@ -135,18 +135,29 @@ export default function HomePage() {
             </View>
 
             <View style={styles.weightBox}>
-                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
-                    <Text style={{fontWeight:'600' }}>Current Goals:</Text> {GetGoals()}
+                <Text style={{fontSize: 18, textAlign: 'center', marginTop: 10}}>
+                    <Text style={{fontWeight:'600' }}>Current Goal:</Text> {GetGoals()}
                 </Text>
-                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
-                    <Text style={{fontWeight:'600' }}>Current Weight:</Text> {Math.floor(currentUser.currentWeight)} lbs
-                </Text>
-                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
-                    <Text style={{fontWeight:'600' }}>Weight left to lose: </Text> {Math.floor(currentUser.currentWeight - currentUser.goalWeight)} lbs
-                </Text>
-                <Text style={{fontSize: 20, textAlign: 'center', marginTop: 10}}>
-                    <Text style={{fontWeight:'600' }}>Rating: </Text> Last time you checked in, you were feeling 
-                </Text>
+                {currentUser.loseWeight && 
+                    <View>
+                        <Text style={{fontSize: 18, textAlign: 'center', marginTop: 10}}>
+                            <Text style={{fontWeight:'600' }}>Current Weight:</Text> {Math.floor(currentUser.currentWeight)} lbs
+                        </Text>
+                        <Text style={{fontSize: 18, textAlign: 'center', marginTop: 10}}>
+                            <Text style={{fontWeight:'600' }}>Weight left to lose: </Text> {Math.floor(currentUser.currentWeight - currentUser.goalWeight)} lbs
+                        </Text>
+                    </View>
+                }
+                {currentUser.feelBetter && currentUser.lastRating != 0 &&  
+                    <Text style={{fontSize: 18, textAlign: 'center', marginTop: 10}}>
+                        <Text style={{fontWeight:'600' }}>Latest Feeling: </Text> Last time you checked in, you were feeling {currentUser.lastRating} / 5 stars
+                    </Text>
+                }
+                {currentUser.feelBetter && currentUser.lastRating === 0 && 
+                    <Text style={{fontSize: 18, textAlign: 'center', marginTop: 10}}>
+                        <Text style={{fontWeight:'600' }}>Latest Feeling:</Text> Looks like you recently added "feel better" as a goal. Once you add progress, your latest rating will show up here!
+                    </Text>
+                }
             </View>
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}>
@@ -212,7 +223,6 @@ function NavigateToProfileManagement(currentUser:any, navigation:any){
 function NavigateToProcessLogging(currentUser:any, navigation:any){
     navigation.navigate('ProcessLogging', {currentUser} as never)
 }
-
 function LogoutPopup(navigation: any){
     Alert.alert(
         "Confirmation",
@@ -234,7 +244,6 @@ function LogoutPopup(navigation: any){
         ]
     );
 }
-
 export const getNextGame = async () => {
     try {
         const response = await fetch(`${AppUrls.url}/home-tile/`, {
@@ -257,7 +266,6 @@ export const getNextGame = async () => {
         console.error('Error getting next game:', error);
     }
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
