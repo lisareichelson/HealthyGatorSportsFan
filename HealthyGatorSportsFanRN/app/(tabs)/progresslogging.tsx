@@ -157,6 +157,10 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
         currentUser.goalType = 'feelBetter';
     }
 
+    if (!currentUser.loseWeight){
+        newWeight = 0;
+    }
+
     if (currentUser.feelBetter && (rating === 0|| rating === null)){
         Alert.alert(
             "Missing Information",
@@ -390,6 +394,7 @@ const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLose
             currentUser.goal_to_lose_weight = false;
             currentUser.loseWeight = false;
             currentUser.goal_to_lose_weight = false; 
+            currentUser.goalWeight = 0; 
             console.log("Current user after API call & updates: ", currentUser);
             // Navigate back to the welcome page.
             navigation.navigate('ProfileManagement', {currentUser} as never);

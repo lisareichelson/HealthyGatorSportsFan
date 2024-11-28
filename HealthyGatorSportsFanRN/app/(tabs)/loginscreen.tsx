@@ -86,7 +86,6 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
         if (response.ok) {
             const data = await response.json();
             console.log('User:', data);
-            // Handle successful login (load data, load user data, then navigate to another screen)
             currentUser.userId = data.user_id;
             currentUser.email = data.email;
             currentUser.password = data.password;
@@ -101,6 +100,7 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
             currentUser.loseWeight = data.goal_to_lose_weight;
             currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
             currentUser.goalWeight = data.goal_weight;
+            if (!currentUser.loseWeight){ currentUser.goalWeight = 0}
             await getLatestUserData(currentUser, navigation); 
         } else {
             const errorData = await response.json();
