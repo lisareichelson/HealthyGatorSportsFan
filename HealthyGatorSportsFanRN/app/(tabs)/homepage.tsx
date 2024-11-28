@@ -159,6 +159,17 @@ export default function HomePage() {
                     </Text>
                 }
             </View>
+
+            <View style={styles.weightBox}>
+                <TouchableOpacity style={styles.button} onPress={demoGameNotifications}>
+                    <Text style={styles.buttonText}>Demo Notifications</Text>
+                </TouchableOpacity>
+                <View>
+                    <Text style={{padding: 3, marginTop: 3}}>UF Score: </Text>
+                    <Text style={{padding: 3}}>Opponent Score: </Text>
+                </View>
+            </View>
+
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style={styles.bottomIcons} activeOpacity={0.5}>
                     <Image
@@ -266,6 +277,11 @@ export const getNextGame = async () => {
         console.error('Error getting next game:', error);
     }
 };
+const demoGameNotifications = async () => {
+
+   // TODO: Hook up mock scoreboard & dummy polling scenario to generate notifications when a game is not live
+
+};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -303,7 +319,7 @@ const styles = StyleSheet.create({
     middleContent:{
         flexDirection: 'column',
         justifyContent: 'space-around',
-        marginTop: '20%',
+        marginTop: '7%',
     },
     scoreBox:{
         flexDirection: 'row',
@@ -335,8 +351,24 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 5, // For Android shadow
-        marginTop: '15%',
+        marginTop: '5%',
         alignSelf: 'center',
         justifyContent:'space-around',
-    }
+    },
+    button: {
+        backgroundColor: '#2196F3', // Default button color
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 4,
+        elevation: 2, // For Android shadow
+        shadowColor: '#000', // For iOS shadow
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+    },
 });
