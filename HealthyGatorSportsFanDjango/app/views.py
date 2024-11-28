@@ -363,11 +363,11 @@ def poll_cfbd_view(request):
     game_status= check_game_status(apiInstance)
     poll_cfbd.send_notification(game_status)
     print(game_status)
-    if push_token:
-        try:
-            send_push_notification_next_game(push_token, message)
-        except Exception as e:
-            print(f"Error sending push notification: {e}")
+    # if push_token:
+    #     try:
+    #         send_push_notification_next_game(push_token, message)
+    #     except Exception as e:
+    #         print(f"Error sending push notification: {e}")
     return JsonResponse(response)
 #class GetGameNotificationView(APIView):
 
