@@ -144,10 +144,6 @@ export default function ProgressLogging() {
 
 function ConfirmChanges(navigation: any, rating: number, newWeight: any, currentUser: User){
 
-    function timeout(delay: number) {
-        return new Promise( res => setTimeout(res, delay) );
-    }
-
     // The user's goals may have been updated after login. Set goal type for this log entry accordingly.
     if (currentUser.feelBetter && currentUser.loseWeight) {
         currentUser.goalType = 'both';
@@ -155,10 +151,6 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
         currentUser.goalType = 'loseWeight';
     } else if (currentUser.feelBetter) {
         currentUser.goalType = 'feelBetter';
-    }
-
-    if (!currentUser.loseWeight){
-        newWeight = 0;
     }
 
     if (currentUser.feelBetter && (rating === 0|| rating === null)){
