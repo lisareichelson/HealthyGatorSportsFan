@@ -2,6 +2,9 @@
 from exponent_server_sdk import PushClient, PushMessage
 import os
 import cfbd
+import redis
+
+redis_client = redis.StrictRedis.from_url('redis://localhost:6379/0')
 def send_push_notification_next_game(header, push_token, message):
     response = PushClient().publish(
         PushMessage(
@@ -12,7 +15,7 @@ def send_push_notification_next_game(header, push_token, message):
     )
 def check_game_status(apiInstance):
     scoreboard = apiInstance.get_scoreboard()
-    curr_team = 'Florida Gators'
+    curr_team = 'Memphis Tigers'
     curr_game = None
     for game in scoreboard:
         if game.home_team.name == curr_team or game.away_team.name == curr_team:
@@ -69,4 +72,15 @@ def send_notification(game_status: str):
             'lost_decisive': "Just because the Gators lost doesn't mean you have to! Make healthy choices after the game!",
             'Game not started': "The game hasn't started yet. Get ready to meet your health goals when it does!"
         }[game_status]
-        send_push_notification_next_game("Health Notification", push_token, message)
+
+        last_score = redis_client.get('last_score')
+        if last_score is None:
+            last_score = "Game not started"
+        else:
+            # Decode is needed here because Redis stores data as bytes, so we need to turn it back into a string
+            last_score = last_score.decode('utf-8')
+
+        if last_score != game_status:
+            send_push_notification_next_game("Health Notification", push_token, message)
+            redis_client.set('last_score', game_status)
+        #send_push_notification_next_game("Health Notification", push_token, message)
