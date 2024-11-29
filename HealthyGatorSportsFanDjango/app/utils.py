@@ -33,9 +33,9 @@ def check_game_status(apiInstance):
         opponent_score = curr_game.home_team.points
     score_diff = florida_score - opponent_score
     if curr_game.status == 'in_progress':
-        if score_diff > 14:
+        if score_diff >= 14:
             return 'winning_decisive'
-        elif 1 <= score_diff <= 14:
+        elif 1 <= score_diff < 14:
             return 'winning_close'
         elif score_diff == 0:
             return 'tied'
@@ -44,9 +44,9 @@ def check_game_status(apiInstance):
         else:
             return 'losing_decisive'
     elif curr_game.status == 'completed':
-        if score_diff > 14:
+        if score_diff >= 14:
             return 'won_decisive'
-        elif 1 <= score_diff <= 14:
+        elif 1 <= score_diff < 14:
             return 'won_close'
         elif -14 < score_diff <= -1:
             return 'lost_close'
