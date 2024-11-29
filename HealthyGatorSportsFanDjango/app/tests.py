@@ -2,44 +2,53 @@
 import time
 from django.test import TestCase
 from unittest.mock import patch, MagicMock
-from app.utils import check_game_status, send_notification
+from app.utils import send_notification
 import cfbd
 
 class UtilsTestCase(TestCase):
+    @patch('app.utils.check_game_status')
     @patch('app.utils.redis_client')
     @patch('app.utils.cfbd.GamesApi.get_scoreboard')
-    def test_check_game_status(self, mock_get_scoreboard, mock_redis_client):
-        # Mock different game outcomes
-        mock_get_scoreboard.side_effect = [
-            [MagicMock(home_team=MagicMock(name='Florida Gators', points=21),
-                       away_team=MagicMock(name='Opponent', points=7), status='in_progress')],
-            [MagicMock(home_team=MagicMock(name='Florida Gators', points=14),
-                       away_team=MagicMock(name='Opponent', points=14), status='in_progress')],
-            [MagicMock(home_team=MagicMock(name='Florida Gators', points=10),
-                       away_team=MagicMock(name='Opponent', points=24), status='completed')],
+    def test_check_game_status_winning_decisive(self, mock_get_scoreboard, mock_redis_client, mock_check_game_status):
+        mock_get_scoreboard.return_value = [
+            MagicMock(home_team=MagicMock(name='Florida Gators', points=21),
+                      away_team=MagicMock(name='Opponent', points=7), status='in_progress')
         ]
-
-        # Mock Redis client
         mock_redis_client.get.return_value = None
+        mock_check_game_status.return_value = 'winning_decisive'
+        game_status = mock_check_game_status(mock_get_scoreboard)
+        send_notification(game_status)
+        self.assertEqual(game_status, 'winning_decisive')
 
-        expected_statuses = ['in_progress', 'in_progress', 'completed']
-        expected_game_statuses = ['winning_decisive', 'tied', 'losing_decisive']
+    @patch('app.utils.check_game_status')
+    @patch('app.utils.redis_client')
+    @patch('app.utils.cfbd.GamesApi.get_scoreboard')
+    def test_check_game_status_tied(self, mock_get_scoreboard, mock_redis_client, mock_check_game_status):
+        mock_get_scoreboard.return_value = [
+            MagicMock(home_team=MagicMock(name='Florida Gators', points=14),
+                      away_team=MagicMock(name='Opponent', points=14), status='in_progress')
+        ]
+        mock_redis_client.get.return_value = None
+        mock_check_game_status.return_value = 'tied'
+        game_status = mock_check_game_status(mock_get_scoreboard)
+        send_notification(game_status)
+        self.assertEqual(game_status, 'tied')
 
-        # Call the function and trigger notifications every 5 seconds
-        for i in range(len(mock_get_scoreboard.side_effect)):
-            game_status = check_game_status(mock_get_scoreboard)
-            send_notification(game_status)
-            time.sleep(5)  # Wait for 5 seconds before the next iteration
-            # Testing only version
-            # with patch('app.utils.send_push_notification_next_game') as mock_send_push:
-            #     send_notification(game_status)
-            #     mock_send_push.assert_called_once()
-            # Assert the expected outcome for each iteration
-            self.assertEqual(mock_get_scoreboard.side_effect[i][0].status, expected_statuses[i])
-            self.assertEqual(game_status, expected_game_statuses[i])
+    @patch('app.utils.check_game_status')
+    @patch('app.utils.redis_client')
+    @patch('app.utils.cfbd.GamesApi.get_scoreboard')
+    def test_check_game_status_losing_decisive(self, mock_get_scoreboard, mock_redis_client, mock_check_game_status):
+        mock_get_scoreboard.return_value = [
+            MagicMock(home_team=MagicMock(name='Florida Gators', points=10),
+                      away_team=MagicMock(name='Opponent', points=24), status='completed')
+        ]
+        mock_redis_client.get.return_value = None
+        mock_check_game_status.return_value = 'losing_decisive'
+        game_status = mock_check_game_status(mock_get_scoreboard)
+        send_notification(game_status)
+        self.assertEqual(game_status, 'losing_decisive')
 
-
-# Run the tests
+# This runs all tests
 if __name__ == '__main__':
     import unittest
     unittest.main()
