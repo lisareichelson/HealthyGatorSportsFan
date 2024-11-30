@@ -41,16 +41,16 @@ If you want to test the application on an IOS device, follow the steps shown bel
 - Notify @lisareichelson@ufl.edu that you would like access to test our application. All we need is your email address to be able to grant you access.
 - Check your email for an invitation. Create an account / follow the on-screen instructions. Eventually you should be prompted to download an application on your phone via testflight. Do so, and allow notifications if prompted.
 
-  **ADMIN NOTES: navigate to (the user management screen)[https://appstoreconnect.apple.com/access/users] to send an invitation to the requested email address.
-Once they accept the invitation, go to (the tester management screen)[https://appstoreconnect.apple.com/teams/6dbe8045-715d-454b-9898-d5f6c28236e9/apps/6738848648/testflight/groups/ee86f684-4ec1-4ec3-8697-fb92d0ffdd35] and add them as an approved tester. **
+  **ADMIN NOTES: navigate to [the user management screen](https://appstoreconnect.apple.com/access/users) to send an invitation to the requested email address.
+Once they accept the invitation, go to [the tester management screen](https://appstoreconnect.apple.com/teams/6dbe8045-715d-454b-9898-d5f6c28236e9/apps/6738848648/testflight/groups/ee86f684-4ec1-4ec3-8697-fb92d0ffdd35) and add them as an approved tester. **
 
 ##### If Public Link Approved (recommended)
 - Download the “TestFlight” application on your mobile device.
-- Open this link on your phone / testing device: [https://testflight.apple.com/join/DgDEk74t]
+- Open this link on your phone / testing device: https://testflight.apple.com/join/DgDEk74t
 - Follow the prompts on your device, allow notifications if prompted.
 
 #### Option 2: Run on Android Device 
-- Open this link on your phone / testing device: [https://tsfr.io/join/j83v89]
+- Open this link on your phone / testing device: https://tsfr.io/join/j83v89
 - Follow the instructions that appear on the screen. Install the application, allow notifications if prompted.
 
 
