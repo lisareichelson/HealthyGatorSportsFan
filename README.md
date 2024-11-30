@@ -1,14 +1,25 @@
 # HealthyGatorSportsFan
 Senior Project / JITAI application 2024
 
+<img src="HealthyGatorSportsFanRN/assets/images/clipboardgator.jpg" width="200" /><img src="HealthyGatorSportsFanRN/assets/images/coolgator.png" width="200" />
+
 ## Code Organization
 (TODO: Complete this section) 
 
-HealthyGatorSportsFan is organized into two main directories
+HealthyGatorSportsFan is organized into two primary directories: **HealthyGatorSportsFanDjango** for the Django-powered backend code, and **HealthyGatorSportsFanRN** for the React Native frontend code.
+
+### Backend
+
+Database entities for User, UserData, and NotificationData are defined in HealthyGatorSportsFanDjango/app/models.py.
+
+APIs are defined in the backend in [HealthyGatorSportsFanDjango/app/views.py](HealthyGatorSportsFanDjango/app/views.py)
+
+API URLs are captured in [HealthyGatorSportsFanDjango/project/urls.py](HealthyGatorSportsFanDjango/project/urls.py)
+
+Thse REST APIs are documented in our [Swagger](https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/swagger/).
 
 Heroku, Django, Expo SDK 52, ReactNative...
 
-Our home-grown REST APIs are documented in our [Swagger](https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/swagger/).
 
 Django Index:
 
