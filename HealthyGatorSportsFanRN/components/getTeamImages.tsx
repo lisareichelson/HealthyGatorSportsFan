@@ -3,6 +3,9 @@ This file is used to manage dynamic image loading for opposing teams.
 Ensure to load all possible opponents into this file
  */
 
+// TODO: Add all remaining college abbreviations from HealthyGatorSportsFanRN\constants\Abbreviations.ts to this file
+    // Can limit this to only the team UF will play.
+
 interface Image {
     name: string;
     image: any;
@@ -10,6 +13,10 @@ interface Image {
 
 export class TeamLogo {
     private static images: Array<Image> = [
+        {
+            name: 'fla', //florida
+            image: require('../assets/images/teamLogos/gatorlogo.png'),
+        },
         {
             name: 'fsu', //florida state university
             image: require('../assets/images/teamLogos/fsu.png'),
@@ -27,11 +34,11 @@ export class TeamLogo {
             image: require('../assets/images/teamLogos/uk.png'),
         },
         {
-            name: 'uv', //university of vanderbilt
+            name: 'van', //university of vanderbilt
             image: require('../assets/images/teamLogos/uv.png'),
         },
         {
-            name: 'utk', //university of tennessee knoxville
+            name: 'utk', //university of tennessee knoxville <-- this one doesn't seem to be in the CFBD API
             image: require('../assets/images/teamLogos/utk.jpg'),
         },
         {
@@ -39,11 +46,11 @@ export class TeamLogo {
             image: require('../assets/images/teamLogos/usc.png'),
         },
         {
-            name: 'mu', //university of Missouri
+            name: 'miz', //university of Missouri
             image: require('../assets/images/teamLogos/mu.png'),
         },
         {
-            name: 'a&m', //texas A & M
+            name: 'ta&m', //texas A & M
             image: require('../assets/images/teamLogos/a&m.png'),
         },
     ];

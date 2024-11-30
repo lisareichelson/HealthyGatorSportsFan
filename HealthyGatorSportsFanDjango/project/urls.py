@@ -19,7 +19,8 @@ from django.urls import path
 # for pushing to heroku
 #from HealthyGatorSportsFanDjango.app.views import index, CreateUserView, poll_cfbd_view, CreateUserDataView, NotificationListView, CreateNotificationView, DeleteNotificationView, BulkDeleteNotificationsView, UserLoginView, LatestUserDataView, UserUpdateView, CheckEmailView
 # for running locally
-from app.views import index, CreateUserView, poll_cfbd_view, CreateUserDataView, NotificationListView, CreateNotificationView, DeleteNotificationView, BulkDeleteNotificationsView, UserLoginView, LatestUserDataView, UserUpdateView, CheckEmailView
+#from app.views import index, CreateUserView, poll_cfbd_view, BasicInfoView, GoalCollectionView, CreateUserDataView (before merge)
+from app.views import index, CreateUserView, poll_cfbd_view, home_tile_view, CreateUserDataView, NotificationListView, CreateNotificationView, DeleteNotificationView, BulkDeleteNotificationsView, UserLoginView, LatestUserDataView, UserUpdateView, CheckEmailView
 
 # Import drf-yasg components
 from drf_yasg.views import get_schema_view 
@@ -55,7 +56,8 @@ urlpatterns = [
     path('notificationdata/delete/<int:notification_id>/', DeleteNotificationView.as_view(), name='notification-delete'),
     path('notificationdata/deleteall/<int:user_id>/', BulkDeleteNotificationsView.as_view(), name='notifications-delete-all'),
     path('poll-cfbd/', poll_cfbd_view, name='poll_cfbd'),
-
+    path('home-tile/', home_tile_view, name='home_tile_view'),
+    
     # API endpoint for Swagger
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

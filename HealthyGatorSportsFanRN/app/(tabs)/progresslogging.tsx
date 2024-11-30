@@ -142,7 +142,6 @@ export default function ProgressLogging() {
     );
 }
 
-
 function ConfirmChanges(navigation: any, rating: number, newWeight: any, currentUser: User){
 
     // The user's goals may have been updated after login. Set goal type for this log entry accordingly.
@@ -181,17 +180,14 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
                     style: "destructive",
                     onPress: async () => {
                         let goHome = true;
-                        if (currentUser.goalWeight && newWeight <= currentUser.goalWeight) {goHome = false}
-                        await addUserProgress(currentUser, rating, newWeight, navigation, goHome);
-                        if (currentUser.goalWeight && newWeight <= currentUser.goalWeight){
+                        if (currentUser.loseWeight && currentUser.goalWeight && newWeight <= currentUser.goalWeight) {goHome = false}
+                        await addUserProgress(currentUser, rating, newWeight, navigation, goHome); 
+                        if (currentUser.feelBetter){await sendFeelBetterMessage(rating);}                           
+                        if (currentUser.loseWeight && currentUser.goalWeight && newWeight <= currentUser.goalWeight){
                             Alert.alert(
-                                "Confirmation",
-                                "Congratulations!! You have reached your weight goal. We'll reset your goal to feel-better only for now. Please continue to the profile management screen to update your goals.",
+                                "Congratulations!!",
+                                "You have reached your weight goal. We'll reset your goal to feel-better only for now. Please continue to the profile management screen to update your goals.",
                                 [
-                                    {
-                                        //text: "Nevermind!!",
-                                        //style: "cancel"
-                                    },
                                     {
                                         text: "Continue",
                                         style: "destructive",
@@ -205,13 +201,44 @@ function ConfirmChanges(navigation: any, rating: number, newWeight: any, current
                                     }
                                 ]
                             );
-                        }                        
+                        } 
                     }
                 }
             ]
         );
     }
 }
+const sendFeelBetterMessage = async (rating: number) => new Promise((resolve) => {
+
+    console.log("currentUser.feelBetter in sendFeelBetterMessage = ", rating)
+
+    let message = '';
+    if (rating === 5)
+        message = "Fantastic! You're really thriving, keep embracing that great energy!";
+    if (rating === 4)
+        message = "Great to hear! You're doing awesome, keep up the positive vibes!";
+    if (rating === 3)
+        message = "Thanks for your input! You're in a steady place, keep moving forward!";
+    if (rating === 2)
+        message = "Proud of your honesty! Remember, it's okay to have ups and downs.";
+    if (rating === 1)
+        message = "It's tough right now, but every step forward counts. You're not alone in this!";
+
+    Alert.alert(
+        "Feel-better Rating Check-in",
+        message,
+        [
+            {
+                text: "Ok",
+                style: "destructive",
+                onPress: () => {
+                    resolve('YES');
+                }
+            }
+        ],
+        { cancelable: false },
+    );
+});
 function LogoutPopup(navigation: any){
     Alert.alert(
         "Confirmation",
@@ -309,7 +336,7 @@ function NavigateToNotifications(currentUser:any, navigation:any){
         ]
     );
 }
-async function addUserProgress(currentUser: any, rating: number, newWeight: number, navigation: any, goHome: boolean){
+async function addUserProgress (currentUser: any, rating: number, newWeight: number, navigation: any, goHome: boolean){
     // UserData POST API call
     fetch(`${AppUrls.url}/userdata/${currentUser.userId}/`, {
         method: 'POST',
@@ -326,9 +353,10 @@ async function addUserProgress(currentUser: any, rating: number, newWeight: numb
         if (!response.ok) throw new Error('Failed to save your goal progress.');
         return response.json();
     })
-    .then(data => {
+    .then(async data => {
         console.log('Progress successfully logged:', data);
         currentUser.currentWeight = newWeight;
+        currentUser.lastRating = rating;
         if(goHome){navigation.navigate('HomePage', {currentUser} as never);}
     })
     .catch(error => {
@@ -336,7 +364,6 @@ async function addUserProgress(currentUser: any, rating: number, newWeight: numb
         Alert.alert("Failed to save your progress. Please try again!");
     });
 }
-
 const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLoseWeight: boolean, navigation: any) => {
     const updatedData = {
         goal_to_feel_better: newFeelBetter,
@@ -359,6 +386,7 @@ const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLose
             currentUser.goal_to_lose_weight = false;
             currentUser.loseWeight = false;
             currentUser.goal_to_lose_weight = false; 
+            currentUser.goalWeight = 0; 
             console.log("Current user after API call & updates: ", currentUser);
             // Navigate back to the welcome page.
             navigation.navigate('ProfileManagement', {currentUser} as never);
@@ -371,7 +399,6 @@ const updateUserGoals = async (currentUser: any, newFeelBetter: boolean, newLose
         Alert.alert("Network error");
     }
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
