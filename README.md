@@ -46,9 +46,13 @@ Once they accept the invitation, go to https://appstoreconnect.apple.com/teams/6
 
 ##### If Public Link Approved (recommended)
 - Download the “TestFlight” application on your mobile device.
-- Open this link on your phone / testing device: https://testflight.apple.com/join/DgDEk74t
+- Open this link on your phone / testing device: (https://testflight.apple.com/join/DgDEk74t)[https://testflight.apple.com/join/DgDEk74t]
 - Follow the prompts on your device, allow notifications if prompted.
-  
+
+#### Option 2: Run on Android Device 
+- Open this link on your phone / testing device: (https://tsfr.io/join/j83v89)[https://tsfr.io/join/j83v89]
+- Follow the instructions that appear on the screen. Install the application, allow notifications if prompted.
+
 
 ## Advanced Setup (Recommended for development purposes only)
 
