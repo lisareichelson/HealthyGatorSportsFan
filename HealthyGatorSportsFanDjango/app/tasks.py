@@ -2,9 +2,9 @@
 import logging
 from celery import shared_task
 # for running locally
-from app.views import poll_cfbd_view
+#from app.views import poll_cfbd_view
 # for pushing to Heroku
-#from HealthyGatorSportsFanDjango.app.views import poll_cfbd_view
+from HealthyGatorSportsFanDjango.app.views import poll_cfbd_view
 
 logger = logging.getLogger(__name__)
 
