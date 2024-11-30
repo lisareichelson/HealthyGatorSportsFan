@@ -26,3 +26,6 @@ __pycache__/
 HealthyGatorSportsFanDjango/celerybeat-schedule.bak
 HealthyGatorSportsFanDjango/celerybeat-schedule.dat
 HealthyGatorSportsFanDjango/celerybeat-schedule.dir
+
+# Ignore FCM file
+HealthyGatorSportsFanRN\google-services.json
