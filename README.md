@@ -33,6 +33,25 @@ Django Admin View:
 ## Run the App
 The following instructions describe how to run the app.
 
+### Simple Setup (recommended)
+This process involves downloading our pre-packaged installation file for testing on a mobile device.
+#### Option 1: Run on IOS Device 
+If you want to test the application on an IOS device, follow the steps shown below.
+##### If Public Link NOT Approved (Not approved as of 11/30)
+- Notify @lisareichelson@ufl.edu that you would like access to test our application. All we need is your email address to be able to grant you access.
+- Check your email for an invitation. Create an account / follow the on-screen instructions. Eventually you should be prompted to download an application on your phone via testflight. Do so, and allow notifications if prompted.
+
+  **ADMIN NOTES: navigate to https://appstoreconnect.apple.com/access/users to send an invitation to the requested email address.
+Once they accept the invitation, go to https://appstoreconnect.apple.com/teams/6dbe8045-715d-454b-9898-d5f6c28236e9/apps/6738848648/testflight/groups/ee86f684-4ec1-4ec3-8697-fb92d0ffdd35 and add them as an approved tester. **
+
+##### If Public Link Approved (recommended)
+- Download the “TestFlight” application on your mobile device.
+- Open this link on your phone / testing device: https://testflight.apple.com/join/DgDEk74t
+- Follow the prompts on your device, allow notifications if prompted.
+  
+
+## Advanced Setup (Recommended for development purposes only)
+
 ### Backend
 
 #### Option 1: Run on Heroku (recommended)
