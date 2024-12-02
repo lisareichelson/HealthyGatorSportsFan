@@ -48,7 +48,7 @@ async function ConfirmData(email: any, password: any, navigation: any){
     console.log(password);
     //Eventually design a backup email verification system for forgotten passwords.
 
-    const currentUser = new User(1,'','','','','','',0,0,0, false,true,0, "both");
+    const currentUser = new User(1,'','','','','','',0,0,0, false,true,0, "both", 0);
 
     //TODO: REMOVE ME AFTER TESTING, THIS IS FOR DEBUG USER
     if ((email == "debug" || email == "Debug") && (password == "debug" || password == "Debug")){
@@ -69,7 +69,8 @@ async function ConfirmData(email: any, password: any, navigation: any){
         navigation.navigate('HomePage', {currentUser} as never);
     }
     else{
-        await handleLogin(currentUser, email, password, navigation);    
+        await handleLogin(currentUser, email, password, navigation);
+        console.log("currentUser", currentUser)    
     }    
 }
 
@@ -85,7 +86,6 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
         if (response.ok) {
             const data = await response.json();
             console.log('User:', data);
-            // Handle successful login (load data, load user data, then navigate to another screen)
             currentUser.userId = data.user_id;
             currentUser.email = data.email;
             currentUser.password = data.password;
@@ -100,6 +100,7 @@ const handleLogin = async (currentUser: any, email: any, password: any, navigati
             currentUser.loseWeight = data.goal_to_lose_weight;
             currentUser.goal_to_lose_weight = data.goal_to_lose_weight;
             currentUser.goalWeight = data.goal_weight;
+            if (!currentUser.loseWeight){ currentUser.goalWeight = 0}
             await getLatestUserData(currentUser, navigation); 
         } else {
             const errorData = await response.json();
@@ -126,6 +127,7 @@ const getLatestUserData = async (currentUser: any, navigation: any) => {
             console.log('UserData:', data);
             currentUser.currentWeight = data.weight_value;
             currentUser.goalType = data.goal_type; // This is the goal type as of their last user data entry, but it may not match their current goals. Best practice it to use the booleans in the User to detect current goal type.
+            currentUser.lastRating = data.feel_better_value;
             navigation.navigate('HomePage', {currentUser} as never);
         } else {
             const errorData = await response.json();

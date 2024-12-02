@@ -383,7 +383,7 @@ function ConfirmChanges(currentUser:User, newFirstName: any, newLastName: any, n
     }
 
     // Condition: Goal to lose weight selected, but no goal weight provided
-    else if(newLoseWeight === true && (newGoalWeight === 0 || newGoalWeight === "0" || newGoalWeight === '') && currentUser.goalWeight === 0){
+    else if(newLoseWeight === true && (newGoalWeight === 0 || newGoalWeight === "0" || newGoalWeight === '' || newGoalWeight === 'N/A' ) && currentUser.goalWeight === 0){
         Alert.alert(
             "Goal weight missing",
             "Please set your goal weight, or remove the lose-weight goal from your goal selection",

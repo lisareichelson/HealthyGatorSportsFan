@@ -24,6 +24,9 @@ from pathlib import Path
 
 from celery.schedules import crontab, schedule
 
+# for pushing to Heroku
+#from kombu import Connection
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,6 +59,7 @@ ALLOWED_HOSTS = ['healthygatorsportsfan-84ee3c84673f.herokuapp.com','127.0.0.1',
 #    'django.contrib.staticfiles',
 #    'HealthyGatorSportsFanDjango.app',
 #    'rest_framework',
+#    'drf_yasg',
 #    'corsheaders',
 #]
 
@@ -69,7 +73,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'rest_framework',
-    'drf_yasg',
     'corsheaders',
 ]
 
@@ -190,7 +193,21 @@ CSRF_TRUSTED_ORIGINS = [
     'https://healthygatorsportsfan-84ee3c84673f.herokuapp.com'
 ]
 
+# for pushing to Heroku
+# configures Celery to handle Redis connections using SSL.
+#BROKER_USE_SSL = {
+#    "ssl_cert_reqs": "CERT_NONE"
+#}
+#CELERY_BROKER_URL = os.environ.get("REDIS_URL") + '?ssl_cert_reqs=CERT_NONE'
+#CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL") + '?ssl_cert_reqs=CERT_NONE'
+#CELERY_BROKER_TRANSPORT_OPTIONS = BROKER_USE_SSL
+#CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = BROKER_USE_SSL
+#CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_TASK_SERIALIZER = 'json'
+#CELERY_RESULT_SERIALIZER = 'json'
+#CELERY_TIMEZONE = 'UTC'
 
+# for running locally
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
@@ -198,6 +215,15 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
+# for pushing to heroku
+#CELERY_BEAT_SCHEDULE = {
+#    'poll-cfbd-every-10-seconds': {
+#        'task': 'HealthyGatorSportsFanDjango.app.tasks.poll_cfbd_task',
+#        'schedule': schedule(10.0),  # 10 seconds
+#    },
+#}
+
+# for running locally
 CELERY_BEAT_SCHEDULE = {
     'poll-cfbd-every-10-seconds': {
         'task': 'app.tasks.poll_cfbd_task',
