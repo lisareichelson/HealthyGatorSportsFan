@@ -79,7 +79,10 @@ def send_notification(game_status: str, home_team: str, home_score: int, away_te
         if game_status == 'Game not started':
             last_score = "Game not started"
         else:
-            last_score = last_score.decode('utf-8')
+            if last_score is not None:
+                last_score = last_score.decode('utf-8')
+            else:
+                last_score = ""
             if last_score != current_score:
                 send_push_notification_next_game("Health Notification", push_token, message)
                 redis_client.set('last_score', current_score)

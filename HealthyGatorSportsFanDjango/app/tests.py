@@ -219,10 +219,10 @@ class UtilsTestCase(TestCase):
             MagicMock(home_team=MagicMock(name='Florida Gators', points=0),
                       away_team=MagicMock(name='Opponent', points=14), status='in_progress')
         ]
-        mock_check_game_status.return_value = 'losing_decisive'
+        mock_check_game_status.return_value = 'losing_close'
         game_status = mock_check_game_status(mock_get_scoreboard)
         send_notification(game_status, 'Florida Gators', 0, 'Opponent', 14)
-        self.assertEqual(game_status, 'losing_decisive')
+        self.assertEqual(game_status, 'losing_close')
         time.sleep(5)
 
         # Scenario 4
