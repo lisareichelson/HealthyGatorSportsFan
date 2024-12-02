@@ -3,37 +3,7 @@ Senior Project / JITAI application 2024
 
 <img src="HealthyGatorSportsFanRN/assets/images/clipboardgator.jpg" width="200" /><img src="HealthyGatorSportsFanRN/assets/images/coolgator.png" width="200" />
 
-## Code Organization
-(TODO: Complete this section) 
-
-HealthyGatorSportsFan is organized into two primary directories: **HealthyGatorSportsFanDjango** for the Django-powered backend code, and **HealthyGatorSportsFanRN** for the React Native frontend code.
-
-### Backend
-
-Database entities for User, UserData, and NotificationData are defined in HealthyGatorSportsFanDjango/app/models.py.
-
-APIs are defined in the backend in [HealthyGatorSportsFanDjango/app/views.py](HealthyGatorSportsFanDjango/app/views.py)
-
-API URLs are captured in [HealthyGatorSportsFanDjango/project/urls.py](HealthyGatorSportsFanDjango/project/urls.py)
-
-Thse REST APIs are documented in our [Swagger](https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/swagger/).
-
-Heroku, Django, Expo SDK 52, ReactNative...
-
-
-Django Index:
-
-<img width="443" alt="image" src="https://github.com/user-attachments/assets/1160bd37-580e-45e6-819a-b3787e96793e">
-
-Django Admin View:
-
-<img width="559" alt="image" src="https://github.com/user-attachments/assets/61943fa6-eeb2-42fc-a535-43b57581c5ac">
-
-
-## Run the App
-The following instructions describe how to run the app.
-
-### Simple Setup (recommended)
+## Run the App: Simple Setup (recommended)
 This process involves downloading our pre-packaged installation file for testing on a mobile device.
 #### Option 1: Run on IOS Device 
 If you want to test the application on an IOS device, follow the steps shown below.
@@ -54,7 +24,7 @@ Once they accept the invitation, go to [the tester management screen](https://ap
 - Follow the instructions that appear on the screen. Install the application, allow notifications if prompted.
 
 
-## Advanced Setup (Recommended for development purposes only)
+## Run the App: Advanced Setup (Recommended for development purposes only)
 
 ### Backend
 
@@ -165,6 +135,7 @@ Open a new terminal and navigate to the **HealthyGatorSportsFanDjango** director
 Now the backend should be up and running locally!
 
 ### Frontend
+This section is still under construction.
 
 #### Option 2: Run using TestFlight
 (TODO: Complete this section)
@@ -208,3 +179,30 @@ If you come across warnings like this, you may need to update package versions a
 - `npm install react-native@0.76.3`
 
 If you come across any build errors, you may need further package updates or installations. Follow the messages accordingly.
+
+## Code Organization
+This section is still under construction.
+(TODO: Complete this section) 
+
+HealthyGatorSportsFan is organized into two primary directories: **HealthyGatorSportsFanDjango** for the Django-powered backend code, and **HealthyGatorSportsFanRN** for the React Native frontend code.
+
+### Backend
+
+Database entities for User, UserData, and NotificationData are defined in HealthyGatorSportsFanDjango/app/models.py.
+
+APIs are defined in the backend in [HealthyGatorSportsFanDjango/app/views.py](HealthyGatorSportsFanDjango/app/views.py)
+
+API URLs are captured in [HealthyGatorSportsFanDjango/project/urls.py](HealthyGatorSportsFanDjango/project/urls.py)
+
+Thse REST APIs are documented in our [Swagger](https://healthygatorsportsfan-84ee3c84673f.herokuapp.com/swagger/).
+
+Heroku, Django, Expo SDK 52, ReactNative...
+
+
+Django Index:
+
+<img width="443" alt="image" src="https://github.com/user-attachments/assets/1160bd37-580e-45e6-819a-b3787e96793e">
+
+Django Admin View:
+
+<img width="559" alt="image" src="https://github.com/user-attachments/assets/61943fa6-eeb2-42fc-a535-43b57581c5ac">
