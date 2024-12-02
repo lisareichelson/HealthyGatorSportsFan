@@ -4,7 +4,11 @@ import os
 import cfbd
 import redis
 
-redis_client = redis.StrictRedis.from_url(os.environ.get("REDIS_URL"))
+redis_client = redis.StrictRedis.from_url(
+    os.environ.get("REDIS_URL"), 
+    decode_responses=True, 
+    ssl_cert_reqs=None
+)
 def send_push_notification_next_game(header, push_token, message):
     response = PushClient().publish(
         PushMessage(
