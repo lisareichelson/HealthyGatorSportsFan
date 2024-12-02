@@ -227,6 +227,6 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'poll-cfbd-every-10-seconds': {
         'task': 'app.tasks.poll_cfbd_task',
-        'schedule': schedule(10.0),  # 10 seconds
+        'schedule': schedule(120.0),  # 10 seconds
     },
 }
