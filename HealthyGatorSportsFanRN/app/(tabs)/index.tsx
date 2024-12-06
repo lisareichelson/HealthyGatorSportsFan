@@ -24,7 +24,8 @@ export default function CreateOrSignIn() {
                 </View>
             </Modal>
 
-            <Image source={require('./../../assets/images/coolgator.png')}/>
+            <Image source={require('./../../assets/images/coolgator.png')}
+                   style={{ marginTop: '20%' }}/>
             <TouchableOpacity style = {[styles.buttons, {marginTop: 100} ]} activeOpacity={0.5}
                               onPress={() => navigation.navigate('WelcomeScreen' as never) }>
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
@@ -35,6 +36,14 @@ export default function CreateOrSignIn() {
                 <Text style={{fontSize: 15, fontFamily: 'System'}}>
                     Login</Text>
             </TouchableOpacity>
+            <View style = {styles.credits}>
+            <Text style={{fontSize: 10, fontFamily: 'System'}}>
+                Authors: Yonghwan Chang PhD, Lisa Reichelson, Shannon Archer, Isaac Yoder, Amy Stone, Danielle Jake-Schoffman PhD, & Kathryn Marie Ross PhD
+            </Text>
+            <Text style={{fontSize: 10, fontFamily: 'System', marginTop: '5%'}}>
+                Acknowledgements: Associate Provost David Reed, Ph.D., HHP Dean Michael Reid, Ph.D, Gator AccelerAItor team, Departments of Sport Management, Health Education & Behavior, Clinical and Health Psychology, and Computer Science.
+            </Text>
+            </View>
         </View>
     );
 }
@@ -82,4 +91,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
     },
+    credits:{
+        marginTop: '25%',
+        marginLeft: '5%',
+        marginRight: '5%',
+    }
 });
